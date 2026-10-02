@@ -314,29 +314,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     // PICK RANDOM NEXT IMAGE
     // ==================================================
 
-    function pickNextIndex() {
+function pickNextIndex() {
+  if (imageIds.length <= 1) {
+    return slideshow.currentIndex;
+  }
 
-      if (imageIds.length <= 1) {
-        return slideshow.currentIndex;
-      }
-
-      let index;
-
-      do {
-
-        index =
-          Math.floor(
-            Math.random() *
-              imageIds.length
-          );
-
-      } while (
-        index ===
-        slideshow.currentIndex
-      );
-
-      return index;
-    }
+  return (
+    slideshow.currentIndex + 1
+  ) % imageIds.length;
+}
 
 
     // ==================================================
