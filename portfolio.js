@@ -54,479 +54,442 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --------------------------------------------------
   // PROFESSIONAL CATEGORY SLIDESHOW
-  // --------------------------------------------------
-  //
-  // Features:
-  //
-  // • Cinematic horizontal transition
-  // • Smooth cross-fade
-  // • Subtle Ken Burns-style scaling
-  // • Preloads the next image
-  // • Prevents overlapping transitions
-  // • Pauses while hovering over a card
-  // • Pauses when browser tab is hidden
-  // • Resumes when tab becomes visible
-  // • Respects prefers-reduced-motion
-  // • Never shows the same photo twice consecutively
-  // • Handles failed image loads gracefully
-  //
+
   // --------------------------------------------------
 
-  function startCategorySlideshow(imageElement, imageIds) {
-    if (!imageElement || imageIds.length <= 1) {
-      return;
+ function startCategorySlideshow(imageElement, imageIds) {
+  if (!imageElement || imageIds.length <= 1) {
+    return;
+  }
+
+  // Respect accessibility preferences
+  if (
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return;
+  }
+
+  // --------------------------------------------------
+  // SETTINGS
+  // --------------------------------------------------
+
+  const DISPLAY_MS = 10000;
+  const TRANSITION_MS = 1400;
+  const PRELOAD_TIMEOUT = 8000;
+
+  const card = imageElement.parentElement;
+
+  if (!card) {
+    return;
+  }
+
+  // --------------------------------------------------
+  // CARD SETUP
+  // --------------------------------------------------
+
+  if (getComputedStyle(card).position === "static") {
+    card.style.position = "relative";
+  }
+
+  card.style.overflow = "hidden";
+
+  // --------------------------------------------------
+  // CREATE SECOND IMAGE LAYER
+  // --------------------------------------------------
+
+  const nextImage = imageElement.cloneNode(false);
+
+  nextImage.removeAttribute("src");
+
+  nextImage.loading = "eager";
+  nextImage.decoding = "async";
+  nextImage.alt = "";
+  nextImage.setAttribute("aria-hidden", "true");
+
+  nextImage.style.position = "absolute";
+  nextImage.style.inset = "0";
+  nextImage.style.width = "100%";
+  nextImage.style.height = "100%";
+  nextImage.style.objectFit = "cover";
+  nextImage.style.objectPosition = "center";
+  nextImage.style.pointerEvents = "none";
+
+  // Start completely outside the card on the LEFT
+  nextImage.style.visibility = "hidden";
+  nextImage.style.transform =
+    "translate3d(-100%, 0, 0)";
+
+  nextImage.style.zIndex = "2";
+  nextImage.style.willChange = "transform";
+
+  // Current image
+  imageElement.style.position = "relative";
+  imageElement.style.zIndex = "1";
+  imageElement.style.willChange = "transform";
+
+  imageElement.after(nextImage);
+
+  // --------------------------------------------------
+  // STATE
+  // --------------------------------------------------
+
+  let currentIndex = 0;
+  let nextIndex = null;
+
+  let timer = null;
+  let transitionTimer = null;
+
+  let busy = false;
+  let paused = false;
+  let destroyed = false;
+
+  // --------------------------------------------------
+  // IMAGE URL
+  // --------------------------------------------------
+
+  const getUrl = (id) =>
+    imageUrl(id);
+
+  // --------------------------------------------------
+  // PRELOAD IMAGE
+  // --------------------------------------------------
+
+  function preloadImage(id) {
+    return new Promise((resolve) => {
+      const img = new Image();
+
+      let finished = false;
+
+      const timeout = setTimeout(() => {
+        finish(false);
+      }, PRELOAD_TIMEOUT);
+
+      function finish(success) {
+        if (finished) {
+          return;
+        }
+
+        finished = true;
+
+        clearTimeout(timeout);
+
+        resolve(success);
+      }
+
+      img.onload = () => {
+        finish(true);
+      };
+
+      img.onerror = () => {
+        finish(false);
+      };
+
+      img.src = getUrl(id);
+    });
+  }
+
+  // --------------------------------------------------
+  // PICK RANDOM NEXT PHOTO
+  // --------------------------------------------------
+
+  function pickNextIndex() {
+    if (imageIds.length <= 1) {
+      return currentIndex;
     }
 
-    // --------------------------------------------------
-    // ACCESSIBILITY
-    // --------------------------------------------------
+    let index;
 
+    do {
+      index = Math.floor(
+        Math.random() * imageIds.length
+      );
+    } while (index === currentIndex);
+
+    return index;
+  }
+
+  // --------------------------------------------------
+  // PREPARE NEXT PHOTO
+  // --------------------------------------------------
+
+  async function prepareNext() {
+    if (destroyed) {
+      return false;
+    }
+
+    const candidate = pickNextIndex();
+
+    const loaded = await preloadImage(
+      imageIds[candidate]
+    );
+
+    if (!loaded || destroyed) {
+      return false;
+    }
+
+    nextIndex = candidate;
+
+    return true;
+  }
+
+  // --------------------------------------------------
+  // RESET SECOND IMAGE
+  // --------------------------------------------------
+
+  function resetNextImage() {
+    nextImage.style.transition = "none";
+
+    nextImage.style.visibility = "hidden";
+
+    nextImage.style.transform =
+      "translate3d(-100%, 0, 0)";
+  }
+
+  // --------------------------------------------------
+  // TRANSITION TO NEXT PHOTO
+  // --------------------------------------------------
+
+  async function transitionToNext() {
     if (
-      window.matchMedia("(prefers-reduced-motion: reduce)")
-        .matches
+      destroyed ||
+      busy ||
+      paused ||
+      document.hidden
     ) {
       return;
     }
 
-    // --------------------------------------------------
-    // SETTINGS
-    // --------------------------------------------------
+    busy = true;
 
-    const DISPLAY_MS = 10000;
-    const TRANSITION_MS = 1400;
-    const PRELOAD_TIMEOUT = 8000;
+    // Make sure a photo is ready
+    if (nextIndex === null) {
+      const prepared = await prepareNext();
 
-    const card = imageElement.parentElement;
+      if (!prepared) {
+        busy = false;
+        scheduleNext();
+        return;
+      }
+    }
 
-    if (!card) {
+    const targetIndex = nextIndex;
+
+    const targetId =
+      imageIds[targetIndex];
+
+    const targetUrl =
+      getUrl(targetId);
+
+    // ------------------------------------------------
+    // LOAD NEXT IMAGE
+    // ------------------------------------------------
+
+    nextImage.src = targetUrl;
+
+    try {
+      await nextImage.decode();
+    } catch {
+      // Browser may already have decoded the image.
+    }
+
+    if (
+      destroyed ||
+      paused ||
+      document.hidden
+    ) {
+      busy = false;
       return;
     }
 
-    // --------------------------------------------------
-    // CARD SETUP
-    // --------------------------------------------------
+    // ------------------------------------------------
+    // POSITION NEXT IMAGE
+    // ------------------------------------------------
 
-    if (getComputedStyle(card).position === "static") {
-      card.style.position = "relative";
-    }
+    nextImage.style.visibility = "visible";
 
-    card.style.overflow = "hidden";
-
-    // --------------------------------------------------
-    // CREATE SECOND IMAGE LAYER
-    // --------------------------------------------------
-
-    const nextImage = imageElement.cloneNode(false);
-
-    nextImage.removeAttribute("src");
-
-    nextImage.loading = "eager";
-    nextImage.decoding = "async";
-    nextImage.alt = "";
-    nextImage.setAttribute("aria-hidden", "true");
-
-    nextImage.style.position = "absolute";
-    nextImage.style.inset = "0";
-    nextImage.style.width = "100%";
-    nextImage.style.height = "100%";
-    nextImage.style.objectFit = "cover";
-    nextImage.style.objectPosition = "center";
-    nextImage.style.pointerEvents = "none";
-
-    nextImage.style.visibility = "hidden";
-    nextImage.style.opacity = "0";
+    nextImage.style.transition = "none";
 
     nextImage.style.transform =
-      "translate3d(-7%, 0, 0) scale(1.015)";
+      "translate3d(-100%, 0, 0)";
 
-    nextImage.style.willChange =
-      "transform, opacity";
+    // Force browser to register starting position
+    void nextImage.offsetWidth;
 
-    nextImage.style.zIndex = "2";
+    // ------------------------------------------------
+    // START SLIDE
+    // ------------------------------------------------
 
-    // Current/base image
-    imageElement.style.position = "relative";
-    imageElement.style.zIndex = "1";
-    imageElement.style.willChange =
-      "transform, opacity";
+    const transition =
+      `transform ${TRANSITION_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
 
-    imageElement.after(nextImage);
+    nextImage.style.transition = transition;
 
-    // --------------------------------------------------
-    // STATE
-    // --------------------------------------------------
+    imageElement.style.transition = transition;
 
-    let currentIndex = 0;
-    let nextIndex = null;
+    // New photo comes in from LEFT
+    nextImage.style.transform =
+      "translate3d(0, 0, 0)";
 
-    let timer = null;
-    let transitionTimer = null;
+    // Current photo exits to RIGHT
+    imageElement.style.transform =
+      "translate3d(100%, 0, 0)";
 
-    let busy = false;
-    let paused = false;
-    let destroyed = false;
+    // ------------------------------------------------
+    // COMPLETE TRANSITION
+    // ------------------------------------------------
 
-    // --------------------------------------------------
-    // IMAGE URL
-    // --------------------------------------------------
-
-    const getUrl = (id) =>
-      imageUrl(id);
-
-    // --------------------------------------------------
-    // PRELOAD IMAGE
-    // --------------------------------------------------
-
-    function preloadImage(id) {
-      return new Promise((resolve) => {
-        const img = new Image();
-
-        let finished = false;
-
-        const timeout = setTimeout(() => {
-          finish(false);
-        }, PRELOAD_TIMEOUT);
-
-        function finish(success) {
-          if (finished) {
-            return;
-          }
-
-          finished = true;
-
-          clearTimeout(timeout);
-
-          resolve(success);
-        }
-
-        img.onload = () => {
-          finish(true);
-        };
-
-        img.onerror = () => {
-          finish(false);
-        };
-
-        img.src = getUrl(id);
-      });
-    }
-
-    // --------------------------------------------------
-    // PICK RANDOM NEXT PHOTO
-    // --------------------------------------------------
-
-    function pickNextIndex() {
-      if (imageIds.length <= 1) {
-        return currentIndex;
-      }
-
-      let index;
-
-      do {
-        index = Math.floor(
-          Math.random() * imageIds.length
-        );
-      } while (index === currentIndex);
-
-      return index;
-    }
-
-    // --------------------------------------------------
-    // PREPARE NEXT PHOTO
-    // --------------------------------------------------
-
-    async function prepareNext() {
+    transitionTimer = setTimeout(() => {
       if (destroyed) {
-        return false;
-      }
-
-      const candidate = pickNextIndex();
-
-      const loaded = await preloadImage(
-        imageIds[candidate]
-      );
-
-      if (!loaded || destroyed) {
-        return false;
-      }
-
-      nextIndex = candidate;
-
-      return true;
-    }
-
-    // --------------------------------------------------
-    // RESET NEXT IMAGE
-    // --------------------------------------------------
-
-    function resetNextImage() {
-      nextImage.style.transition = "none";
-
-      nextImage.style.visibility = "hidden";
-
-      nextImage.style.opacity = "0";
-
-      nextImage.style.transform =
-        "translate3d(-7%, 0, 0) scale(1.015)";
-    }
-
-    // --------------------------------------------------
-    // TRANSITION TO NEXT PHOTO
-    // --------------------------------------------------
-
-    async function transitionToNext() {
-      if (
-        destroyed ||
-        busy ||
-        paused ||
-        document.hidden
-      ) {
         return;
       }
 
-      busy = true;
+      // Make the new image the permanent base image
+      imageElement.src = targetUrl;
 
-      // ------------------------------------------------
-      // MAKE SURE NEXT PHOTO IS READY
-      // ------------------------------------------------
+      imageElement.style.transition = "none";
 
-      if (nextIndex === null) {
-        const prepared = await prepareNext();
-
-        if (!prepared) {
-          busy = false;
-
-          scheduleNext();
-
-          return;
-        }
-      }
-
-      const targetIndex = nextIndex;
-
-      const targetId =
-        imageIds[targetIndex];
-
-      const targetUrl =
-        getUrl(targetId);
-
-      // ------------------------------------------------
-      // LOAD IMAGE INTO SECOND LAYER
-      // ------------------------------------------------
-
-      nextImage.src = targetUrl;
-
-      try {
-        await nextImage.decode();
-      } catch {
-        // The browser may already have decoded it.
-      }
-
-      if (
-        destroyed ||
-        paused ||
-        document.hidden
-      ) {
-        busy = false;
-        return;
-      }
-
-      // ------------------------------------------------
-      // MAKE NEXT IMAGE VISIBLE
-      // ------------------------------------------------
-
-      nextImage.style.visibility = "visible";
-
-      // Force the browser to register the starting state
-      void nextImage.offsetWidth;
-
-      // ------------------------------------------------
-      // CINEMATIC TRANSITION
-      // ------------------------------------------------
-
-      const transition =
-        `transform ${TRANSITION_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1), ` +
-        `opacity ${TRANSITION_MS}ms ease`;
-
-      nextImage.style.transition =
-        transition;
-
-      imageElement.style.transition =
-        transition;
-
-      // Incoming image
-      nextImage.style.transform =
-        "translate3d(0, 0, 0) scale(1)";
-
-      nextImage.style.opacity = "1";
-
-      // Outgoing image
       imageElement.style.transform =
-        "translate3d(7%, 0, 0) scale(1.015)";
+        "translate3d(0, 0, 0)";
 
-      imageElement.style.opacity = "0.25";
+      // Reset overlay image
+      resetNextImage();
 
-      // ------------------------------------------------
-      // FINISH TRANSITION
-      // ------------------------------------------------
+      // Update current image
+      currentIndex = targetIndex;
 
-      transitionTimer = setTimeout(() => {
-        if (destroyed) {
-          return;
+      nextIndex = null;
+
+      busy = false;
+
+      // Preload another random image
+      prepareNext().then(() => {
+        if (!destroyed) {
+          scheduleNext();
         }
+      });
 
-        // Make the new image the permanent base image
-        imageElement.src = targetUrl;
+    }, TRANSITION_MS + 40);
+  }
 
-        imageElement.style.transition = "none";
+  // --------------------------------------------------
+  // SCHEDULE NEXT TRANSITION
+  // --------------------------------------------------
 
-        imageElement.style.transform =
-          "translate3d(0, 0, 0)";
+  function scheduleNext() {
+    clearTimeout(timer);
 
-        imageElement.style.opacity = "1";
-
-        // Reset the overlay layer
-        resetNextImage();
-
-        // Update slideshow state
-        currentIndex = targetIndex;
-
-        nextIndex = null;
-
-        busy = false;
-
-        // ------------------------------------------------
-        // PREPARE NEXT IMAGE WHILE CURRENT IMAGE SHOWS
-        // ------------------------------------------------
-
-        prepareNext().then(() => {
-          if (!destroyed) {
-            scheduleNext();
-          }
-        });
-
-      }, TRANSITION_MS + 40);
+    if (
+      destroyed ||
+      paused ||
+      document.hidden
+    ) {
+      return;
     }
 
-    // --------------------------------------------------
-    // SCHEDULE NEXT TRANSITION
-    // --------------------------------------------------
+    timer = setTimeout(
+      transitionToNext,
+      DISPLAY_MS
+    );
+  }
 
-    function scheduleNext() {
+  // --------------------------------------------------
+  // PAUSE
+  // --------------------------------------------------
+
+  function pauseSlideshow() {
+    paused = true;
+
+    clearTimeout(timer);
+  }
+
+  // --------------------------------------------------
+  // RESUME
+  // --------------------------------------------------
+
+  function resumeSlideshow() {
+    if (destroyed) {
+      return;
+    }
+
+    paused = false;
+
+    if (!document.hidden) {
+      scheduleNext();
+    }
+  }
+
+  // --------------------------------------------------
+  // PAUSE ON HOVER
+  // --------------------------------------------------
+
+  card.addEventListener(
+    "mouseenter",
+    pauseSlideshow
+  );
+
+  card.addEventListener(
+    "mouseleave",
+    resumeSlideshow
+  );
+
+  // --------------------------------------------------
+  // HANDLE BROWSER TAB VISIBILITY
+  // --------------------------------------------------
+
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
       clearTimeout(timer);
-
-      if (
-        destroyed ||
-        paused ||
-        document.hidden
-      ) {
-        return;
-      }
-
-      timer = setTimeout(
-        transitionToNext,
-        DISPLAY_MS
-      );
+      return;
     }
 
-    // --------------------------------------------------
-    // PAUSE
-    // --------------------------------------------------
-
-    function pauseSlideshow() {
-      paused = true;
-
-      clearTimeout(timer);
+    if (!paused && !busy) {
+      scheduleNext();
     }
+  };
 
-    // --------------------------------------------------
-    // RESUME
-    // --------------------------------------------------
+  document.addEventListener(
+    "visibilitychange",
+    handleVisibilityChange
+  );
 
-    function resumeSlideshow() {
-      if (destroyed) {
-        return;
-      }
+  // --------------------------------------------------
+  // CLEANUP
+  // --------------------------------------------------
 
-      paused = false;
+  card._destroySlideshow = () => {
+    destroyed = true;
 
-      if (!document.hidden) {
-        scheduleNext();
-      }
-    }
+    clearTimeout(timer);
+    clearTimeout(transitionTimer);
 
-    // --------------------------------------------------
-    // PAUSE WHEN USER HOVERS
-    // --------------------------------------------------
-
-    card.addEventListener(
+    card.removeEventListener(
       "mouseenter",
       pauseSlideshow
     );
 
-    card.addEventListener(
+    card.removeEventListener(
       "mouseleave",
       resumeSlideshow
     );
 
-    // --------------------------------------------------
-    // HANDLE BROWSER TAB VISIBILITY
-    // --------------------------------------------------
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        clearTimeout(timer);
-        return;
-      }
-
-      if (!paused && !busy) {
-        scheduleNext();
-      }
-    };
-
-    document.addEventListener(
+    document.removeEventListener(
       "visibilitychange",
       handleVisibilityChange
     );
 
-    // --------------------------------------------------
-    // CLEANUP
-    // --------------------------------------------------
+    nextImage.remove();
+  };
 
-    card._destroySlideshow = () => {
-      destroyed = true;
+  // --------------------------------------------------
+  // START
+  // --------------------------------------------------
 
-      clearTimeout(timer);
-      clearTimeout(transitionTimer);
-
-      card.removeEventListener(
-        "mouseenter",
-        pauseSlideshow
-      );
-
-      card.removeEventListener(
-        "mouseleave",
-        resumeSlideshow
-      );
-
-      document.removeEventListener(
-        "visibilitychange",
-        handleVisibilityChange
-      );
-
-      nextImage.remove();
-    };
-
-    // --------------------------------------------------
-    // START
-    // --------------------------------------------------
-
-    prepareNext().then(() => {
-      if (!destroyed) {
-        scheduleNext();
-      }
-    });
-  }
+  prepareNext().then(() => {
+    if (!destroyed) {
+      scheduleNext();
+    }
+  });
+}
 
   // --------------------------------------------------
   // LOAD CATEGORIES
