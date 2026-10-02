@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // GLOBAL SLIDESHOW SETTINGS
   // ==================================================
 
-  const GLOBAL_SLIDE_INTERVAL = 10000;
+  const GLOBAL_SLIDE_INTERVAL = 18000;
   const GLOBAL_TRANSITION_MS = 1400;
 
 
