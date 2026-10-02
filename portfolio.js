@@ -4,18 +4,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let categories = [];
 
-  // Keep track of slideshow timers so they can be cleared
-  // when the portfolio is re-rendered or filtered.
-  let slideshowTimers = [];
-
   const normalize = (value) =>
     String(value || "").trim().toLowerCase();
 
   // --------------------------------------------------
   // IMAGE URL
-  // Cards use a resized copy (w=800) so photos load fast
-  // and slideshow changes are smooth. The full-size photo
-  // (no w) is what category.html uses.
+  // --------------------------------------------------
+  // Cards use a resized version for faster loading.
+  // Full-size images can still be used on category pages.
   // --------------------------------------------------
 
   const CARD_WIDTH = 800;
@@ -24,161 +20,512 @@ document.addEventListener("DOMContentLoaded", async () => {
     `/api/image?id=${encodeURIComponent(id)}&w=${CARD_WIDTH}`;
 
   // --------------------------------------------------
-  // GO TO A CATEGORY'S PAGE (the "See More" action)
+  // GO TO CATEGORY PAGE
   // --------------------------------------------------
 
   function goToCategory(cat) {
-    if (!cat.id) {
+    if (!cat || !cat.id) {
       console.error("❌ Category ID missing:", cat);
       return;
     }
 
-    window.location.href = `category.html?id=${encodeURIComponent(cat.id)}`;
+    window.location.href =
+      `category.html?id=${encodeURIComponent(cat.id)}`;
   }
 
   // --------------------------------------------------
   // CLEAR ALL ACTIVE SLIDESHOWS
   // --------------------------------------------------
+  // Each slideshow registers its own cleanup function.
+  // This prevents old timers, listeners and image layers
+  // from surviving when the portfolio is filtered/re-rendered.
+  // --------------------------------------------------
 
   function clearSlideshowTimers() {
-    slideshowTimers.forEach((timer) => {
-      clearInterval(timer); // also cancels the start-delay timeouts
-    });
-
-    slideshowTimers = [];
+    document
+      .querySelectorAll(".portfolio-card")
+      .forEach((card) => {
+        if (typeof card._destroySlideshow === "function") {
+          card._destroySlideshow();
+          delete card._destroySlideshow;
+        }
+      });
   }
 
   // --------------------------------------------------
-  // START CATEGORY SLIDESHOW
-  // Each category card has its own slideshow, and all cards
-  // change at the SAME moment. Every change picks a RANDOM photo (never the one that is
-  // already showing) and slides it in from the LEFT, pushing
-  // the current photo out to the RIGHT. The next photo is
-  // downloaded BEFORE the slide starts, so the card never
-  // shows an empty gap.
+  // PROFESSIONAL CATEGORY SLIDESHOW
+  // --------------------------------------------------
+  //
+  // Features:
+  //
+  // • Cinematic horizontal transition
+  // • Smooth cross-fade
+  // • Subtle Ken Burns-style scaling
+  // • Preloads the next image
+  // • Prevents overlapping transitions
+  // • Pauses while hovering over a card
+  // • Pauses when browser tab is hidden
+  // • Resumes when tab becomes visible
+  // • Respects prefers-reduced-motion
+  // • Never shows the same photo twice consecutively
+  // • Handles failed image loads gracefully
+  //
   // --------------------------------------------------
 
-  function startCategorySlideshow(imageElement, imageIds, startDelay = 0) {
+  function startCategorySlideshow(imageElement, imageIds) {
     if (!imageElement || imageIds.length <= 1) {
       return;
     }
 
-    // Respect visitors who turned off animations
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    // --------------------------------------------------
+    // ACCESSIBILITY
+    // --------------------------------------------------
+
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)")
+        .matches
+    ) {
       return;
     }
 
-    const SLIDE_MS = 12000;     // time each photo stays on screen
-    const SLIDE_ANIM_MS = 1200; // how long the slide itself takes
+    // --------------------------------------------------
+    // SETTINGS
+    // --------------------------------------------------
 
-    // The card clips the photos while they slide
+    const DISPLAY_MS = 10000;
+    const TRANSITION_MS = 1400;
+    const PRELOAD_TIMEOUT = 8000;
+
     const card = imageElement.parentElement;
-    card.style.overflow = "hidden";
+
+    if (!card) {
+      return;
+    }
+
+    // --------------------------------------------------
+    // CARD SETUP
+    // --------------------------------------------------
 
     if (getComputedStyle(card).position === "static") {
       card.style.position = "relative";
     }
 
+    card.style.overflow = "hidden";
+
+    // --------------------------------------------------
+    // CREATE SECOND IMAGE LAYER
+    // --------------------------------------------------
+
+    const nextImage = imageElement.cloneNode(false);
+
+    nextImage.removeAttribute("src");
+
+    nextImage.loading = "eager";
+    nextImage.decoding = "async";
+    nextImage.alt = "";
+    nextImage.setAttribute("aria-hidden", "true");
+
+    nextImage.style.position = "absolute";
+    nextImage.style.inset = "0";
+    nextImage.style.width = "100%";
+    nextImage.style.height = "100%";
+    nextImage.style.objectFit = "cover";
+    nextImage.style.objectPosition = "center";
+    nextImage.style.pointerEvents = "none";
+
+    nextImage.style.visibility = "hidden";
+    nextImage.style.opacity = "0";
+
+    nextImage.style.transform =
+      "translate3d(-7%, 0, 0) scale(1.015)";
+
+    nextImage.style.willChange =
+      "transform, opacity";
+
+    nextImage.style.zIndex = "2";
+
+    // Current/base image
+    imageElement.style.position = "relative";
+    imageElement.style.zIndex = "1";
+    imageElement.style.willChange =
+      "transform, opacity";
+
+    imageElement.after(nextImage);
+
+    // --------------------------------------------------
+    // STATE
+    // --------------------------------------------------
+
     let currentIndex = 0;
-    let busy = false; // don't start a new change while one is still running
+    let nextIndex = null;
 
-    // Second image that waits off-screen to the left
-    const layer = imageElement.cloneNode(false);
-    layer.removeAttribute("src");
-    layer.loading = "eager";
-    layer.alt = "";
-    layer.setAttribute("aria-hidden", "true");
-    layer.style.cssText =
-      "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" +
-      "transform:translateX(-100%);visibility:hidden;pointer-events:none;";
-    imageElement.after(layer);
+    let timer = null;
+    let transitionTimer = null;
 
-    // Download a photo in the background (it lands in the browser cache)
-    const preload = (id) =>
-      new Promise((resolve) => {
+    let busy = false;
+    let paused = false;
+    let destroyed = false;
+
+    // --------------------------------------------------
+    // IMAGE URL
+    // --------------------------------------------------
+
+    const getUrl = (id) =>
+      imageUrl(id);
+
+    // --------------------------------------------------
+    // PRELOAD IMAGE
+    // --------------------------------------------------
+
+    function preloadImage(id) {
+      return new Promise((resolve) => {
         const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = imageUrl(id);
-      });
 
-    // A random photo that isn't the one currently showing
-    const pickNext = () => {
-      let next;
+        let finished = false;
+
+        const timeout = setTimeout(() => {
+          finish(false);
+        }, PRELOAD_TIMEOUT);
+
+        function finish(success) {
+          if (finished) {
+            return;
+          }
+
+          finished = true;
+
+          clearTimeout(timeout);
+
+          resolve(success);
+        }
+
+        img.onload = () => {
+          finish(true);
+        };
+
+        img.onerror = () => {
+          finish(false);
+        };
+
+        img.src = getUrl(id);
+      });
+    }
+
+    // --------------------------------------------------
+    // PICK RANDOM NEXT PHOTO
+    // --------------------------------------------------
+
+    function pickNextIndex() {
+      if (imageIds.length <= 1) {
+        return currentIndex;
+      }
+
+      let index;
 
       do {
-        next = Math.floor(Math.random() * imageIds.length);
-      } while (next === currentIndex);
+        index = Math.floor(
+          Math.random() * imageIds.length
+        );
+      } while (index === currentIndex);
 
-      return next;
-    };
+      return index;
+    }
 
-    // Choose and download the NEXT photo in advance, while the current one is
-    // on screen, so every card is ready the instant the shared tick arrives.
-    let nextIndex = pickNext();
-    let ready = preload(imageIds[nextIndex]);
+    // --------------------------------------------------
+    // PREPARE NEXT PHOTO
+    // --------------------------------------------------
 
-    const advance = async () => {
-      if (document.hidden || busy) return; // don't animate in background tabs
+    async function prepareNext() {
+      if (destroyed) {
+        return false;
+      }
+
+      const candidate = pickNextIndex();
+
+      const loaded = await preloadImage(
+        imageIds[candidate]
+      );
+
+      if (!loaded || destroyed) {
+        return false;
+      }
+
+      nextIndex = candidate;
+
+      return true;
+    }
+
+    // --------------------------------------------------
+    // RESET NEXT IMAGE
+    // --------------------------------------------------
+
+    function resetNextImage() {
+      nextImage.style.transition = "none";
+
+      nextImage.style.visibility = "hidden";
+
+      nextImage.style.opacity = "0";
+
+      nextImage.style.transform =
+        "translate3d(-7%, 0, 0) scale(1.015)";
+    }
+
+    // --------------------------------------------------
+    // TRANSITION TO NEXT PHOTO
+    // --------------------------------------------------
+
+    async function transitionToNext() {
+      if (
+        destroyed ||
+        busy ||
+        paused ||
+        document.hidden
+      ) {
+        return;
+      }
 
       busy = true;
 
-      const target = nextIndex;
-      const loaded = await ready;
+      // ------------------------------------------------
+      // MAKE SURE NEXT PHOTO IS READY
+      // ------------------------------------------------
 
-      if (!loaded) {
-        // broken image: choose another one and try again on the next tick
-        nextIndex = pickNext();
-        ready = preload(imageIds[nextIndex]);
+      if (nextIndex === null) {
+        const prepared = await prepareNext();
+
+        if (!prepared) {
+          busy = false;
+
+          scheduleNext();
+
+          return;
+        }
+      }
+
+      const targetIndex = nextIndex;
+
+      const targetId =
+        imageIds[targetIndex];
+
+      const targetUrl =
+        getUrl(targetId);
+
+      // ------------------------------------------------
+      // LOAD IMAGE INTO SECOND LAYER
+      // ------------------------------------------------
+
+      nextImage.src = targetUrl;
+
+      try {
+        await nextImage.decode();
+      } catch {
+        // The browser may already have decoded it.
+      }
+
+      if (
+        destroyed ||
+        paused ||
+        document.hidden
+      ) {
         busy = false;
         return;
       }
 
-      const url = imageUrl(imageIds[target]);
+      // ------------------------------------------------
+      // MAKE NEXT IMAGE VISIBLE
+      // ------------------------------------------------
 
-      layer.src = url;
-      await layer.decode().catch(() => {});
+      nextImage.style.visibility = "visible";
 
-      layer.style.visibility = "visible";
-      void layer.offsetWidth; // apply the starting position before animating
+      // Force the browser to register the starting state
+      void nextImage.offsetWidth;
 
-      // New photo slides in from the left, current one slides out to the right
-      const slide = `transform ${SLIDE_ANIM_MS}ms ease-in-out`;
-      layer.style.transition = slide;
-      imageElement.style.transition = slide;
-      layer.style.transform = "translateX(0)";
-      imageElement.style.transform = "translateX(100%)";
+      // ------------------------------------------------
+      // CINEMATIC TRANSITION
+      // ------------------------------------------------
 
-      setTimeout(async () => {
-        // Make the bottom photo match, then quietly reset the top layer
-        imageElement.src = url;
-        await imageElement.decode().catch(() => {});
+      const transition =
+        `transform ${TRANSITION_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1), ` +
+        `opacity ${TRANSITION_MS}ms ease`;
+
+      nextImage.style.transition =
+        transition;
+
+      imageElement.style.transition =
+        transition;
+
+      // Incoming image
+      nextImage.style.transform =
+        "translate3d(0, 0, 0) scale(1)";
+
+      nextImage.style.opacity = "1";
+
+      // Outgoing image
+      imageElement.style.transform =
+        "translate3d(7%, 0, 0) scale(1.015)";
+
+      imageElement.style.opacity = "0.25";
+
+      // ------------------------------------------------
+      // FINISH TRANSITION
+      // ------------------------------------------------
+
+      transitionTimer = setTimeout(() => {
+        if (destroyed) {
+          return;
+        }
+
+        // Make the new image the permanent base image
+        imageElement.src = targetUrl;
 
         imageElement.style.transition = "none";
-        imageElement.style.transform = "";
-        void imageElement.offsetWidth;
-        imageElement.style.transition = ""; // give the hover zoom back to the stylesheet
 
-        layer.style.transition = "none";
-        layer.style.visibility = "hidden";
-        layer.style.transform = "translateX(-100%)";
+        imageElement.style.transform =
+          "translate3d(0, 0, 0)";
 
-        currentIndex = target;
+        imageElement.style.opacity = "1";
 
-        // line up the next random photo for the following tick
-        nextIndex = pickNext();
-        ready = preload(imageIds[nextIndex]);
+        // Reset the overlay layer
+        resetNextImage();
+
+        // Update slideshow state
+        currentIndex = targetIndex;
+
+        nextIndex = null;
 
         busy = false;
-      }, SLIDE_ANIM_MS + 50);
+
+        // ------------------------------------------------
+        // PREPARE NEXT IMAGE WHILE CURRENT IMAGE SHOWS
+        // ------------------------------------------------
+
+        prepareNext().then(() => {
+          if (!destroyed) {
+            scheduleNext();
+          }
+        });
+
+      }, TRANSITION_MS + 40);
+    }
+
+    // --------------------------------------------------
+    // SCHEDULE NEXT TRANSITION
+    // --------------------------------------------------
+
+    function scheduleNext() {
+      clearTimeout(timer);
+
+      if (
+        destroyed ||
+        paused ||
+        document.hidden
+      ) {
+        return;
+      }
+
+      timer = setTimeout(
+        transitionToNext,
+        DISPLAY_MS
+      );
+    }
+
+    // --------------------------------------------------
+    // PAUSE
+    // --------------------------------------------------
+
+    function pauseSlideshow() {
+      paused = true;
+
+      clearTimeout(timer);
+    }
+
+    // --------------------------------------------------
+    // RESUME
+    // --------------------------------------------------
+
+    function resumeSlideshow() {
+      if (destroyed) {
+        return;
+      }
+
+      paused = false;
+
+      if (!document.hidden) {
+        scheduleNext();
+      }
+    }
+
+    // --------------------------------------------------
+    // PAUSE WHEN USER HOVERS
+    // --------------------------------------------------
+
+    card.addEventListener(
+      "mouseenter",
+      pauseSlideshow
+    );
+
+    card.addEventListener(
+      "mouseleave",
+      resumeSlideshow
+    );
+
+    // --------------------------------------------------
+    // HANDLE BROWSER TAB VISIBILITY
+    // --------------------------------------------------
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        clearTimeout(timer);
+        return;
+      }
+
+      if (!paused && !busy) {
+        scheduleNext();
+      }
     };
 
-    // All cards start on the same tick so they slide together
-    const starter = setTimeout(() => {
-      slideshowTimers.push(setInterval(advance, SLIDE_MS));
-    }, startDelay);
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange
+    );
 
-    slideshowTimers.push(starter);
+    // --------------------------------------------------
+    // CLEANUP
+    // --------------------------------------------------
+
+    card._destroySlideshow = () => {
+      destroyed = true;
+
+      clearTimeout(timer);
+      clearTimeout(transitionTimer);
+
+      card.removeEventListener(
+        "mouseenter",
+        pauseSlideshow
+      );
+
+      card.removeEventListener(
+        "mouseleave",
+        resumeSlideshow
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange
+      );
+
+      nextImage.remove();
+    };
+
+    // --------------------------------------------------
+    // START
+    // --------------------------------------------------
+
+    prepareNext().then(() => {
+      if (!destroyed) {
+        scheduleNext();
+      }
+    });
   }
 
   // --------------------------------------------------
@@ -186,19 +533,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   // --------------------------------------------------
 
   try {
-    const res = await fetch("/api/categories", {
-      cache: "no-store"
-    });
+    const res = await fetch(
+      "/api/categories",
+      {
+        cache: "no-store"
+      }
+    );
 
     if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
+      throw new Error(
+        `HTTP ${res.status}`
+      );
     }
 
     categories = await res.json();
 
     if (!Array.isArray(categories)) {
-      throw new Error("Invalid categories data");
+      throw new Error(
+        "Invalid categories data"
+      );
     }
+
+    // ------------------------------------------------
+    // NO CATEGORIES
+    // ------------------------------------------------
 
     if (categories.length === 0) {
       portfolioGrid.innerHTML = `
@@ -206,40 +564,58 @@ document.addEventListener("DOMContentLoaded", async () => {
           No portfolio items available yet.
         </p>
       `;
+
       return;
     }
 
-    // --------------------------------------------------
-    // BUILD FILTER TABS DYNAMICALLY
-    // --------------------------------------------------
+    // ------------------------------------------------
+    // BUILD FILTER TABS
+    // ------------------------------------------------
 
     categories.forEach((cat) => {
-      const button = document.createElement("button");
+      const button =
+        document.createElement("button");
 
       button.type = "button";
-      button.dataset.filter = normalize(cat.name);
-      button.textContent = cat.name;
+
+      button.dataset.filter =
+        normalize(cat.name);
+
+      button.textContent =
+        cat.name;
 
       filterTabs.appendChild(button);
     });
 
-    // Make sure the "All" tab (already in the HTML) starts active
+    // ------------------------------------------------
+    // ACTIVATE "ALL"
+    // ------------------------------------------------
+
     filterTabs
       .querySelectorAll("button")
-      .forEach((btn) => btn.classList.toggle("active", btn.dataset.filter === "all"));
+      .forEach((btn) => {
+        btn.classList.toggle(
+          "active",
+          btn.dataset.filter === "all"
+        );
+      });
 
-    // --------------------------------------------------
+    // ------------------------------------------------
     // INITIAL RENDER
-    // --------------------------------------------------
+    // ------------------------------------------------
 
     renderCards("all");
 
   } catch (error) {
-    console.error("❌ Failed to load categories:", error);
+    console.error(
+      "❌ Failed to load categories:",
+      error
+    );
 
     portfolioGrid.innerHTML = `
       <p class="grid-message">
-        Could not load portfolio items. Please try again later.
+        Could not load portfolio items.
+        Please try again later.
       </p>
     `;
   }
@@ -249,17 +625,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   // --------------------------------------------------
 
   function renderCards(filter) {
-    // Stop existing slideshows before rebuilding cards
+    // Stop existing slideshows before rebuilding
     clearSlideshowTimers();
 
     portfolioGrid.innerHTML = "";
 
-    const visibleCategories = categories.filter((cat) => {
-      return (
-        filter === "all" ||
-        normalize(cat.name) === normalize(filter)
-      );
-    });
+    // ------------------------------------------------
+    // FILTER CATEGORIES
+    // ------------------------------------------------
+
+    const visibleCategories =
+      categories.filter((cat) => {
+        return (
+          filter === "all" ||
+          normalize(cat.name) ===
+            normalize(filter)
+        );
+      });
+
+    // ------------------------------------------------
+    // NO RESULTS
+    // ------------------------------------------------
 
     if (visibleCategories.length === 0) {
       portfolioGrid.innerHTML = `
@@ -267,99 +653,182 @@ document.addEventListener("DOMContentLoaded", async () => {
           No portfolio items in this category.
         </p>
       `;
+
       return;
     }
 
-    visibleCategories.forEach((cat, index) => {
+    // ------------------------------------------------
+    // CREATE CATEGORY CARDS
+    // ------------------------------------------------
+
+    visibleCategories.forEach((cat) => {
       const images =
-        Array.isArray(cat.images) && cat.images.length > 0
+        Array.isArray(cat.images) &&
+        cat.images.length > 0
           ? cat.images.filter(Boolean)
           : [];
 
-      const card = document.createElement("article");
-      card.className = "portfolio-card";
+      // ------------------------------------------------
+      // CARD
+      // ------------------------------------------------
+
+      const card =
+        document.createElement("article");
+
+      card.className =
+        "portfolio-card";
 
       // ------------------------------------------------
-      // CARD IMAGE (pulled from the database)
+      // CARD IMAGE
       // ------------------------------------------------
 
       if (images.length > 0) {
-        const image = document.createElement("img");
+        const image =
+          document.createElement("img");
 
-        image.src = imageUrl(images[0]);
-        image.alt = cat.name || "Bleeve Creations portfolio";
+        image.src =
+          imageUrl(images[0]);
+
+        image.alt =
+          cat.name ||
+          "Bleeve Creations portfolio";
+
         image.loading = "lazy";
+
         image.decoding = "async";
 
         image.onerror = () => {
           image.style.display = "none";
-          card.classList.add("no-image");
+
+          card.classList.add(
+            "no-image"
+          );
         };
 
         card.appendChild(image);
 
-        // ----------------------------------------------
-        // START RANDOM SLIDESHOW
-        // Only starts if the category has multiple images.
-        // ----------------------------------------------
+        // ------------------------------------------------
+        // START SLIDESHOW
+        // ------------------------------------------------
 
         if (images.length > 1) {
-          startCategorySlideshow(image, images); // all cards start together
+          startCategorySlideshow(
+            image,
+            images
+          );
         }
+
       } else {
-        card.classList.add("no-image");
+        card.classList.add(
+          "no-image"
+        );
       }
 
       // ------------------------------------------------
       // DARK IMAGE OVERLAY
       // ------------------------------------------------
 
-      const overlay = document.createElement("div");
-      overlay.className = "portfolio-card-overlay";
+      const overlay =
+        document.createElement("div");
+
+      overlay.className =
+        "portfolio-card-overlay";
 
       // ------------------------------------------------
-      // CATEGORY NAME — floats bottom-left of the card
+      // CATEGORY NAME
       // ------------------------------------------------
 
-      const categoryName = document.createElement("h3");
-      categoryName.className = "portfolio-category-name";
-      categoryName.textContent = cat.name;
+      const categoryName =
+        document.createElement("h3");
 
-      overlay.appendChild(categoryName);
+      categoryName.className =
+        "portfolio-category-name";
+
+      categoryName.textContent =
+        cat.name || "Untitled";
+
+      overlay.appendChild(
+        categoryName
+      );
 
       // ------------------------------------------------
       // PHOTO COUNT
       // ------------------------------------------------
 
       if (images.length > 0) {
-        const photoCount = document.createElement("span");
-        photoCount.className = "portfolio-photo-count";
+        const photoCount =
+          document.createElement("span");
+
+        photoCount.className =
+          "portfolio-photo-count";
 
         photoCount.textContent =
-          `${images.length} ${images.length === 1 ? "photo" : "photos"}`;
+          `${images.length} ${
+            images.length === 1
+              ? "photo"
+              : "photos"
+          }`;
 
-        overlay.appendChild(photoCount);
+        overlay.appendChild(
+          photoCount
+        );
       }
 
-      card.appendChild(overlay);
+      // Add overlay to card
+      card.appendChild(
+        overlay
+      );
 
       // ------------------------------------------------
-      // CLICK / KEYBOARD → "See More" (open category page)
+      // ACCESSIBILITY
       // ------------------------------------------------
 
-      card.addEventListener("click", () => goToCategory(cat));
+      card.setAttribute(
+        "role",
+        "link"
+      );
 
-      card.setAttribute("role", "link");
-      card.setAttribute("tabindex", "0");
+      card.setAttribute(
+        "tabindex",
+        "0"
+      );
 
-      card.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
+      // ------------------------------------------------
+      // CLICK → CATEGORY PAGE
+      // ------------------------------------------------
+
+      card.addEventListener(
+        "click",
+        () => {
           goToCategory(cat);
         }
-      });
+      );
 
-      portfolioGrid.appendChild(card);
+      // ------------------------------------------------
+      // KEYBOARD → CATEGORY PAGE
+      // ------------------------------------------------
+
+      card.addEventListener(
+        "keydown",
+        (event) => {
+          if (
+            event.key === "Enter" ||
+            event.key === " "
+          ) {
+            event.preventDefault();
+
+            goToCategory(cat);
+          }
+        }
+      );
+
+      // ------------------------------------------------
+      // ADD CARD TO GRID
+      // ------------------------------------------------
+
+      portfolioGrid.appendChild(
+        card
+      );
     });
   }
 
@@ -367,17 +836,41 @@ document.addEventListener("DOMContentLoaded", async () => {
   // FILTER TABS
   // --------------------------------------------------
 
-  filterTabs.addEventListener("click", (event) => {
-    const button = event.target.closest("button");
+  filterTabs.addEventListener(
+    "click",
+    (event) => {
+      const button =
+        event.target.closest(
+          "button"
+        );
 
-    if (!button) return;
+      if (!button) {
+        return;
+      }
 
-    filterTabs
-      .querySelectorAll("button")
-      .forEach((btn) => btn.classList.remove("active"));
+      // ------------------------------------------------
+      // UPDATE ACTIVE TAB
+      // ------------------------------------------------
 
-    button.classList.add("active");
+      filterTabs
+        .querySelectorAll("button")
+        .forEach((btn) => {
+          btn.classList.remove(
+            "active"
+          );
+        });
 
-    renderCards(button.dataset.filter);
-  });
+      button.classList.add(
+        "active"
+      );
+
+      // ------------------------------------------------
+      // RENDER SELECTED CATEGORY
+      // ------------------------------------------------
+
+      renderCards(
+        button.dataset.filter
+      );
+    }
+  );
 });
