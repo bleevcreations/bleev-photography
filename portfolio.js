@@ -57,74 +57,84 @@ document.addEventListener("DOMContentLoaded", async () => {
   // picture.
   // --------------------------------------------------
 
-  function startCategorySlideshow(imageElement, imageIds, startDelay = 0) {
-    if (!imageElement || imageIds.length <= 1) {
+ function startCategorySlideshow(imageElement, imageIds, startDelay = 0) {
+  if (!imageElement || imageIds.length <= 1) return;
+
+  // Respect visitors who turned off animations
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const SLIDE_MS = 6000; // time each photo stays on screen
+  const FADE_MS = 800;   // crossfade duration
+
+  let currentIndex = 0;
+  let busy = false;
+
+  // Second image layered on top of the first, used for the crossfade
+  const layer = imageElement.cloneNode(false);
+  layer.removeAttribute("src");
+  layer.loading = "eager";
+  layer.alt = "";
+  layer.setAttribute("aria-hidden", "true");
+  layer.style.cssText =
+    `position:absolute;inset:0;width:100%;height:100%;object-fit:cover;` +
+    `opacity:0;pointer-events:none;transition:opacity ${FADE_MS}ms ease;`;
+  imageElement.after(layer);
+
+  const preload = (id) =>
+    new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = imageUrl(id);
+    });
+
+  // A random photo that isn't the one currently showing
+  const pickNext = () => {
+    let next;
+    do {
+      next = Math.floor(Math.random() * imageIds.length);
+    } while (next === currentIndex);
+    return next;
+  };
+
+  const advance = async () => {
+    if (document.hidden || busy) return;
+    busy = true;
+
+    const nextIndex = pickNext();
+    const url = imageUrl(imageIds[nextIndex]);
+
+    if (!(await preload(imageIds[nextIndex]))) {
+      busy = false; // broken image: try another one next tick
       return;
     }
 
-    // Respect visitors who turned off animations
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
+    layer.src = url;
+    await layer.decode().catch(() => {});
+    layer.style.opacity = "1"; // crossfade in over the old photo
 
-    const SLIDE_MS = 4000; // time each photo stays on screen
-    const FADE_MS = 400;   // fade out / fade in time
+    setTimeout(async () => {
+      imageElement.src = url; // make the bottom photo match
+      await imageElement.decode().catch(() => {});
 
-    let currentIndex = 0;
+      // hide the top layer instantly, then restore its transition
+      layer.style.transition = "none";
+      layer.style.opacity = "0";
+      void layer.offsetWidth;
+      layer.style.transition = `opacity ${FADE_MS}ms ease`;
 
-    // Download a photo in the background (it lands in the browser cache)
-    const preload = (id) =>
-      new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = imageUrl(id);
-      });
+      currentIndex = nextIndex;
+      busy = false;
+    }, FADE_MS + 50);
+  };
 
-    // A random photo that isn't the one currently showing
-    const pickNext = () => {
-      let next;
+  // Stagger start times so the cards don't all change at once
+  const starter = setTimeout(() => {
+    slideshowTimers.push(setInterval(advance, SLIDE_MS));
+  }, startDelay);
 
-      do {
-        next = Math.floor(Math.random() * imageIds.length);
-      } while (next === currentIndex);
-
-      return next;
-    };
-
-    let busy = false; // don't start a new change while one is still loading
-
-    const advance = async () => {
-      if (document.hidden || busy) return; // don't animate in background tabs
-
-      busy = true;
-
-      const nextIndex = pickNext();
-      const loaded = await preload(imageIds[nextIndex]);
-
-      if (!loaded) {
-        busy = false; // broken image: try another one next tick
-        return;
-      }
-
-      // Fade out, swap while invisible, fade in
-      imageElement.style.opacity = "0";
-
-      setTimeout(() => {
-        imageElement.src = imageUrl(imageIds[nextIndex]);
-        imageElement.style.opacity = "1";
-        currentIndex = nextIndex;
-        busy = false;
-      }, FADE_MS);
-    };
-
-    // Stagger start times so the cards don't all change at once
-    const starter = setTimeout(() => {
-      slideshowTimers.push(setInterval(advance, SLIDE_MS));
-    }, startDelay);
-
-    slideshowTimers.push(starter);
-  }
+  slideshowTimers.push(starter);
+}
 
   // --------------------------------------------------
   // LOAD CATEGORIES
