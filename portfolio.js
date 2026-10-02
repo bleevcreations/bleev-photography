@@ -4,8 +4,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let categories = [];
 
+  // Keep track of slideshow timers so they can be cleared
+  // when the portfolio is re-rendered or filtered.
+  let slideshowTimers = [];
+
   const normalize = (value) =>
     String(value || "").trim().toLowerCase();
+
+  // --------------------------------------------------
+  // IMAGE URL
+  // Cards use a resized copy (w=800) so photos load fast
+  // and slideshow changes are smooth. The full-size photo
+  // (no w) is what category.html uses.
+  // --------------------------------------------------
+
+  const CARD_WIDTH = 800;
+
+  const imageUrl = (id) =>
+    `/api/image?id=${encodeURIComponent(id)}&w=${CARD_WIDTH}`;
 
   // --------------------------------------------------
   // GO TO A CATEGORY'S PAGE (the "See More" action)
@@ -18,6 +34,96 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     window.location.href = `category.html?id=${encodeURIComponent(cat.id)}`;
+  }
+
+  // --------------------------------------------------
+  // CLEAR ALL ACTIVE SLIDESHOWS
+  // --------------------------------------------------
+
+  function clearSlideshowTimers() {
+    slideshowTimers.forEach((timer) => {
+      clearInterval(timer); // also cancels the start-delay timeouts
+    });
+
+    slideshowTimers = [];
+  }
+
+  // --------------------------------------------------
+  // START CATEGORY SLIDESHOW
+  // Each category card has its own independent slideshow.
+  // Every change picks a RANDOM photo (never the one that is
+  // already showing). The next photo is downloaded BEFORE the
+  // fade starts, so the card never fades back in on the old
+  // picture.
+  // --------------------------------------------------
+
+  function startCategorySlideshow(imageElement, imageIds, startDelay = 0) {
+    if (!imageElement || imageIds.length <= 1) {
+      return;
+    }
+
+    // Respect visitors who turned off animations
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const SLIDE_MS = 4000; // time each photo stays on screen
+    const FADE_MS = 400;   // fade out / fade in time
+
+    let currentIndex = 0;
+
+    // Download a photo in the background (it lands in the browser cache)
+    const preload = (id) =>
+      new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = imageUrl(id);
+      });
+
+    // A random photo that isn't the one currently showing
+    const pickNext = () => {
+      let next;
+
+      do {
+        next = Math.floor(Math.random() * imageIds.length);
+      } while (next === currentIndex);
+
+      return next;
+    };
+
+    let busy = false; // don't start a new change while one is still loading
+
+    const advance = async () => {
+      if (document.hidden || busy) return; // don't animate in background tabs
+
+      busy = true;
+
+      const nextIndex = pickNext();
+      const loaded = await preload(imageIds[nextIndex]);
+
+      if (!loaded) {
+        busy = false; // broken image: try another one next tick
+        return;
+      }
+
+      // Fade out, swap while invisible, fade in
+      imageElement.style.opacity = "0";
+
+      setTimeout(() => {
+        imageElement.src = imageUrl(imageIds[nextIndex]);
+        imageElement.style.opacity = "1";
+        currentIndex = nextIndex;
+        busy = false;
+      }, FADE_MS);
+    };
+
+    // Stagger start times so the cards don't all change at once
+    const starter = setTimeout(() => {
+      slideshowTimers.push(setInterval(advance, SLIDE_MS));
+    }, startDelay);
+
+    slideshowTimers.push(starter);
   }
 
   // --------------------------------------------------
@@ -88,6 +194,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // --------------------------------------------------
 
   function renderCards(filter) {
+    // Stop existing slideshows before rebuilding cards
+    clearSlideshowTimers();
+
     portfolioGrid.innerHTML = "";
 
     const visibleCategories = categories.filter((cat) => {
@@ -106,10 +215,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    visibleCategories.forEach((cat) => {
+    visibleCategories.forEach((cat, index) => {
       const images =
         Array.isArray(cat.images) && cat.images.length > 0
-          ? cat.images
+          ? cat.images.filter(Boolean)
           : [];
 
       const card = document.createElement("article");
@@ -122,9 +231,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (images.length > 0) {
         const image = document.createElement("img");
 
-        image.src = `/api/image?id=${images[0]}`;
+        image.src = imageUrl(images[0]);
         image.alt = cat.name || "Bleeve Creations portfolio";
         image.loading = "lazy";
+        image.decoding = "async";
+
+        // Smooth slideshow transition
+        image.style.transition = "opacity 0.4s ease";
+        image.style.opacity = "1";
 
         image.onerror = () => {
           image.style.display = "none";
@@ -132,6 +246,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         card.appendChild(image);
+
+        // ----------------------------------------------
+        // START RANDOM SLIDESHOW
+        // Only starts if the category has multiple images.
+        // ----------------------------------------------
+
+        if (images.length > 1) {
+          startCategorySlideshow(image, images, (index % 5) * 800);
+        }
       } else {
         card.classList.add("no-image");
       }
