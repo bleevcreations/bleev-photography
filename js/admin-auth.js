@@ -14,6 +14,9 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
     appId: "1:1035315236217:web:0cff6f55165f1357c6f3a8",
     measurementId: "G-NJYKW4Y1SK"
   };
+
+ const app = initializeApp(firebaseConfig);
+ 
 const auth = getAuth(app);
 
 let resolveReady;
