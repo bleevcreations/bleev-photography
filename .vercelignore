@@ -1,0 +1,8 @@
+uploads/
+php/
+*.php
+*.sql
+scripts/
+.env
+node_modules/
+.git

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio | Capturing Moments</title>
+  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    .category-image-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      max-width: 1300px;
+      margin: 2rem auto 0;
+    }
+
+    .category-image-grid img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 14px;
+      transition: transform 0.4s ease;
+    }
+
+    .category-image-grid img:hover {
+      transform: scale(1.03);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #555;
+    }
+
+    @media (max-width: 1024px) {
+      .category-image-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .category-image-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav style="text-align:center; padding-bottom: 1rem;">
+      <a href="homepage.html">Home</a>
+      &nbsp;|&nbsp;
+      <a href="portfolio.html">Portfolio</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="gallery-section">
+      <div class="portfolio-header portfolio-page-header">
+        <a href="portfolio.html" class="back-link">&larr; Back to Portfolio</a>
+        <h1 id="categoryTitle">Loading&hellip;</h1>
+      </div>
+      <div class="category-image-grid" id="categoryImageGrid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Capturing Moments</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoWvtStSddplApt6NieGTD9uBWIyk0Oz0",
+      authDomain: "bleev-creations.firebaseapp.com",
+      projectId: "bleev-creations",
+      storageBucket: "bleev-creations.firebasestorage.app",
+      messagingSenderId: "1043941419628",
+      appId: "1:1043941419628:web:f3743b03d163d33c538649",
+      measurementId: "G-8LJ8V9DB45"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const titleEl = document.getElementById("categoryTitle");
+    const imageGrid = document.getElementById("categoryImageGrid");
+
+    const params = new URLSearchParams(window.location.search);
+    const categoryId = params.get("id");
+
+    if (!categoryId) {
+      titleEl.textContent = "Category not found";
+    } else {
+      const snap = await getDoc(doc(db, "portfolioCategories", categoryId));
+
+      if (!snap.exists()) {
+        titleEl.textContent = "Category not found";
+      } else {
+        const data = snap.data();
+        // Only the category name and its images are shown here —
+        // price and description are intentionally left out of this view.
+        titleEl.textContent = data.name || "Portfolio";
+
+        (data.images || []).forEach((url) => {
+          imageGrid.innerHTML += `<img src="${url}" alt="${data.name || "Portfolio image"}" loading="lazy" />`;
+        });
+      }
+    }
+  </script>
+</body>
+</html>

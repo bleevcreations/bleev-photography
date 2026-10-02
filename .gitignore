@@ -1,0 +1,20 @@
+# secrets: never commit these
+.env
+.env.local
+*.json.key
+*-firebase-adminsdk-*.json
+
+# dependencies and Vercel local state
+node_modules/
+.vercel/
+
+# migration-only files (photos live in Google Drive now)
+uploads/
+bleev_db.sql
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+# Private credentials
+key.json

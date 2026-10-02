@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit About Page</title>
+  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fb;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background-color: #fff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .form-label {
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: block;
+      color: #333;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: #fff;
+      margin-right: 10px;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: #fff;
+      margin-top: 20px;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .preview-img {
+      width: 150px;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px 15px;
+      }
+
+      .btn, .btn-primary, .btn-danger, .btn-secondary {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .preview-img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+  <style>html { visibility: hidden; }</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Edit About Page</h2>
+
+  <form id="aboutForm">
+    <label for="profile_picture" class="form-label">Profile Picture</label>
+    <img id="preview" class="preview-img" alt="Preview" hidden><br>
+    <input class="form-control" type="file" id="profile_picture" accept="image/*">
+
+    <label for="description" class="form-label">About Description</label>
+    <textarea class="form-control" id="description" rows="6"></textarea>
+
+    <button type="submit" class="btn btn-primary" id="saveBtn">Save Changes</button>
+  </form>
+
+  <button type="button" class="btn btn-danger" id="removePic" style="margin-top: 15px;" hidden>Remove Profile Picture</button>
+
+  <br>
+  <a href="admin-panel.html" class="btn btn-secondary">&larr; Back to Admin Panel</a>
+</div>
+
+<script type="module" src="js/admin-auth.js"></script>
+<script>
+  const input = document.getElementById('profile_picture');
+  const preview = document.getElementById('preview');
+  const removeBtn = document.getElementById('removePic');
+  const saveBtn = document.getElementById('saveBtn');
+
+  function showPicture(fileId) {
+    if (fileId) {
+      preview.src = '/api/image?id=' + encodeURIComponent(fileId);
+      preview.hidden = false;
+    } else {
+      preview.hidden = true;
+    }
+    removeBtn.hidden = !fileId;
+  }
+
+  async function loadAbout() {
+    const data = await (await fetch('/api/about', { cache: 'no-store' })).json();
+    document.getElementById('description').value = data.description || '';
+    showPicture(data.profilePicture);
+  }
+
+  input.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      preview.src = URL.createObjectURL(file);
+      preview.hidden = false;
+    }
+  });
+
+  document.getElementById('aboutForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    saveBtn.disabled = true;
+    try {
+      const file = input.files[0];
+      if (file) {
+        const blob = await prepareImage(file, 1200);
+        const up = await (await adminFetch('/api/about?name=' + encodeURIComponent(file.name), {
+          method: 'POST',
+          headers: { 'Content-Type': blob.type },
+          body: blob
+        })).json();
+        if (!up.success) throw new Error(up.error || 'Picture upload failed');
+      }
+
+      const res = await (await adminFetch('/api/about', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: document.getElementById('description').value })
+      })).json();
+      if (!res.success) throw new Error(res.error || 'Could not save');
+
+      input.value = '';
+      alert('Saved!');
+      await loadAbout();
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'Something went wrong.');
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  removeBtn.addEventListener('click', async () => {
+    if (!confirm('Remove the profile picture?')) return;
+    const res = await (await adminFetch('/api/about', { method: 'DELETE' })).json();
+    if (!res.success) return alert(res.error || 'Could not remove the picture.');
+    await loadAbout();
+  });
+
+  loadAbout();
+</script>
+
+</body>
+</html>

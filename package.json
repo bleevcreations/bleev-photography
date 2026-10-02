@@ -1,0 +1,23 @@
+{
+  "name": "bleeve-creations",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "drive-to-cloudinary": "node scripts/drive-to-cloudinary.js",
+    "drive-to-cloudinary:dry": "node scripts/drive-to-cloudinary.js --dry",
+    "migrate:dry": "node scripts/migrate.js --dry",
+    "migrate": "node scripts/migrate.js"
+  },
+  "dependencies": {
+    "cloudinary": "^2.11.0",
+    "firebase-admin": "^12.6.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "google-auth-library": "^9.14.0"
+  }
+}

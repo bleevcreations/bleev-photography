@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Random Reviews</title>
+  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .review-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .review-category {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .review-text {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .rating-stars {
+      color: #fbc02d;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      font-size: 16px;
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+     /* =========================================================
+       FOOTER
+       ========================================================= */
+
+    footer {
+      padding: 1.5rem 1rem;
+
+      text-align: center;
+
+      background:
+        linear-gradient(
+          135deg,
+          #052a4a,
+          #2b5876,
+          #4e4376
+        );
+
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    footer p {
+      margin: 0;
+
+      font-family:
+        "Playfair Display",
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 0.9rem;
+
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌟 Random User Reviews</h1>
+  <div id="reviewsContainer">
+    <p>Loading reviews...</p>
+  </div>
+  <a href="homepage.html" class="back-link">&larr; Back to Homepage</a>
+
+  <footer>
+  <p>
+    © Copyright 2022
+    &nbsp;|&nbsp;
+    Bleev Creations 
+    &nbsp;|&nbsp;
+    All Rights Reserved
+  </p>
+</footer>
+
+  <script>
+    // Reviews are public input, so escape before putting them into innerHTML
+    const esc = (v) => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+    async function fetchRandomReviews() {
+      const reviewsContainer = document.getElementById("reviewsContainer");
+      try {
+        const response = await fetch('/api/reviews?random=1');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+
+        reviewsContainer.innerHTML = '';
+
+        // If no reviews
+        if (!data.length) {
+          reviewsContainer.innerHTML = "<p>No reviews found.</p>";
+          return;
+        }
+
+        data.forEach(item => {
+          if (item.review) {
+            const card = document.createElement("div");
+            card.className = "review-card";
+
+            // Create rating stars
+            const stars = "★".repeat(item.review.rating) + "☆".repeat(5 - item.review.rating);
+
+            card.innerHTML = `
+              <div class="review-category">(${esc(item.category_name)})</div>
+              <div class="rating-stars">${stars}</div>
+              <div class="review-text">"${esc(item.review.text)}"</div>
+              <div class="reviewer-name" style="margin-top:10px; font-style:italic; color:#555;">— ${esc(item.review.name)}</div>
+            `;
+
+            reviewsContainer.appendChild(card);
+          }
+        });
+      } catch (err) {
+        console.error("Failed to fetch reviews:", err);
+        reviewsContainer.innerHTML = "<p>Failed to load reviews.</p>";
+      }
+    }
+
+    fetchRandomReviews();
+  </script>
+</body>
+</html>

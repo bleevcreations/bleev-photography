@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Admin Panel - Portfolio Upload</title>
+  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    :root {
+      --primary: #0066cc;
+      --bg: #f4f6f8;
+      --text: #333;
+      --radius: 8px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 2rem;
+      color: var(--text);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      background: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    form .form-group {
+      margin-bottom: 1rem;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+
+    form input[type="text"],
+    form input[type="number"],
+    form textarea,
+    form input[type="file"] {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      font-size: 1rem;
+    }
+
+    form textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    button {
+      background: var(--primary);
+      color: #fff;
+      padding: 0.75rem 1.2rem;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background: #004c99;
+    }
+
+    /* =========================================================
+       CATEGORY ENTRY
+       ========================================================= */
+
+    .category-entry {
+      background: #fff;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Buttons container at top right */
+
+    .category-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .category-actions button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.3s;
+    }
+
+    .category-actions button:hover {
+      background: #004c99;
+    }
+
+    .category-entry button {
+      margin-right: 0;
+    }
+
+    #previewImages img,
+    #newImagePreview img {
+      width: 100px;
+      margin: 5px;
+      border-radius: var(--radius);
+      object-fit: cover;
+    }
+
+    #categoryList {
+      max-width: 900px;
+      margin: auto;
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 1.5rem;
+
+      font-family: Arial, sans-serif;
+      white-space: normal;
+      width: 100%;
+
+      overflow: hidden;
+    }
+
+    /* =========================================================
+       CATEGORY IMAGES
+       ========================================================= */
+
+    .category-images {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .category-images img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      display: block;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .category-image {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .image-wrapper button {
+      font-size: 14px;
+      padding: 0 4px;
+      border-radius: 3px;
+      color: #900;
+    }
+
+    /* =========================================================
+       MODAL
+       ========================================================= */
+
+    .modal {
+      display: none;
+
+      position: fixed;
+
+      z-index: 999;
+
+      left: 0;
+      top: 0;
+
+      width: 100%;
+      height: 100%;
+
+      overflow: auto;
+
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content {
+      background: #fff;
+
+      margin: 10% auto;
+
+      padding: 2rem;
+
+      max-width: 500px;
+
+      border-radius: var(--radius);
+
+      box-shadow: var(--shadow);
+    }
+  </style>
+  <style>html { visibility: hidden; }</style>
+</head>
+
+<body>
+
+  <!-- =========================================================
+       ADMIN NAVIGATION
+       ========================================================= -->
+
+  <div style="text-align: right; margin-bottom: 1rem;">
+
+    <a
+      href="admin-about.html"
+      style="
+        background: var(--primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        text-decoration: none;
+        font-size: 0.95rem;
+        box-shadow: var(--shadow);
+        margin-right: 1rem;
+      "
+    >
+      Edit About Page
+    </a>
+
+    <a
+      href="homepage.html"
+      style="
+        background: crimson;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        font-size: 0.95rem;
+        border: none;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        text-decoration: none;
+      "
+    >
+      Logout
+    </a>
+
+  </div>
+
+
+  <!-- =========================================================
+       ADD CATEGORY
+       ========================================================= -->
+
+  <h2>Add Portfolio Category</h2>
+
+  <form
+    id="addCategoryForm"
+    enctype="multipart/form-data"
+  >
+
+    <!-- Category Name -->
+
+    <div class="form-group">
+
+      <label for="categoryName">
+        Category Name
+      </label>
+
+      <input
+        type="text"
+        id="categoryName"
+        placeholder="e.g. Weddings, Events"
+        required
+      />
+
+    </div>
+
+
+    <!-- Images -->
+
+    <div class="form-group">
+
+      <label for="imageUpload">
+        Upload Images
+      </label>
+
+      <input
+        type="file"
+        id="imageUpload"
+        name="images[]"
+        multiple
+        accept="image/*"
+        required
+      />
+
+    </div>
+
+
+    <!-- Image Preview -->
+
+    <div
+      id="previewImages"
+      class="image-preview"
+    ></div>
+
+
+    <button type="submit">
+      Add Category
+    </button>
+
+  </form>
+
+
+  <!-- =========================================================
+       MANAGE EXISTING CATEGORIES
+       ========================================================= -->
+
+  <h2>
+    Manage Existing Categories
+  </h2>
+
+  <div id="categoryList"></div>
+
+
+  <!-- =========================================================
+       EDIT CATEGORY MODAL
+       ========================================================= -->
+
+  <div
+    id="editModal"
+    class="modal"
+  >
+
+    <div class="modal-content">
+
+      <h3>
+        Edit Category
+      </h3>
+
+
+      <form id="editCategoryForm">
+
+        <input
+          type="hidden"
+          id="editId"
+        />
+
+
+        <!-- Category Name -->
+
+        <div class="form-group">
+
+          <label for="editName">
+            Category Name
+          </label>
+
+          <input
+            type="text"
+            id="editName"
+            placeholder="Category Name"
+            required
+          />
+
+        </div>
+
+
+        <button type="submit">
+          Save Changes
+        </button>
+
+
+        <button
+          type="button"
+          onclick="closeEditModal()"
+        >
+          Cancel
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       ADD IMAGE MODAL
+       ========================================================= -->
+
+  <div
+    id="addImageModal"
+    class="modal"
+  >
+
+    <div class="modal-content">
+
+      <h3>
+        Add Images
+      </h3>
+
+
+      <form
+        id="addImageForm"
+        enctype="multipart/form-data"
+      >
+
+        <input
+          type="hidden"
+          id="addImageId"
+        />
+
+
+        <div class="form-group">
+
+          <label for="addImages">
+            Upload New Images
+          </label>
+
+          <input
+            type="file"
+            id="addImages"
+            name="newImages[]"
+            multiple
+            accept="image/*"
+            required
+          />
+
+        </div>
+
+
+        <div id="newImagePreview"></div>
+
+
+        <button type="submit">
+          Upload
+        </button>
+
+
+        <button
+          type="button"
+          onclick="closeAddImageModal()"
+        >
+          Cancel
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+       ========================================================= -->
+
+  <script type="module" src="js/admin-auth.js"></script>
+  <script src="js/admin-panel.js"></script>
+
+</body>
+</html>
