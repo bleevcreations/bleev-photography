@@ -5,14 +5,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const app = initializeApp({
-  apiKey: "AIzaSyBoWvtStSddplApt6NieGTD9uBWIyk0Oz0",
-  authDomain: "bleev-creations.firebaseapp.com",
-  projectId: "bleev-creations",
-  storageBucket: "bleev-creations.firebasestorage.app",
-  messagingSenderId: "1043941419628",
-  appId: "1:1043941419628:web:f3743b03d163d33c538649"
-});
+ const firebaseConfig = {
+    apiKey: "AIzaSyAQ8YPGxHskBKDdTUyy-Zf2bsxRWYebWKU",
+    authDomain: "bleev-creations-photography.firebaseapp.com",
+    projectId: "bleev-creations-photography",
+    storageBucket: "bleev-creations-photography.firebasestorage.app",
+    messagingSenderId: "1035315236217",
+    appId: "1:1035315236217:web:0cff6f55165f1357c6f3a8",
+    measurementId: "G-NJYKW4Y1SK"
+  };
 const auth = getAuth(app);
 
 let resolveReady;
