@@ -94,7 +94,6 @@ p {
   );
 
   color: #fff;
-
   padding: 15px 40px;
 
   position: fixed;
@@ -104,7 +103,8 @@ p {
 
   z-index: 1000;
 
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 3px 15px rgba(0, 0, 0, 0.12);
 }
 
 .navbar .logo {
@@ -126,6 +126,7 @@ p {
   color: #fff;
   font-weight: 500;
   font-size: 1rem;
+
   transition:
     color 0.3s ease,
     opacity 0.3s ease;
@@ -173,7 +174,6 @@ p {
   align-items: center;
 
   color: #fff;
-
   padding: 0 20px;
 }
 
@@ -192,12 +192,9 @@ p {
 .hero-btn {
   background: #2b5876;
   color: #fff;
-
   padding: 15px 30px;
-
   font-size: 1.1rem;
   border-radius: 30px;
-
   margin-top: 90px;
 
   transition:
@@ -218,9 +215,7 @@ p {
 .portfolio-page .page-header {
   max-width: 1300px;
   margin: 0 auto;
-
   padding: 70px 40px 30px;
-
   text-align: left;
 }
 
@@ -251,15 +246,14 @@ p {
   background: #ffffff;
 }
 
+
 /* ---------------------------------------------------------
    PORTFOLIO HEADER
    --------------------------------------------------------- */
 
 .portfolio-header {
   max-width: 1500px;
-
   margin: 0 auto 40px;
-
   text-align: center;
 }
 
@@ -267,7 +261,7 @@ p {
   margin: 0 0 25px;
 
   font-family:
-    'Playfair Display',
+    "Playfair Display",
     Georgia,
     serif;
 
@@ -275,11 +269,10 @@ p {
     clamp(2.5rem, 4vw, 4rem);
 
   font-weight: 400;
-
   color: #171717;
-
   letter-spacing: -1px;
 }
+
 
 /* ---------------------------------------------------------
    FILTER TABS
@@ -287,30 +280,22 @@ p {
 
 .filter-tabs {
   display: flex;
-
   justify-content: center;
   align-items: center;
-
   flex-wrap: wrap;
-
   gap: 9px;
 }
 
 .filter-tabs button {
   border: 1px solid #d8d8d8;
-
   background: #fff;
-
   color: #444;
 
   padding: 8px 18px;
-
   border-radius: 30px;
 
   font-size: 14px;
-
   font-weight: 600;
-
   letter-spacing: 0.4px;
 
   cursor: pointer;
@@ -324,17 +309,15 @@ p {
 
 .filter-tabs button:hover {
   transform: translateY(-2px);
-
   border-color: #222;
 }
 
 .filter-tabs button.active {
   background: #171717;
-
   color: #fff;
-
   border-color: #171717;
 }
+
 
 /* ---------------------------------------------------------
    LARGE CARD GRID
@@ -342,7 +325,6 @@ p {
 
 .portfolio-grid {
   width: 100%;
-
   max-width: 1500px;
 
   margin: 0 auto;
@@ -355,6 +337,7 @@ p {
   gap: 16px;
 }
 
+
 /* ---------------------------------------------------------
    PORTFOLIO CARD
    --------------------------------------------------------- */
@@ -363,19 +346,12 @@ p {
   position: relative;
 
   width: 102.5%;
-
-  /*
-   * Moderate height for the 4-column layout.
-   */
   height: 280px;
 
   overflow: hidden;
 
   background: #eee;
 
-  /*
-   * Curved card edges.
-   */
   border-radius: 18px;
 
   cursor: pointer;
@@ -404,14 +380,12 @@ p {
 
 .portfolio-card > img {
   position: absolute;
-
   inset: 0;
 
   width: 100%;
   height: 100%;
 
   object-fit: cover;
-
   display: block;
 
   transition:
@@ -424,21 +398,18 @@ p {
   filter: brightness(0.8);
 }
 
+
 /* ---------------------------------------------------------
    CARD OVERLAY
    --------------------------------------------------------- */
 
 .portfolio-card-overlay {
   position: absolute;
-
   inset: 0;
 
   display: flex;
-
   flex-direction: column;
-
   justify-content: flex-end;
-
   align-items: flex-start;
 
   padding: 35px;
@@ -469,6 +440,7 @@ p {
     );
 }
 
+
 /* ---------------------------------------------------------
    CATEGORY NAME
    --------------------------------------------------------- */
@@ -479,17 +451,15 @@ p {
   color: #ffffff;
 
   font-family:
-    'Playfair Display',
-    'Cormorant Garamond',
+    "Playfair Display",
+    "Cormorant Garamond",
     Georgia,
     serif;
 
-  /* Reduced font size */
-  font-size: clamp(0.85rem, 1.3vw, 1.2rem);
+  font-size:
+    clamp(0.85rem, 1.3vw, 1.2rem);
 
-  /* Bold */
   font-weight: 700;
-
   line-height: 1.15;
 
   letter-spacing: 0.1px;
@@ -497,7 +467,6 @@ p {
   text-shadow:
     0 2px 8px rgba(0, 0, 0, 0.45);
 
-  /* Bottom left */
   text-align: left;
 
   transform: none;
@@ -517,14 +486,11 @@ p {
   color: rgba(255, 255, 255, 0.9);
 
   font-size: 10px;
-
   font-weight: 500;
 
   text-transform: uppercase;
-
   letter-spacing: 1.2px;
 
-  /* Bottom right */
   text-align: right;
 
   opacity: 1;
@@ -550,24 +516,19 @@ p {
   z-index: 3;
 
   display: flex;
-
   align-items: flex-end;
-
   justify-content: space-between;
 
   gap: 15px;
 
   padding: 18px 20px;
 
-  /*
-   * Makes the text easier to read against
-   * different photographs.
-   */
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.72),
-    rgba(0, 0, 0, 0)
-  );
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.72),
+      rgba(0, 0, 0, 0)
+    );
 }
 
 
@@ -582,6 +543,8 @@ p {
 .portfolio-card:hover .portfolio-photo-count {
   opacity: 1;
 }
+
+
 /* ---------------------------------------------------------
    EMPTY IMAGE CARD
    --------------------------------------------------------- */
@@ -599,21 +562,18 @@ p {
   content: "BLEEV CREATIONS";
 
   position: absolute;
-
   inset: 0;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   color: rgba(255, 255, 255, 0.25);
 
   font-size: 13px;
-
   letter-spacing: 4px;
 }
+
 
 /* ---------------------------------------------------------
    EMPTY / ERROR MESSAGE
@@ -631,6 +591,7 @@ p {
   font-size: 16px;
 }
 
+
 /* =========================================================
    RESPONSIVE PORTFOLIO
    ========================================================= */
@@ -643,7 +604,8 @@ p {
   }
 
   .portfolio-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 
   .portfolio-card {
@@ -727,7 +689,6 @@ p {
   display: none;
 
   position: fixed;
-
   inset: 0;
 
   background:
@@ -736,7 +697,6 @@ p {
   z-index: 2000;
 
   align-items: center;
-
   justify-content: center;
 
   padding: 30px 20px;
@@ -748,15 +708,12 @@ p {
 
 .lb-body {
   width: min(1100px, 100%);
-
   max-height: 92vh;
 
   display: flex;
-
   flex-direction: column;
 
   align-items: center;
-
   justify-content: center;
 
   gap: 15px;
@@ -765,10 +722,12 @@ p {
 #lbTitle {
   color: #fff;
 
-  font-family: "Playfair Display", Georgia, serif;
+  font-family:
+    "Playfair Display",
+    Georgia,
+    serif;
 
   font-size: 1.6rem;
-
   font-weight: 500;
 
   margin: 0;
@@ -776,7 +735,6 @@ p {
 
 #lbMainImg {
   max-width: 100%;
-
   max-height: 68vh;
 
   object-fit: contain;
@@ -799,7 +757,10 @@ p {
   padding: 5px 5px 10px;
 
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+
+  scrollbar-color:
+    rgba(255, 255, 255, 0.4)
+    transparent;
 }
 
 #lbThumbs::-webkit-scrollbar {
@@ -811,13 +772,14 @@ p {
 }
 
 #lbThumbs::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.4);
+  background:
+    rgba(255, 255, 255, 0.4);
+
   border-radius: 3px;
 }
 
 #lbThumbs img {
   width: 75px;
-
   height: 58px;
 
   object-fit: cover;
@@ -837,7 +799,6 @@ p {
 
 #lbThumbs img:hover {
   opacity: 0.8;
-
   transform: translateY(-2px);
 }
 
@@ -845,7 +806,6 @@ p {
   opacity: 1;
 
   outline: 2px solid #fff;
-
   outline-offset: 2px;
 }
 
@@ -857,22 +817,22 @@ p {
 
   top: 50%;
 
-  transform: translateY(-50%);
+  transform:
+    translateY(-50%);
 
-  background: rgba(255, 255, 255, 0.08);
+  background:
+    rgba(255, 255, 255, 0.08);
 
   border: none;
 
   color: #fff;
 
   width: 52px;
-
   height: 52px;
 
   border-radius: 50%;
 
   font-size: 2rem;
-
   line-height: 1;
 
   cursor: pointer;
@@ -883,9 +843,12 @@ p {
 }
 
 .lb-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background:
+    rgba(255, 255, 255, 0.18);
 
-  transform: translateY(-50%) scale(1.05);
+  transform:
+    translateY(-50%)
+    scale(1.05);
 }
 
 #lbPrev {
@@ -903,17 +866,14 @@ p {
   position: absolute;
 
   top: 20px;
-
   right: 25px;
 
   background: transparent;
-
   border: none;
 
   color: #fff;
 
   font-size: 2.5rem;
-
   font-weight: 200;
 
   cursor: pointer;
@@ -927,7 +887,6 @@ p {
 
 #lbClose:hover {
   opacity: 0.65;
-
   transform: rotate(90deg);
 }
 
@@ -938,7 +897,6 @@ p {
 
 body:has(#categoryGallery) {
   background: #fff;
-
   padding-top: 0;
 }
 
@@ -947,16 +905,18 @@ body:has(#categoryGallery) {
 
 body:has(#categoryGallery) > header {
   padding: 110px 30px 50px;
-
   background: #fff;
-
   text-align: center;
 }
 
 body:has(#categoryGallery) > header h1 {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family:
+    "Playfair Display",
+    Georgia,
+    serif;
 
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size:
+    clamp(2.5rem, 6vw, 4.5rem);
 
   font-weight: 400;
 
@@ -972,7 +932,6 @@ body:has(#categoryGallery) > header h1 {
 
 .gallery-section {
   background: #fff;
-
   padding: 20px 40px 90px;
 }
 
@@ -984,15 +943,16 @@ body:has(#categoryGallery) > header h1 {
   display: flex;
 
   justify-content: center;
-
   align-items: center;
 
   gap: 12px;
 
-  font-family: "Playfair Display", Georgia, serif;
+  font-family:
+    "Playfair Display",
+    Georgia,
+    serif;
 
   font-size: 1.8rem;
-
   font-weight: 400;
 
   color: #222;
@@ -1001,7 +961,10 @@ body:has(#categoryGallery) > header h1 {
 }
 
 #averageRating {
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
 
   font-size: 0.95rem;
 
@@ -1042,7 +1005,6 @@ body:has(#categoryGallery) > header h1 {
 
 .gallery-img {
   width: 100%;
-
   height: 100%;
 
   object-fit: cover;
@@ -1058,7 +1020,6 @@ body:has(#categoryGallery) > header h1 {
 
 .gallery-item:hover .gallery-img {
   transform: scale(1.05);
-
   filter: brightness(0.9);
 }
 
@@ -1070,14 +1031,17 @@ body:has(#categoryGallery) > header h1 {
 .reviews-section {
   background: #f7f7f5;
 
-  padding: 80px 25px 100px;
+  padding:
+    80px 25px 100px;
 }
 
 .reviews-section > h2 {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family:
+    "Playfair Display",
+    Georgia,
+    serif;
 
   font-size: 2.6rem;
-
   font-weight: 400;
 
   color: #111;
@@ -1088,7 +1052,8 @@ body:has(#categoryGallery) > header h1 {
 #reviews-list {
   width: min(900px, 100%);
 
-  margin: 0 auto 60px;
+  margin:
+    0 auto 60px;
 
   display: grid;
 
@@ -1098,9 +1063,11 @@ body:has(#categoryGallery) > header h1 {
 .review {
   background: #fff;
 
-  padding: 25px 28px;
+  padding:
+    25px 28px;
 
-  border: 1px solid #e8e8e8;
+  border:
+    1px solid #e8e8e8;
 
   border-radius: 2px;
 
@@ -1132,7 +1099,6 @@ body:has(#categoryGallery) > header h1 {
 
 .review p {
   padding: 0;
-
   margin: 0 0 10px;
 
   color: #555;
@@ -1154,12 +1120,15 @@ body:has(#categoryGallery) > header h1 {
 .reviews-section h3 {
   width: min(600px, 100%);
 
-  margin: 0 auto 20px;
+  margin:
+    0 auto 20px;
 
-  font-family: "Playfair Display", Georgia, serif;
+  font-family:
+    "Playfair Display",
+    Georgia,
+    serif;
 
   font-size: 1.8rem;
-
   font-weight: 400;
 
   color: #222;
@@ -1169,7 +1138,6 @@ body:has(#categoryGallery) > header h1 {
 
 #review-form {
   width: min(600px, 100%);
-
   margin: 0 auto;
 }
 
@@ -1177,18 +1145,19 @@ body:has(#categoryGallery) > header h1 {
 #review-form textarea {
   width: 100%;
 
-  padding: 14px 16px;
+  padding:
+    14px 16px;
 
   margin-bottom: 15px;
 
-  border: 1px solid #d7d7d7;
+  border:
+    1px solid #d7d7d7;
 
   border-radius: 2px;
 
   font-size: 0.95rem;
 
   background: #fff;
-
   color: #222;
 
   outline: none;
@@ -1200,7 +1169,6 @@ body:has(#categoryGallery) > header h1 {
 
 #review-form textarea {
   min-height: 140px;
-
   resize: vertical;
 }
 
@@ -1257,7 +1225,8 @@ body:has(#categoryGallery) > header h1 {
 #review-form button {
   display: inline-block;
 
-  padding: 12px 28px;
+  padding:
+    12px 28px;
 
   font-size: 0.95rem;
 
@@ -1279,7 +1248,8 @@ body:has(#categoryGallery) > header h1 {
 #review-form button:hover {
   background: #2b5876;
 
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 }
 
 
@@ -1295,21 +1265,19 @@ body:has(#categoryGallery) > header h1 {
   inset: 0;
 
   width: 100%;
-
   height: 100%;
 
-  background: rgba(0, 0, 0, 0.96);
+  background:
+    rgba(0, 0, 0, 0.96);
 
   z-index: 9999;
 
   justify-content: center;
-
   align-items: center;
 }
 
 #lightboxImage {
   max-width: 90%;
-
   max-height: 85%;
 
   object-fit: contain;
@@ -1325,17 +1293,18 @@ body:has(#categoryGallery) > header h1 {
 
   top: 50%;
 
-  transform: translateY(-50%);
+  transform:
+    translateY(-50%);
 
   width: 55px;
-
   height: 55px;
 
   border: none;
 
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.08);
+  background:
+    rgba(255, 255, 255, 0.08);
 
   color: #fff;
 
@@ -1352,9 +1321,12 @@ body:has(#categoryGallery) > header h1 {
 }
 
 .lightbox-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background:
+    rgba(255, 255, 255, 0.18);
 
-  transform: translateY(-50%) scale(1.05);
+  transform:
+    translateY(-50%)
+    scale(1.05);
 }
 
 #prevImage {
@@ -1369,7 +1341,6 @@ body:has(#categoryGallery) > header h1 {
   position: absolute;
 
   top: 20px;
-
   right: 30px;
 
   font-size: 3rem;
@@ -1390,7 +1361,8 @@ body:has(#categoryGallery) > header h1 {
 #closeModal:hover {
   opacity: 0.7;
 
-  transform: rotate(90deg);
+  transform:
+    rotate(90deg);
 }
 
 
@@ -1401,13 +1373,11 @@ body:has(#categoryGallery) > header h1 {
 .gallery-section h2,
 .gallery h2 {
   margin-top: 0;
-
   padding-bottom: 10px;
 }
 
 .gallery img {
   width: 100%;
-
   height: auto;
 
   object-fit: cover;
@@ -1428,75 +1398,382 @@ body:has(#categoryGallery) > header h1 {
    ========================================================= */
 
 .about-section {
-  position: relative;
+  padding: 90px 6%;
 
   background:
-    url("../assets/images/image-b34.jpg")
-    center / cover;
+    linear-gradient(
+      135deg,
+      #f5f7fa,
+      #eef1f5
+    );
 
-  padding: 100px 20px;
-
-  color: #fff;
+  display: flex;
+  justify-content: center;
 }
 
-.about-section::before {
+
+/* =========================================================
+   3D ABOUT CARD
+   ========================================================= */
+
+.about-card {
+  width: 100%;
+  max-width: 1100px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 60px;
+
+  padding: 55px;
+
+  background: #ffffff;
+
+  border-radius: 28px;
+
+  position: relative;
+
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.12),
+    0 8px 18px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+
+  transform-style: preserve-3d;
+}
+
+
+/* =========================================================
+   3D CARD BACK LAYER
+   ========================================================= */
+
+.about-card::before {
   content: "";
 
   position: absolute;
 
-  inset: 0;
+  top: 18px;
+  left: 18px;
 
-  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2b5876,
+      #4e4376
+    );
+
+  z-index: -1;
+
+  opacity: 0.18;
 }
 
-.about-section .about-content {
-  position: relative;
 
-  z-index: 1;
+/* =========================================================
+   HOVER 3D EFFECT
+   ========================================================= */
+
+.about-card:hover {
+  transform:
+    translateY(-8px)
+    perspective(1000px)
+    rotateX(1deg);
+
+  box-shadow:
+    0 30px 55px rgba(0, 0, 0, 0.16),
+    0 12px 25px rgba(0, 0, 0, 0.10);
+}
+
+
+/* =========================================================
+   PROFILE AREA
+   ========================================================= */
+
+.about-profile {
+  flex:
+    0 0 330px;
 
   display: flex;
 
-  flex-wrap: wrap;
-
   justify-content: center;
-
   align-items: center;
 
-  gap: 2rem;
-
-  max-width: 1000px;
-
-  margin: auto;
+  position: relative;
 }
 
-.about-content img {
-  width: 200px;
 
-  border-radius: 50%;
+/* =========================================================
+   PROFILE IMAGE FRAME
+   ========================================================= */
+
+.profile-frame {
+  width: 300px;
+  height: 360px;
+
+  padding: 10px;
+
+  background: #ffffff;
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 15px 30px rgba(0, 0, 0, 0.18),
+    8px 8px 0 rgba(43, 88, 118, 0.15);
+
+  transform:
+    rotate(-3deg);
+
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
 }
+
+
+/* Image hover */
+
+.about-card:hover .profile-frame {
+  transform:
+    rotate(0deg)
+    translateY(-5px);
+
+  box-shadow:
+    0 20px 35px rgba(0, 0, 0, 0.20),
+    10px 10px 0 rgba(43, 88, 118, 0.18);
+}
+
+
+/* =========================================================
+   PROFILE IMAGE
+   ========================================================= */
+
+.profile-frame img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  border-radius: 17px;
+}
+
+
+/* =========================================================
+   ABOUT TEXT
+   ========================================================= */
 
 .about-text {
-  max-width: 600px;
+  flex: 1;
 
-  text-align: center;
+  padding-right: 15px;
 }
+
+
+/* Small label */
+
+.about-label {
+  display: inline-block;
+
+  margin-bottom: 12px;
+
+  color: #4e4376;
+
+  font-family:
+    "Playfair Display",
+    "Cormorant Garamond",
+    Georgia,
+    serif;
+
+  font-size: 0.78rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+}
+
+
+/* =========================================================
+   ABOUT HEADING
+   ========================================================= */
 
 .about-text h2 {
-  font-family: Georgia, serif;
-
-  font-size: 2.5rem;
+  margin: 0 0 20px;
 }
 
-.about-text h2 a {
-  color: #fff;
+.about-text h2 .text {
+  color: #052a4a;
+
+  text-decoration: none;
+
+  font-family:
+    "Playfair Display",
+    "Cormorant Garamond",
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(2rem, 4vw, 3rem);
+
+  font-weight: 600;
+
+  transition:
+    color 0.3s ease;
 }
 
-.about-text p {
-  padding: 0;
+.about-text h2 .text:hover {
+  color: #4e4376;
+}
 
-  color: rgba(255, 255, 255, 0.9);
 
-  text-align: center;
+/* =========================================================
+   ABOUT DESCRIPTION
+   ========================================================= */
+
+#aboutText {
+  max-width: 650px;
+
+  margin:
+    0 0 28px;
+
+  color: #555;
+
+  font-family:
+    Arial,
+    sans-serif;
+
+  font-size: 1rem;
+
+  line-height: 1.8;
+}
+
+
+/* =========================================================
+   VIEW MORE BUTTON
+   ========================================================= */
+
+.about-text .btn {
+  display: inline-block;
+
+  padding:
+    12px 28px;
+
+  border-radius: 30px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2b5876,
+      #4e4376
+    );
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-weight: 600;
+
+  box-shadow:
+    0 8px 18px rgba(43, 88, 118, 0.25);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.about-text .btn:hover {
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    0 12px 25px rgba(43, 88, 118, 0.35);
+}
+
+
+/* =========================================================
+   ABOUT MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .about-section {
+    padding: 60px 20px;
+  }
+
+  .about-card {
+    flex-direction: column;
+
+    gap: 35px;
+
+    padding:
+      35px 25px;
+
+    text-align: center;
+  }
+
+  .about-profile {
+    flex: none;
+
+    width: 100%;
+  }
+
+  .profile-frame {
+    width: 230px;
+    height: 280px;
+  }
+
+  .about-text {
+    padding-right: 0;
+  }
+
+  #aboutText {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .about-card::before {
+    top: 12px;
+    left: 12px;
+  }
+}
+
+
+/* =========================================================
+   ABOUT SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .about-section {
+    padding:
+      45px 15px;
+  }
+
+  .about-card {
+    padding:
+      30px 20px;
+
+    border-radius: 22px;
+  }
+
+  .profile-frame {
+    width: 200px;
+    height: 245px;
+  }
+
+  .about-text h2 .text {
+    font-size: 2rem;
+  }
+
+  #aboutText {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
 }
 
 
@@ -1506,12 +1783,14 @@ body:has(#categoryGallery) > header h1 {
 
 .services-section {
   background: #fff5e6;
-
   padding: 90px 20px;
 }
 
 .services-section h2 {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family:
+    "Playfair Display",
+    Georgia,
+    serif;
 
   font-size: 2.8rem;
 
@@ -1559,7 +1838,6 @@ body:has(#categoryGallery) > header h1 {
   padding: 12px 0;
 
   font-weight: 700;
-
   font-size: 16px;
 
   background: #2b5876;
@@ -1582,84 +1860,280 @@ body:has(#categoryGallery) > header h1 {
 .book-btn:hover {
   background: #1d3c54;
 
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 }
 
 
 /* =========================================================
-   CONTACT
+   CONTACT SECTION
+   3D DESIGN
    ========================================================= */
 
 .contact-section {
+  padding: 90px 6%;
+
   background:
     linear-gradient(
-      to right,
+      135deg,
+      #eef1f5,
+      #f8f9fb
+    );
+
+  display: flex;
+  justify-content: center;
+}
+
+
+/* =========================================================
+   CONTACT 3D CARD
+   ========================================================= */
+
+.contact-card {
+  width: 100%;
+  max-width: 1150px;
+
+  display: grid;
+
+  grid-template-columns:
+    0.95fr 1.05fr;
+
+  gap: 60px;
+
+  padding: 55px;
+
+  background: #ffffff;
+
+  border-radius: 30px;
+
+  position: relative;
+
+  box-shadow:
+    0 22px 45px rgba(0, 0, 0, 0.12),
+    0 8px 18px rgba(0, 0, 0, 0.07);
+
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+
+  transform-style: preserve-3d;
+}
+
+
+/* =========================================================
+   CONTACT BACK LAYER
+   ========================================================= */
+
+.contact-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 18px;
+  left: 18px;
+
+  width: 100%;
+  height: 100%;
+
+  border-radius: 30px;
+
+  background:
+    linear-gradient(
+      135deg,
       #2b5876,
       #4e4376
     );
 
-  color: #fff;
+  opacity: 0.16;
 
-  padding: 90px 20px;
+  z-index: -1;
 }
 
-.contact-section h2 {
-  font-family: "Playfair Display", Georgia, serif;
 
-  font-size: 2.8rem;
+/* =========================================================
+   CONTACT HOVER
+   ========================================================= */
 
-  font-weight: 400;
+.contact-card:hover {
+  transform:
+    translateY(-7px)
+    perspective(1000px)
+    rotateX(1deg);
+
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.16),
+    0 12px 25px rgba(0, 0, 0, 0.08);
 }
 
-.contact-form {
-  max-width: 600px;
 
-  margin: auto;
+/* =========================================================
+   CONTACT INFORMATION
+   ========================================================= */
 
+.contact-info {
+  padding: 10px 0;
+}
+
+.contact-label {
+  display: inline-block;
+
+  margin-bottom: 15px;
+
+  color: #4e4376;
+
+  font-family:
+    "Playfair Display",
+    "Cormorant Garamond",
+    Georgia,
+    serif;
+
+  font-size: 0.78rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+}
+
+
+/* =========================================================
+   CONTACT HEADING
+   ========================================================= */
+
+.contact-info h2 {
+  margin: 0 0 20px;
+
+  color: #052a4a;
+
+  font-family:
+    "Playfair Display",
+    "Cormorant Garamond",
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(2rem, 4vw, 3.2rem);
+
+  line-height: 1.15;
+}
+
+.contact-info h2 span {
+  display: block;
+  color: #4e4376;
+}
+
+
+/* =========================================================
+   CONTACT DESCRIPTION
+   ========================================================= */
+
+.contact-description {
+  max-width: 500px;
+
+  margin-bottom: 35px;
+
+  color: #666;
+
+  font-size: 1rem;
+
+  line-height: 1.8;
+}
+
+
+/* =========================================================
+   CONTACT DETAILS
+   ========================================================= */
+
+.contact-details {
   display: flex;
 
   flex-direction: column;
 
-  gap: 1rem;
+  gap: 15px;
+
+  margin-bottom: 35px;
 }
 
-.contact-form input,
-.contact-form textarea {
-  padding: 1rem;
+.contact-detail {
+  display: flex;
 
-  border: 1px solid #ccc;
+  align-items: center;
 
-  border-radius: 4px;
+  gap: 15px;
 
-  font-size: 1rem;
+  width: fit-content;
 
-  outline: none;
+  color: #222;
+
+  text-decoration: none;
+
+  transition:
+    transform 0.3s ease;
 }
 
-.contact-form input:focus,
-.contact-form textarea:focus {
-  border-color: #ffcc66;
+.contact-detail:hover {
+  transform:
+    translateX(5px);
 }
 
-.contact-form button {
-  background: #000;
+.contact-detail > span:last-child {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.contact-detail small {
+  color: #888;
+
+  font-size: 0.75rem;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.08em;
+}
+
+.contact-detail strong {
+  color: #052a4a;
+
+  font-size: 0.95rem;
+}
+
+
+/* =========================================================
+   CONTACT ICONS
+   ========================================================= */
+
+.contact-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
 
   color: #fff;
 
-  padding: 1rem;
+  font-size: 21px;
 
-  border: none;
-
-  cursor: pointer;
-
-  border-radius: 4px;
-
-  transition:
-    background 0.3s ease;
+  box-shadow:
+    0 7px 15px rgba(0, 0, 0, 0.15);
 }
 
-.contact-form button:hover {
-  background: #222;
+.whatsapp-icon {
+  background: #25d366;
+}
+
+.email-icon {
+  background:
+    linear-gradient(
+      135deg,
+      #2b5876,
+      #4e4376
+    );
 }
 
 
@@ -1668,51 +2142,370 @@ body:has(#categoryGallery) > header h1 {
    ========================================================= */
 
 .social-contact {
-  text-align: center;
+  margin-top: 30px;
 
-  margin-top: 45px;
+  text-align: left;
 }
 
 .social-contact h3 {
-  font-weight: 400;
+  margin-bottom: 16px;
 
-  font-size: 1.1rem;
+  color: #052a4a;
+
+  font-family:
+    "Playfair Display",
+    "Cormorant Garamond",
+    Georgia,
+    serif;
+
+  font-size: 1rem;
+
+  font-weight: 600;
 }
 
 .social-icons {
-  text-align: center;
+  display: flex;
 
-  margin-top: 1rem;
+  align-items: center;
+
+  gap: 12px;
 }
 
-.social-icons a {
-  display: inline-block;
 
-  font-size: 42px;
+/* =========================================================
+   SOCIAL ICONS
+   ========================================================= */
 
-  margin: 0 12px;
+.social-icon {
+  width: 46px;
+  height: 46px;
 
-  color: white;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #fff;
+
+  text-decoration: none;
+
+  font-size: 19px;
+
+  position: relative;
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.16);
 
   transition:
     transform 0.3s ease,
-    color 0.3s ease;
+    box-shadow 0.3s ease;
 }
 
-.social-icons a:hover {
-  transform: translateY(-4px);
+.social-icon:hover {
+  transform:
+    translateY(-4px)
+    scale(1.05);
+
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.20);
 }
 
-.social-icons a.whatsapp:hover {
-  color: #25D366;
+.social-icon.whatsapp {
+  background: #25d366;
 }
 
-.social-icons a.instagram:hover {
-  color: #E1306C;
+.social-icon.instagram {
+  background:
+    linear-gradient(
+      135deg,
+      #833ab4,
+      #fd1d1d,
+      #fcb045
+    );
 }
 
-.social-icons a.facebook:hover {
-  color: #3b5998;
+.social-icon.facebook {
+  background: #1877f2;
+}
+
+.social-icon.tiktok {
+  background: #111;
+}
+
+
+/* =========================================================
+   CONTACT FORM CONTAINER
+   ========================================================= */
+
+.contact-form-container {
+  padding: 35px;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f8f9fb,
+      #fff
+    );
+
+  box-shadow:
+    inset 0 2px 5px rgba(255, 255, 255, 0.9),
+    0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   FORM HEADING
+   ========================================================= */
+
+.form-heading h3 {
+  margin:
+    0 0 8px;
+
+  color: #052a4a;
+
+  font-family:
+    "Playfair Display",
+    "Cormorant Garamond",
+    Georgia,
+    serif;
+
+  font-size: 1.7rem;
+}
+
+.form-heading p {
+  margin:
+    0 0 28px;
+
+  color: #777;
+
+  font-size: 0.9rem;
+}
+
+
+/* =========================================================
+   CONTACT FORM
+   ========================================================= */
+
+.contact-form {
+  max-width: none;
+
+  margin: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #333;
+
+  font-size: 0.85rem;
+
+  font-weight: 600;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding:
+    14px 16px;
+
+  border:
+    1px solid #e1e4e8;
+
+  border-radius: 13px;
+
+  background: #fff;
+
+  color: #222;
+
+  font-family:
+    Arial,
+    sans-serif;
+
+  font-size: 0.95rem;
+
+  outline: none;
+
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.04);
+
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.contact-form textarea {
+  min-height: 130px;
+
+  resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #4e4376;
+
+  box-shadow:
+    0 0 0 3px rgba(78, 67, 118, 0.10);
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: #aaa;
+}
+
+
+/* =========================================================
+   CONTACT SUBMIT BUTTON
+   ========================================================= */
+
+.contact-submit {
+  width: 100%;
+
+  padding:
+    15px 22px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2b5876,
+      #4e4376
+    );
+
+  color: #fff;
+
+  font-size: 0.95rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 9px 20px rgba(43, 88, 118, 0.25);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.contact-submit i {
+  margin-right: 8px;
+
+  font-size: 18px;
+}
+
+.contact-submit:hover {
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    0 14px 25px rgba(43, 88, 118, 0.35);
+}
+
+
+/* =========================================================
+   CONTACT RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+  .contact-section {
+    padding:
+      65px 20px;
+  }
+
+  .contact-card {
+    grid-template-columns: 1fr;
+
+    gap: 40px;
+
+    padding:
+      40px 30px;
+  }
+
+  .contact-info {
+    text-align: center;
+  }
+
+  .contact-description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contact-details {
+    align-items: center;
+  }
+
+  .social-contact {
+    text-align: center;
+  }
+
+  .social-icons {
+    justify-content: center;
+  }
+}
+
+
+/* =========================================================
+   CONTACT SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .contact-section {
+    padding:
+      45px 15px;
+  }
+
+  .contact-card {
+    padding:
+      30px 20px;
+
+    border-radius: 22px;
+  }
+
+  .contact-form-container {
+    padding:
+      25px 20px;
+
+    border-radius: 20px;
+  }
+
+  .contact-info h2 {
+    font-size: 2rem;
+  }
+
+  .contact-description {
+    font-size: 0.92rem;
+  }
+
+  .social-icon {
+    width: 43px;
+    height: 43px;
+
+    font-size: 18px;
+  }
 }
 
 
@@ -1720,65 +2513,91 @@ body:has(#categoryGallery) > header h1 {
    FOOTER
    ========================================================= */
 
-/* ---------------------------------------------------------
-   FOOTER
-   --------------------------------------------------------- */
-
 footer {
   background: #052a4a;
+
   color: #ffffff;
+
   text-align: center;
-  padding: 35px 20px 28px;
+
+  padding:
+    35px 20px 28px;
+
   position: relative;
+
   overflow: hidden;
 }
 
+
 /* Subtle decorative line */
+
 footer::before {
   content: "";
+
   display: block;
+
   width: 55px;
   height: 2px;
-  margin: 0 auto 18px;
 
-  background: linear-gradient(
-    90deg,
-    #d4af37,
-    #ffffff,
-    #d4af37
-  );
+  margin:
+    0 auto 18px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #d4af37,
+      #ffffff,
+      #d4af37
+    );
 }
 
+
 /* Copyright */
+
 footer p {
   margin: 0;
   padding: 0;
 
-  font-family: "Playfair Display",
+  font-family:
+    "Playfair Display",
     "Cormorant Garamond",
     Georgia,
     serif;
 
-  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-size:
+    clamp(1rem, 2vw, 1.25rem);
+
   font-weight: 700;
+
   letter-spacing: 0.08em;
+
   line-height: 1.6;
 
   color: #ffffff;
 }
 
+
 /* Powered by */
+
 footer .powered-by {
   margin-top: 8px;
 
-  font-family: Arial, sans-serif;
+  font-family:
+    Arial,
+    sans-serif;
+
   font-size: 0.75rem;
+
   font-weight: 700;
+
   letter-spacing: 0.18em;
+
   text-transform: uppercase;
 
-  color: rgba(255, 255, 255, 0.65);
+  color:
+    rgba(255, 255, 255, 0.65);
 }
+
 
 /* =========================================================
    PRICE
@@ -1803,14 +2622,14 @@ footer .powered-by {
   position: fixed;
 
   bottom: 25px;
-
   right: 25px;
 
   background: #d8a900;
 
   color: #000;
 
-  padding: 12px 18px;
+  padding:
+    12px 18px;
 
   border-radius: 30px;
 
@@ -1836,7 +2655,8 @@ footer .powered-by {
 
   color: #fff;
 
-  transform: translateY(-3px);
+  transform:
+    translateY(-3px);
 }
 
 .floating-review-btn i {
@@ -1851,7 +2671,8 @@ footer .powered-by {
 .btn.centered {
   display: inline-block;
 
-  margin: 2rem auto 0;
+  margin:
+    2rem auto 0;
 
   text-align: center;
 }
@@ -1863,7 +2684,6 @@ footer .powered-by {
 
 .card-placeholder {
   width: 100%;
-
   height: 100%;
 
   min-height: 220px;
@@ -1871,7 +2691,6 @@ footer .powered-by {
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
   background: #eee;
@@ -1907,7 +2726,8 @@ footer .powered-by {
   }
 
   .navbar {
-    padding: 13px 20px;
+    padding:
+      13px 20px;
   }
 
   .navbar .logo {
@@ -1926,7 +2746,8 @@ footer .powered-by {
   /* Hero */
 
   .hero {
-    height: calc(100vh - 70px);
+    height:
+      calc(100vh - 70px);
 
     min-height: 500px;
   }
@@ -1943,7 +2764,8 @@ footer .powered-by {
   /* Portfolio */
 
   .portfolio-page .page-header {
-    padding: 50px 20px 25px;
+    padding:
+      50px 20px 25px;
   }
 
   .portfolio-page .page-header h1 {
@@ -1954,7 +2776,8 @@ footer .powered-by {
   /* Category */
 
   body:has(#categoryGallery) > header {
-    padding: 80px 20px 35px;
+    padding:
+      80px 20px 35px;
   }
 
   body:has(#categoryGallery) > header h1 {
@@ -1962,7 +2785,8 @@ footer .powered-by {
   }
 
   .gallery-section {
-    padding: 15px 15px 65px;
+    padding:
+      15px 15px 65px;
   }
 
   .gallery-section > h2 {
@@ -1985,7 +2809,8 @@ footer .powered-by {
   /* Reviews */
 
   .reviews-section {
-    padding: 60px 18px 75px;
+    padding:
+      60px 18px 75px;
   }
 
   .reviews-section > h2 {
@@ -2001,13 +2826,11 @@ footer .powered-by {
 
   #lightboxImage {
     max-width: 94%;
-
     max-height: 78%;
   }
 
   .lightbox-btn {
     width: 45px;
-
     height: 45px;
 
     font-size: 1.8rem;
@@ -2023,7 +2846,6 @@ footer .powered-by {
 
   #closeModal {
     top: 10px;
-
     right: 15px;
 
     font-size: 2.5rem;
@@ -2045,10 +2867,10 @@ footer .powered-by {
 
   .floating-review-btn {
     right: 15px;
-
     bottom: 15px;
 
-    padding: 10px 14px;
+    padding:
+      10px 14px;
 
     font-size: 13px;
   }
@@ -2062,7 +2884,8 @@ footer .powered-by {
 
     gap: 8px;
 
-    padding: 10px 12px;
+    padding:
+      10px 12px;
   }
 
   body {
@@ -2078,7 +2901,8 @@ footer .powered-by {
   }
 
   .hero {
-    height: calc(100vh - 90px);
+    height:
+      calc(100vh - 90px);
   }
 
   .hero-heading {
@@ -2088,7 +2912,8 @@ footer .powered-by {
   .hero-btn {
     font-size: 1rem;
 
-    padding: 12px 24px;
+    padding:
+      12px 24px;
   }
 
   .portfolio-grid {
@@ -2097,7 +2922,6 @@ footer .powered-by {
 
   #lbMainImg {
     max-width: 90%;
-
     max-height: 58vh;
   }
 
@@ -2113,13 +2937,11 @@ footer .powered-by {
     font-size: 1.8rem;
 
     width: 42px;
-
     height: 42px;
   }
 
   #lbThumbs img {
     width: 60px;
-
     height: 48px;
   }
 }

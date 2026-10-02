@@ -1,504 +1,908 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <title>Bleev Creations</title>
-  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
-  <link rel="stylesheet" href="css/style.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="js/main.js" defer></script>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="assets/logos/favicon.png"
+  />
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
+  <script
+    src="js/main.js"
+    defer
+  ></script>
+
   <style>
-    .portfolio-item {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    .portfolio-slideshow {
-      position: relative;
-      width: 100%;
-      height: 200px;
-    }
-
-    .portfolio-slideshow img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-    }
-
-    .portfolio-slideshow img.active {
-      opacity: 1;
-    }
-
-    .floating-review-btn {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background-color: gold;
-      color: #000;
-      padding: 12px 18px;
-      border-radius: 30px;
-      font-size: 16px;
-      font-weight: bold;
-      text-decoration: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      z-index: 999;
-      transition: background-color 0.3s ease;
-    }
-
-    .floating-review-btn:hover {
-      background-color: darkgoldenrod;
-      color: #fff;
-    }
-
-    .floating-review-btn i {
-      margin-right: 8px;
-    }
-
-    .btn.centered {
-      display: inline-block;
-      margin: 2rem auto 0;
-      text-align: center;
-    }
-
     /* =========================================================
-   FLOATING WHATSAPP BUTTON
-   ========================================================= */
-
-.floating-whatsapp {
-  position: fixed;
-
-  right: 25px;
-  bottom: 90px;
-
-  width: 58px;
-  height: 58px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #25D366;
-  color: #ffffff;
-
-  border-radius: 50%;
-  text-decoration: none;
-
-  font-size: 30px;
-
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
-
-  z-index: 9999;
-
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    background-color 0.3s ease;
-}
-
-.floating-whatsapp:hover {
-  background: #20b957;
-  color: #ffffff;
-
-  transform: translateY(-4px) scale(1.05);
-
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.floating-whatsapp i {
-  margin: 0;
-}
-
-/* WhatsApp pulse */
-.floating-whatsapp::before {
-  content: "";
-
-  position: absolute;
-  inset: -4px;
-
-  border: 2px solid rgba(37, 211, 102, 0.45);
-  border-radius: 50%;
-
-  animation: whatsappPulse 2s infinite;
-}
-
-@keyframes whatsappPulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-
-  70% {
-    transform: scale(1.25);
-    opacity: 0;
-  }
-
-  100% {
-    transform: scale(1.25);
-    opacity: 0;
-  }
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-
-  .floating-whatsapp {
-    right: 18px;
-    bottom: 78px;
-
-    width: 54px;
-    height: 54px;
-
-    font-size: 27px;
-  }
-
-}
-
-     /* =========================================================
-       FOOTER
+       FLOATING WHATSAPP BUTTON
        ========================================================= */
 
-    footer {
-      padding: 1.5rem 1rem;
+    .floating-whatsapp {
+      position: fixed;
+      right: 25px;
+      bottom: 90px;
+      width: 58px;
+      height: 58px;
 
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-      background:
-        linear-gradient(
-          135deg,
-          #052a4a,
-          #2b5876,
-          #4e4376
-        );
+      background: #25d366;
+      color: #ffffff;
 
-      color: rgba(255, 255, 255, 0.85);
+      border-radius: 50%;
+      text-decoration: none;
+
+      font-size: 30px;
+
+      box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.25);
+
+      z-index: 9999;
+
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        background-color 0.3s ease;
     }
 
-    footer p {
+    .floating-whatsapp:hover {
+      background: #20b957;
+      color: #ffffff;
+
+      transform:
+        translateY(-4px)
+        scale(1.05);
+
+      box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .floating-whatsapp i {
       margin: 0;
-
-      font-family:
-        "Playfair Display",
-        "Cormorant Garamond",
-        Georgia,
-        serif;
-
-      font-size: 0.9rem;
-
-      letter-spacing: 0.04em;
     }
 
-    /* =========================================================
-   SOCIAL MEDIA
-   ========================================================= */
+    /* WhatsApp pulse */
 
-.social-contact {
-  text-align: center;
-  margin-top: 35px;
-}
+    .floating-whatsapp::before {
+      content: "";
 
-.social-contact h3 {
-  margin-bottom: 18px;
-  color: #ffffff;
-  font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
-  font-size: 1.15rem;
-  font-weight: 600;
-}
+      position: absolute;
+      inset: -4px;
 
-/* Social icon container */
-.social-icons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-}
+      border: 2px solid
+        rgba(37, 211, 102, 0.45);
 
-/* Individual social icons */
-.social-icon {
-  width: 52px;
-  height: 52px;
+      border-radius: 50%;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+      animation:
+        whatsappPulse 2s infinite;
+    }
 
-  border-radius: 50%;
-  text-decoration: none;
+    @keyframes whatsappPulse {
 
-  color: #ffffff;
-  font-size: 22px;
+      0% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
 
-  position: relative;
+      70% {
+        transform: scale(1.25);
+        opacity: 0;
+      }
 
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    background 0.3s ease;
-}
+      100% {
+        transform: scale(1.25);
+        opacity: 0;
+      }
 
-/* WhatsApp */
-.social-icon.whatsapp {
-  background: #25d366;
-  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-}
+    }
 
-/* Instagram */
-.social-icon.instagram {
-  background: linear-gradient(
-    135deg,
-    #833ab4,
-    #fd1d1d,
-    #fcb045
-  );
+    @media (max-width: 600px) {
 
-  box-shadow: 0 5px 15px rgba(225, 48, 108, 0.3);
-}
+      .floating-whatsapp {
+        right: 18px;
+        bottom: 78px;
 
-/* TikTok */
-.social-icon.tiktok {
-  background: #111111;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-}
+        width: 54px;
+        height: 54px;
 
-/* Hover effect */
-.social-icon:hover {
-  transform: translateY(-5px) scale(1.08);
-  color: #ffffff;
-}
+        font-size: 27px;
+      }
 
-/* Individual hover shadows */
-.social-icon.whatsapp:hover {
-  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.45);
-}
-
-.social-icon.instagram:hover {
-  box-shadow: 0 10px 25px rgba(225, 48, 108, 0.45);
-}
-
-.social-icon.tiktok:hover {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-}
-
-/* Subtle outer ring */
-.social-icon::before {
-  content: "";
-  position: absolute;
-  inset: -3px;
-
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  opacity: 0;
-  transform: scale(0.8);
-
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
-}
-
-.social-icon:hover::before {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-  .social-icons {
-    gap: 13px;
-  }
-
-  .social-icon {
-    width: 48px;
-    height: 48px;
-    font-size: 20px;
-  }
-
-  .social-contact h3 {
-    font-size: 1rem;
-  }
-}
-
-/* Facebook */
-.social-icon.facebook {
-  background: #1877f2;
-  box-shadow: 0 5px 15px rgba(24, 119, 242, 0.3);
-}
-
-.social-icon.facebook:hover {
-  box-shadow: 0 10px 25px rgba(24, 119, 242, 0.45);
-}
+    }
   </style>
+
 </head>
+
+
 <body>
 
-  <!-- Navigation Bar -->
+  <!-- =========================================================
+       NAVIGATION
+       ========================================================= -->
+
   <header class="navbar">
-    <div class="logo">BLEEV CREATIONS</div>
+
+    <div class="logo">
+      BLEEV CREATIONS
+    </div>
+
     <nav>
+
       <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#portfolio">Portfolio</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="admin-login.html">Admin</a></li>
+
+        <li>
+          <a href="#home">
+            Home
+          </a>
+        </li>
+
+        <li>
+          <a href="#portfolio">
+            Portfolio
+          </a>
+        </li>
+
+        <li>
+          <a href="#about">
+            About
+          </a>
+        </li>
+
+        <li>
+          <a href="#contact">
+            Contact
+          </a>
+        </li>
+
+        <li>
+          <a href="admin-login.html">
+            Admin
+          </a>
+        </li>
+
       </ul>
+
     </nav>
+
   </header>
 
-  <!-- Hero Section -->
-  <header class="hero" id="home">
-    
-  </header>
-    <!-- Portfolio Section -->
-  <section class="portfolio-section" id="portfolio">
 
-  <div class="portfolio-header">
-    <h2>Portfolio</h2>
+  <!-- =========================================================
+       HERO SECTION
+       ========================================================= -->
 
-    <div class="filter-tabs" id="filterTabs">
-      <button
-        type="button"
-        class="active"
-        data-filter="all">
-        All
-      </button>
-    </div>
-  </div>
-
-  <div
-    class="portfolio-grid"
-    id="portfolioGrid">
-  </div>
-
-</section>
-  <!-- About Section -->
-<section class="about-section" id="about">
-  <div class="about-content">
-    <!-- Removed image tag -->
-    <div class="about-text">
-      <h2><a href="about.html" class="text">About Me</a></h2>
-      <p id="aboutSnippet">
-        Loading about description...
-      </p><br>
-      <a href="about.html" class="btn">View More</a><br>
-    </div>
-  </div>
-</section>
-
-
-
-
-  <!-- Contact Section -->
-  <section class="contact-section" id="contact">
-    <h2>Get In Touch</h2>
-    <form class="contact-form" id="contactForm" onsubmit="sendSMS(); return false;">
-  <input type="text" name="name" id="userName" placeholder="Name" required />
-  <input type="email" name="email" id="userEmail" placeholder="Email" required />
-  <textarea name="message" id="userMessage" placeholder="Your message..." rows="5" required></textarea>
-  <button type="submit">Send Message</button>
-</form>
-
-<script>
-  document.getElementById("contactForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const name = document.getElementById("userName").value;
-    const email = document.getElementById("userEmail").value;
-    const message = document.getElementById("userMessage").value;
-
-    const fullMessage = `Hello, I'm ${name} (${email})%0A%0A${encodeURIComponent(message)}`;
-    const phoneNumber = "254768572974"; // Your WhatsApp number
-    const whatsappURL = `https://wa.me/${phoneNumber}?text=${fullMessage}`;
-
-    window.open(whatsappURL, "_blank");
-  });
-</script>
-
-
-    <div class="social-contact">
-      <h3>Contact me via social media</h3>
-      <div class="social-icons">
-        <a href="https://wa.me/254768572974" target="_blank" rel="noopener" class="whatsapp"><i class="fab fa-whatsapp"></i></a>
-        <a href="https://www.instagram.com/bleevcreations?igsh=MXFndXlyZjVhMDVzNQ==" target="_blank" rel="noopener" class="instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://www.facebook.com/profile.php?id=100090282535869" target="_blank" rel="noopener" class="facebook"><i class="fab fa-facebook-f"></i></a>
-         <!-- TikTok -->
-  <a
-    href="https://www.tiktok.com/@bleevcreations"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="tiktok"
-    aria-label="TikTok"
+  <header
+    class="hero"
+    id="home"
   >
-    <i class="fab fa-tiktok"></i>
-  </a>
-        
+  </header>
+
+
+  <!-- =========================================================
+       PORTFOLIO SECTION
+       ========================================================= -->
+
+  <section
+    class="portfolio-section"
+    id="portfolio"
+  >
+
+    <div class="portfolio-header">
+
+      <h2>
+        Portfolio
+      </h2>
+
+      <div
+        class="filter-tabs"
+        id="filterTabs"
+      >
+
+        <button
+          type="button"
+          class="active"
+          data-filter="all"
+        >
+          All
+        </button>
+
       </div>
+
     </div>
+
+
+    <div
+      class="portfolio-grid"
+      id="portfolioGrid"
+    >
+    </div>
+
   </section>
 
- <footer>
-  <p>
-    © 2022   Bleev Creations.
-    All Rights Reserved
-  </p>
-</footer>
 
-<script>
-  document.getElementById("current-year").textContent = new Date().getFullYear();
-</script>
+  <!-- =========================================================
+       ABOUT SECTION
+       ========================================================= -->
 
-  <!-- Floating Button -->
-  <a href="random-reviews.html" class="floating-review-btn" title="Check Random Reviews">
-    <i class="fas fa-star"></i> Check Reviews
-  </a>
+  <section
+    class="about-section"
+    id="about"
+  >
 
-  <!-- Floating WhatsApp Button -->
-<a
-  href="https://wa.me/254768572974"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="floating-whatsapp"
-  title="Chat with Bleev Creations on WhatsApp"
-  aria-label="Chat with Bleev Creations on WhatsApp"
->
-  <i class="fab fa-whatsapp"></i>
-</a>
+    <div class="about-card">
 
-  <!-- Script to load categories -->
-     <script src="js/portfolio.js" defer></script>
-  
+
+      <!-- Profile Picture -->
+
+      <div class="about-profile">
+
+        <div class="profile-frame">
+
+          <img
+            id="aboutImg"
+            src=""
+            alt="Bleev Creations"
+            hidden
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- About Content -->
+
+      <div class="about-text">
+
+        <span class="about-label">
+          ABOUT BLEEV CREATIONS
+        </span>
+
+
+        <h2>
+
+          <a
+            href="about.html"
+            class="text"
+          >
+            About Me
+          </a>
+
+        </h2>
+
+
+        <p id="aboutText">
+          Loading about description...
+        </p>
+
+
+        <a
+          href="about.html"
+          class="btn"
+        >
+          View More
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       CONTACT SECTION
+       ========================================================= -->
+
+  <section
+    class="contact-section"
+    id="contact"
+  >
+
+    <div class="contact-card">
+
+
+      <!-- =====================================================
+           LEFT SIDE — CONTACT INFORMATION
+           ===================================================== -->
+
+      <div class="contact-info">
+
+        <span class="contact-label">
+          GET IN TOUCH
+        </span>
+
+
+        <h2>
+
+          Let's Create Something
+
+          <span>
+            Beautiful
+          </span>
+
+        </h2>
+
+
+        <p class="contact-description">
+
+          Have a photography project, event,
+          portrait session, or creative idea
+          in mind? Get in touch and let's bring
+          it to life.
+
+        </p>
+
+
+        <!-- Contact Details -->
+
+        <div class="contact-details">
+
+
+          <!-- WhatsApp -->
+
+          <a
+            href="https://wa.me/254768572974"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-detail"
+          >
+
+            <span class="contact-icon whatsapp-icon">
+
+              <i class="fab fa-whatsapp"></i>
+
+            </span>
+
+
+            <span>
+
+              <small>
+                WhatsApp
+              </small>
+
+              <strong>
+                Chat with me
+              </strong>
+
+            </span>
+
+          </a>
+
+
+          <!-- Email -->
+
+          <a
+            href="mailto:bleevcreationsmedia@gmail.com"
+            class="contact-detail"
+          >
+
+            <span class="contact-icon email-icon">
+
+              <i class="fas fa-envelope"></i>
+
+            </span>
+
+
+            <span>
+
+              <small>
+                Email
+              </small>
+
+              <strong>
+                Send an email
+              </strong>
+
+            </span>
+
+          </a>
+
+        </div>
+
+
+        <!-- =================================================
+             SOCIAL MEDIA
+             ================================================= -->
+
+        <div class="social-contact">
+
+          <h3>
+            Follow Bleev Creations
+          </h3>
+
+
+          <div class="social-icons">
+
+
+            <!-- WhatsApp -->
+
+            <a
+              href="https://wa.me/254768572974"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon whatsapp"
+              aria-label="WhatsApp"
+            >
+
+              <i class="fab fa-whatsapp"></i>
+
+            </a>
+
+
+            <!-- Instagram -->
+
+            <a
+              href="https://www.instagram.com/bleevcreations?igsh=MXFndXlyZjVhMDVzNQ=="
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon instagram"
+              aria-label="Instagram"
+            >
+
+              <i class="fab fa-instagram"></i>
+
+            </a>
+
+
+            <!-- Facebook -->
+
+            <a
+              href="https://www.facebook.com/profile.php?id=100090282535869"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon facebook"
+              aria-label="Facebook"
+            >
+
+              <i class="fab fa-facebook-f"></i>
+
+            </a>
+
+
+            <!-- TikTok -->
+
+            <a
+              href="https://www.tiktok.com/@bleevcreations"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon tiktok"
+              aria-label="TikTok"
+            >
+
+              <i class="fab fa-tiktok"></i>
+
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           RIGHT SIDE — CONTACT FORM
+           ===================================================== -->
+
+      <div class="contact-form-container">
+
+
+        <div class="form-heading">
+
+          <h3>
+            Send a Message
+          </h3>
+
+          <p>
+            Tell me a little about what
+            you have in mind.
+          </p>
+
+        </div>
+
+
+        <form
+          class="contact-form"
+          id="contactForm"
+        >
+
+
+          <!-- Name -->
+
+          <div class="form-group">
+
+            <label for="userName">
+              Your Name
+            </label>
+
+            <input
+              type="text"
+              name="name"
+              id="userName"
+              placeholder="Enter your name"
+              autocomplete="name"
+              required
+            />
+
+          </div>
+
+
+          <!-- Email -->
+
+          <div class="form-group">
+
+            <label for="userEmail">
+              Email Address
+            </label>
+
+            <input
+              type="email"
+              name="email"
+              id="userEmail"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            />
+
+          </div>
+
+
+          <!-- Message -->
+
+          <div class="form-group">
+
+            <label for="userMessage">
+              Your Message
+            </label>
+
+            <textarea
+              name="message"
+              id="userMessage"
+              placeholder="Tell me about your photography project..."
+              rows="5"
+              required
+            ></textarea>
+
+          </div>
+
+
+          <!-- Submit -->
+
+          <button
+            type="submit"
+            class="contact-submit"
+          >
+
+            <i class="fab fa-whatsapp"></i>
+
+            Send via WhatsApp
+
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+
+  <footer>
+
+    <p>
+
+      © <span id="year"></span>
+      Bleev Creations.
+      All Rights Reserved
+
+    </p>
+
+
+    <div class="powered-by">
+      Capturing Moments. Creating Memories.
+    </div>
+
+  </footer>
+
+
+  <!-- =========================================================
+       CONTACT FORM → WHATSAPP
+       ========================================================= -->
 
   <script>
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const res = await fetch("/api/about");
-    const data = await res.json();
-    document.getElementById("aboutSnippet").textContent = data.snippet;
-  } catch (err) {
-    console.error("❌ Failed to load about snippet:", err);
-    document.getElementById("aboutSnippet").textContent = "Hi, I'm Bleev – a passionate photographer.";
-  }
-});
-</script>
 
-<!-- Portfolio lightbox -->
-<div class="cat-lightbox" id="catLightbox">
-  <button id="lbClose" title="Close">&times;</button>
-  <div class="lb-body">
-    <h3 id="lbTitle"></h3>
-    <img id="lbMainImg" src="" alt="" />
-    <div id="lbThumbs"></div>
+    const contactForm =
+      document.getElementById("contactForm");
+
+    if (contactForm) {
+
+      contactForm.addEventListener(
+        "submit",
+        function (e) {
+
+          e.preventDefault();
+
+
+          const name =
+            document
+              .getElementById("userName")
+              .value
+              .trim();
+
+
+          const email =
+            document
+              .getElementById("userEmail")
+              .value
+              .trim();
+
+
+          const message =
+            document
+              .getElementById("userMessage")
+              .value
+              .trim();
+
+
+          const fullMessage =
+            `Hello, I'm ${name} (${email})\n\n${message}`;
+
+
+          const phoneNumber =
+            "254768572974";
+
+
+          const whatsappURL =
+            `https://wa.me/${phoneNumber}?text=${encodeURIComponent(fullMessage)}`;
+
+
+          window.open(
+            whatsappURL,
+            "_blank"
+          );
+
+        }
+      );
+
+    }
+
+  </script>
+
+
+  <!-- =========================================================
+       DYNAMIC FOOTER YEAR + ABOUT INFORMATION
+       ========================================================= -->
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        /* Dynamic footer year */
+
+        const yearElement =
+          document.getElementById("year");
+
+        if (yearElement) {
+
+          yearElement.textContent =
+            new Date().getFullYear();
+
+        }
+
+
+        /* Load About information */
+
+        const aboutText =
+          document.getElementById("aboutText");
+
+        const aboutImg =
+          document.getElementById("aboutImg");
+
+
+        fetch("/api/about")
+
+          .then((response) => {
+
+            if (!response.ok) {
+
+              throw new Error(
+                `HTTP ${response.status}`
+              );
+
+            }
+
+            return response.json();
+
+          })
+
+          .then((data) => {
+
+
+            /* About description */
+
+            if (aboutText) {
+
+              aboutText.textContent =
+                data.description || "";
+
+            }
+
+
+            /* About profile picture */
+
+            if (
+              data.profilePicture &&
+              aboutImg
+            ) {
+
+              aboutImg.src =
+                "/api/image?id=" +
+                encodeURIComponent(
+                  data.profilePicture
+                );
+
+              aboutImg.hidden = false;
+
+            }
+
+          })
+
+          .catch((error) => {
+
+            console.error(
+              "❌ Failed to load about information:",
+              error
+            );
+
+
+            if (aboutText) {
+
+              aboutText.textContent =
+                "Could not load this information. Please try again later.";
+
+            }
+
+          });
+
+      }
+    );
+
+  </script>
+
+
+  <!-- =========================================================
+       FLOATING REVIEW BUTTON
+       ========================================================= -->
+
+  <a
+    href="random-reviews.html"
+    class="floating-review-btn"
+    title="Check Random Reviews"
+  >
+
+    <i class="fas fa-star"></i>
+
+    Check Reviews
+
+  </a>
+
+
+  <!-- =========================================================
+       FLOATING WHATSAPP BUTTON
+       ========================================================= -->
+
+  <a
+    href="https://wa.me/254768572974"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="floating-whatsapp"
+    title="Chat with Bleev Creations on WhatsApp"
+    aria-label="Chat with Bleev Creations on WhatsApp"
+  >
+
+    <i class="fab fa-whatsapp"></i>
+
+  </a>
+
+
+  <!-- =========================================================
+       PORTFOLIO JAVASCRIPT
+       ========================================================= -->
+
+  <script
+    src="js/portfolio.js"
+    defer
+  ></script>
+
+
+  <!-- =========================================================
+       PORTFOLIO LIGHTBOX
+       ========================================================= -->
+
+  <div
+    class="cat-lightbox"
+    id="catLightbox"
+  >
+
+    <button
+      id="lbClose"
+      title="Close"
+      aria-label="Close"
+    >
+      &times;
+    </button>
+
+
+    <div class="lb-body">
+
+      <h3 id="lbTitle"></h3>
+
+
+      <img
+        id="lbMainImg"
+        src=""
+        alt=""
+      />
+
+
+      <div id="lbThumbs"></div>
+
+    </div>
+
+
+    <button
+      id="lbPrev"
+      class="lb-nav-btn"
+      title="Previous"
+      aria-label="Previous image"
+    >
+      &#10094;
+    </button>
+
+
+    <button
+      id="lbNext"
+      class="lb-nav-btn"
+      title="Next"
+      aria-label="Next image"
+    >
+      &#10095;
+    </button>
+
   </div>
-  <button id="lbPrev" class="lb-nav-btn" title="Previous">&#10094;</button>
-  <button id="lbNext" class="lb-nav-btn" title="Next">&#10095;</button>
-</div>
 
 
 </body>
+
 </html>
