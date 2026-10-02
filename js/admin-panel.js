@@ -738,10 +738,12 @@ if (addImageForm) {
           }
         );
 
-        const result = {
-          success: failed.length < files.length,
-          error: "Failed to upload: " + failed.join(", ")
-        };
+       const result = {
+  success: failed.length === 0,
+  error: failed.length
+    ? "Failed to upload: " + failed.join(", ")
+    : ""
+};
 
         if (result.success && failed.length) {
           alert("Some photos failed to upload:\n" + failed.join("\n"));
