@@ -1,31 +1,60 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const portfolioGrid = document.getElementById("portfolioGrid");
-  const filterTabs = document.getElementById("filterTabs");
+  const portfolioGrid =
+    document.getElementById("portfolioGrid");
+
+  const filterTabs =
+    document.getElementById("filterTabs");
 
   let categories = [];
 
-  const normalize = (value) =>
-    String(value || "").trim().toLowerCase();
-
-  // --------------------------------------------------
-  // IMAGE URL
-  // --------------------------------------------------
-  // Cards use a resized version for faster loading.
-  // Full-size images can still be used on category pages.
-  // --------------------------------------------------
+  // ==================================================
+  // IMAGE SETTINGS
+  // ==================================================
 
   const CARD_WIDTH = 800;
 
   const imageUrl = (id) =>
     `/api/image?id=${encodeURIComponent(id)}&w=${CARD_WIDTH}`;
 
-  // --------------------------------------------------
+
+  // ==================================================
+  // GLOBAL SLIDESHOW SETTINGS
+  // ==================================================
+
+  const GLOBAL_SLIDE_INTERVAL = 10000;
+  const GLOBAL_TRANSITION_MS = 1400;
+
+
+  // ==================================================
+  // GLOBAL SLIDESHOW STATE
+  // ==================================================
+
+  let synchronizedSlideshows = [];
+
+  let globalSlideshowTimer = null;
+
+
+  // ==================================================
+  // NORMALIZE VALUES
+  // ==================================================
+
+  const normalize = (value) =>
+    String(value || "")
+      .trim()
+      .toLowerCase();
+
+
+  // ==================================================
   // GO TO CATEGORY PAGE
-  // --------------------------------------------------
+  // ==================================================
 
   function goToCategory(cat) {
     if (!cat || !cat.id) {
-      console.error("❌ Category ID missing:", cat);
+      console.error(
+        "❌ Category ID missing:",
+        cat
+      );
+
       return;
     }
 
@@ -33,495 +62,700 @@ document.addEventListener("DOMContentLoaded", async () => {
       `category.html?id=${encodeURIComponent(cat.id)}`;
   }
 
-  // --------------------------------------------------
-  // CLEAR ALL ACTIVE SLIDESHOWS
-  // --------------------------------------------------
-  // Each slideshow registers its own cleanup function.
-  // This prevents old timers, listeners and image layers
-  // from surviving when the portfolio is filtered/re-rendered.
-  // --------------------------------------------------
+
+  // ==================================================
+  // STOP GLOBAL SLIDESHOW CLOCK
+  // ==================================================
+
+  function stopGlobalSlideshowClock() {
+    if (globalSlideshowTimer) {
+      clearInterval(
+        globalSlideshowTimer
+      );
+
+      globalSlideshowTimer = null;
+    }
+  }
+
+
+  // ==================================================
+  // CLEAR ALL SLIDESHOWS
+  // ==================================================
 
   function clearSlideshowTimers() {
-    document
-      .querySelectorAll(".portfolio-card")
-      .forEach((card) => {
-        if (typeof card._destroySlideshow === "function") {
-          card._destroySlideshow();
-          delete card._destroySlideshow;
+    stopGlobalSlideshowClock();
+
+    synchronizedSlideshows.forEach(
+      (slideshow) => {
+        if (
+          slideshow &&
+          typeof slideshow.destroy ===
+            "function"
+        ) {
+          slideshow.destroy();
         }
-      });
+      }
+    );
+
+    synchronizedSlideshows = [];
   }
 
-  // --------------------------------------------------
-  // PROFESSIONAL CATEGORY SLIDESHOW
 
-  // --------------------------------------------------
+  // ==================================================
+  // START CATEGORY SLIDESHOW
+  // ==================================================
 
- function startCategorySlideshow(imageElement, imageIds) {
-  if (!imageElement || imageIds.length <= 1) {
-    return;
-  }
-
-  // Respect accessibility preferences
-  if (
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  function startSynchronizedSlideshow(
+    imageElement,
+    imageIds,
+    card
   ) {
-    return;
-  }
+    if (
+      !imageElement ||
+      imageIds.length <= 1 ||
+      !card
+    ) {
+      return;
+    }
 
-  // --------------------------------------------------
-  // SETTINGS
-  // --------------------------------------------------
+    // ------------------------------------------------
+    // RESPECT ACCESSIBILITY SETTINGS
+    // ------------------------------------------------
 
-  const DISPLAY_MS = 10000;
-  const TRANSITION_MS = 1400;
-  const PRELOAD_TIMEOUT = 8000;
+    if (
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
+    ) {
+      return;
+    }
 
-  const card = imageElement.parentElement;
 
-  if (!card) {
-    return;
-  }
+    // ------------------------------------------------
+    // CARD SETUP
+    // ------------------------------------------------
 
-  // --------------------------------------------------
-  // CARD SETUP
-  // --------------------------------------------------
+    if (
+      getComputedStyle(card).position ===
+      "static"
+    ) {
+      card.style.position = "relative";
+    }
 
-  if (getComputedStyle(card).position === "static") {
-    card.style.position = "relative";
-  }
+    card.style.overflow = "hidden";
 
-  card.style.overflow = "hidden";
 
-  // --------------------------------------------------
-  // CREATE SECOND IMAGE LAYER
-  // --------------------------------------------------
+    // ------------------------------------------------
+    // CREATE SECOND IMAGE LAYER
+    // ------------------------------------------------
 
-  const nextImage = imageElement.cloneNode(false);
+    const nextImage =
+      imageElement.cloneNode(false);
 
-  nextImage.removeAttribute("src");
+    nextImage.removeAttribute("src");
 
-  nextImage.loading = "eager";
-  nextImage.decoding = "async";
-  nextImage.alt = "";
-  nextImage.setAttribute("aria-hidden", "true");
+    nextImage.loading = "eager";
 
-  nextImage.style.position = "absolute";
-  nextImage.style.inset = "0";
-  nextImage.style.width = "100%";
-  nextImage.style.height = "100%";
-  nextImage.style.objectFit = "cover";
-  nextImage.style.objectPosition = "center";
-  nextImage.style.pointerEvents = "none";
+    nextImage.decoding = "async";
 
-  // Start completely outside the card on the LEFT
-  nextImage.style.visibility = "hidden";
-  nextImage.style.transform =
-    "translate3d(-100%, 0, 0)";
+    nextImage.alt = "";
 
-  nextImage.style.zIndex = "2";
-  nextImage.style.willChange = "transform";
+    nextImage.setAttribute(
+      "aria-hidden",
+      "true"
+    );
 
-  // Current image
-  imageElement.style.position = "relative";
-  imageElement.style.zIndex = "1";
-  imageElement.style.willChange = "transform";
 
-  imageElement.after(nextImage);
+    // ------------------------------------------------
+    // SECOND IMAGE CSS
+    // ------------------------------------------------
 
-  // --------------------------------------------------
-  // STATE
-  // --------------------------------------------------
+    nextImage.style.position =
+      "absolute";
 
-  let currentIndex = 0;
-  let nextIndex = null;
+    nextImage.style.inset = "0";
 
-  let timer = null;
-  let transitionTimer = null;
+    nextImage.style.width =
+      "100%";
 
-  let busy = false;
-  let paused = false;
-  let destroyed = false;
+    nextImage.style.height =
+      "100%";
 
-  // --------------------------------------------------
-  // IMAGE URL
-  // --------------------------------------------------
+    nextImage.style.objectFit =
+      "cover";
 
-  const getUrl = (id) =>
-    imageUrl(id);
+    nextImage.style.objectPosition =
+      "center";
 
-  // --------------------------------------------------
-  // PRELOAD IMAGE
-  // --------------------------------------------------
+    nextImage.style.pointerEvents =
+      "none";
 
-  function preloadImage(id) {
-    return new Promise((resolve) => {
-      const img = new Image();
+    nextImage.style.visibility =
+      "hidden";
 
-      let finished = false;
+    // Start outside the card
+    // on the LEFT.
 
-      const timeout = setTimeout(() => {
-        finish(false);
-      }, PRELOAD_TIMEOUT);
+    nextImage.style.transform =
+      "translate3d(-100%, 0, 0)";
 
-      function finish(success) {
-        if (finished) {
+    nextImage.style.zIndex = "2";
+
+    nextImage.style.willChange =
+      "transform";
+
+
+    // ------------------------------------------------
+    // CURRENT IMAGE
+    // ------------------------------------------------
+
+    imageElement.style.position =
+      "relative";
+
+    imageElement.style.zIndex = "1";
+
+    imageElement.style.willChange =
+      "transform";
+
+
+    // Add second layer
+    card.appendChild(
+      nextImage
+    );
+
+
+    // ==================================================
+    // SLIDESHOW OBJECT
+    // ==================================================
+
+    const slideshow = {
+
+      imageElement,
+
+      nextImage,
+
+      imageIds,
+
+      card,
+
+      currentIndex: 0,
+
+      nextIndex: null,
+
+      busy: false,
+
+      paused: false,
+
+      destroyed: false,
+
+      prepareNext: null,
+
+      transition: null,
+
+      reset: null,
+
+      destroy: null
+
+    };
+
+
+    // ==================================================
+    // PRELOAD IMAGE
+    // ==================================================
+
+    function preloadImage(id) {
+      return new Promise(
+        (resolve) => {
+
+          const img =
+            new Image();
+
+          let finished = false;
+
+          const timeout =
+            setTimeout(() => {
+              finish(false);
+            }, 8000);
+
+
+          function finish(success) {
+            if (finished) {
+              return;
+            }
+
+            finished = true;
+
+            clearTimeout(
+              timeout
+            );
+
+            resolve(success);
+          }
+
+
+          img.onload = () => {
+            finish(true);
+          };
+
+
+          img.onerror = () => {
+            finish(false);
+          };
+
+
+          img.src =
+            imageUrl(id);
+        }
+      );
+    }
+
+
+    // ==================================================
+    // PICK RANDOM NEXT IMAGE
+    // ==================================================
+
+    function pickNextIndex() {
+
+      if (imageIds.length <= 1) {
+        return slideshow.currentIndex;
+      }
+
+      let index;
+
+      do {
+
+        index =
+          Math.floor(
+            Math.random() *
+              imageIds.length
+          );
+
+      } while (
+        index ===
+        slideshow.currentIndex
+      );
+
+      return index;
+    }
+
+
+    // ==================================================
+    // PREPARE NEXT IMAGE
+    // ==================================================
+
+    slideshow.prepareNext =
+      async function () {
+
+        if (
+          slideshow.destroyed
+        ) {
+          return false;
+        }
+
+
+        const candidate =
+          pickNextIndex();
+
+
+        const loaded =
+          await preloadImage(
+            imageIds[candidate]
+          );
+
+
+        if (
+          !loaded ||
+          slideshow.destroyed
+        ) {
+          return false;
+        }
+
+
+        slideshow.nextIndex =
+          candidate;
+
+
+        return true;
+      };
+
+
+    // ==================================================
+    // RESET NEXT IMAGE
+    // ==================================================
+
+    slideshow.reset =
+      function () {
+
+        nextImage.style.transition =
+          "none";
+
+
+        nextImage.style.visibility =
+          "hidden";
+
+
+        nextImage.style.transform =
+          "translate3d(-100%, 0, 0)";
+      };
+
+
+    // ==================================================
+    // TRANSITION TO NEXT IMAGE
+    // ==================================================
+
+    slideshow.transition =
+      async function () {
+
+        if (
+          slideshow.destroyed ||
+          slideshow.busy ||
+          slideshow.paused ||
+          document.hidden
+        ) {
           return;
         }
 
-        finished = true;
 
-        clearTimeout(timeout);
+        // ------------------------------------------------
+        // MAKE SURE NEXT IMAGE IS READY
+        // ------------------------------------------------
 
-        resolve(success);
-      }
+        if (
+          slideshow.nextIndex ===
+          null
+        ) {
 
-      img.onload = () => {
-        finish(true);
-      };
+          const ready =
+            await slideshow.prepareNext();
 
-      img.onerror = () => {
-        finish(false);
-      };
 
-      img.src = getUrl(id);
-    });
-  }
-
-  // --------------------------------------------------
-  // PICK RANDOM NEXT PHOTO
-  // --------------------------------------------------
-
-  function pickNextIndex() {
-    if (imageIds.length <= 1) {
-      return currentIndex;
-    }
-
-    let index;
-
-    do {
-      index = Math.floor(
-        Math.random() * imageIds.length
-      );
-    } while (index === currentIndex);
-
-    return index;
-  }
-
-  // --------------------------------------------------
-  // PREPARE NEXT PHOTO
-  // --------------------------------------------------
-
-  async function prepareNext() {
-    if (destroyed) {
-      return false;
-    }
-
-    const candidate = pickNextIndex();
-
-    const loaded = await preloadImage(
-      imageIds[candidate]
-    );
-
-    if (!loaded || destroyed) {
-      return false;
-    }
-
-    nextIndex = candidate;
-
-    return true;
-  }
-
-  // --------------------------------------------------
-  // RESET SECOND IMAGE
-  // --------------------------------------------------
-
-  function resetNextImage() {
-    nextImage.style.transition = "none";
-
-    nextImage.style.visibility = "hidden";
-
-    nextImage.style.transform =
-      "translate3d(-100%, 0, 0)";
-  }
-
-  // --------------------------------------------------
-  // TRANSITION TO NEXT PHOTO
-  // --------------------------------------------------
-
-  async function transitionToNext() {
-    if (
-      destroyed ||
-      busy ||
-      paused ||
-      document.hidden
-    ) {
-      return;
-    }
-
-    busy = true;
-
-    // Make sure a photo is ready
-    if (nextIndex === null) {
-      const prepared = await prepareNext();
-
-      if (!prepared) {
-        busy = false;
-        scheduleNext();
-        return;
-      }
-    }
-
-    const targetIndex = nextIndex;
-
-    const targetId =
-      imageIds[targetIndex];
-
-    const targetUrl =
-      getUrl(targetId);
-
-    // ------------------------------------------------
-    // LOAD NEXT IMAGE
-    // ------------------------------------------------
-
-    nextImage.src = targetUrl;
-
-    try {
-      await nextImage.decode();
-    } catch {
-      // Browser may already have decoded the image.
-    }
-
-    if (
-      destroyed ||
-      paused ||
-      document.hidden
-    ) {
-      busy = false;
-      return;
-    }
-
-    // ------------------------------------------------
-    // POSITION NEXT IMAGE
-    // ------------------------------------------------
-
-    nextImage.style.visibility = "visible";
-
-    nextImage.style.transition = "none";
-
-    nextImage.style.transform =
-      "translate3d(-100%, 0, 0)";
-
-    // Force browser to register starting position
-    void nextImage.offsetWidth;
-
-    // ------------------------------------------------
-    // START SLIDE
-    // ------------------------------------------------
-
-    const transition =
-      `transform ${TRANSITION_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
-
-    nextImage.style.transition = transition;
-
-    imageElement.style.transition = transition;
-
-    // New photo comes in from LEFT
-    nextImage.style.transform =
-      "translate3d(0, 0, 0)";
-
-    // Current photo exits to RIGHT
-    imageElement.style.transform =
-      "translate3d(100%, 0, 0)";
-
-    // ------------------------------------------------
-    // COMPLETE TRANSITION
-    // ------------------------------------------------
-
-    transitionTimer = setTimeout(() => {
-      if (destroyed) {
-        return;
-      }
-
-      // Make the new image the permanent base image
-      imageElement.src = targetUrl;
-
-      imageElement.style.transition = "none";
-
-      imageElement.style.transform =
-        "translate3d(0, 0, 0)";
-
-      // Reset overlay image
-      resetNextImage();
-
-      // Update current image
-      currentIndex = targetIndex;
-
-      nextIndex = null;
-
-      busy = false;
-
-      // Preload another random image
-      prepareNext().then(() => {
-        if (!destroyed) {
-          scheduleNext();
+          if (!ready) {
+            return;
+          }
         }
-      });
 
-    }, TRANSITION_MS + 40);
-  }
 
-  // --------------------------------------------------
-  // SCHEDULE NEXT TRANSITION
-  // --------------------------------------------------
+        slideshow.busy = true;
 
-  function scheduleNext() {
-    clearTimeout(timer);
 
-    if (
-      destroyed ||
-      paused ||
-      document.hidden
-    ) {
-      return;
-    }
+        const targetIndex =
+          slideshow.nextIndex;
 
-    timer = setTimeout(
-      transitionToNext,
-      DISPLAY_MS
-    );
-  }
 
-  // --------------------------------------------------
-  // PAUSE
-  // --------------------------------------------------
+        const targetId =
+          imageIds[targetIndex];
 
-  function pauseSlideshow() {
-    paused = true;
 
-    clearTimeout(timer);
-  }
+        const targetUrl =
+          imageUrl(targetId);
 
-  // --------------------------------------------------
-  // RESUME
-  // --------------------------------------------------
 
-  function resumeSlideshow() {
-    if (destroyed) {
-      return;
-    }
+        // ------------------------------------------------
+        // LOAD IMAGE INTO SECOND LAYER
+        // ------------------------------------------------
 
-    paused = false;
+        nextImage.src =
+          targetUrl;
 
-    if (!document.hidden) {
-      scheduleNext();
-    }
-  }
 
-  // --------------------------------------------------
-  // PAUSE ON HOVER
-  // --------------------------------------------------
+        try {
 
-  card.addEventListener(
-    "mouseenter",
-    pauseSlideshow
-  );
+          await nextImage.decode();
 
-  card.addEventListener(
-    "mouseleave",
-    resumeSlideshow
-  );
+        } catch {
+          // Browser may already have
+          // decoded the image.
+        }
 
-  // --------------------------------------------------
-  // HANDLE BROWSER TAB VISIBILITY
-  // --------------------------------------------------
 
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
-      clearTimeout(timer);
-      return;
-    }
+        // ------------------------------------------------
+        // CHECK STATE AGAIN
+        // ------------------------------------------------
 
-    if (!paused && !busy) {
-      scheduleNext();
-    }
-  };
+        if (
+          slideshow.destroyed ||
+          slideshow.paused ||
+          document.hidden
+        ) {
 
-  document.addEventListener(
-    "visibilitychange",
-    handleVisibilityChange
-  );
+          slideshow.busy =
+            false;
 
-  // --------------------------------------------------
-  // CLEANUP
-  // --------------------------------------------------
+          return;
+        }
 
-  card._destroySlideshow = () => {
-    destroyed = true;
 
-    clearTimeout(timer);
-    clearTimeout(transitionTimer);
+        // ------------------------------------------------
+        // SET STARTING POSITION
+        // ------------------------------------------------
 
-    card.removeEventListener(
+        nextImage.style.transition =
+          "none";
+
+
+        nextImage.style.visibility =
+          "visible";
+
+
+        nextImage.style.transform =
+          "translate3d(-100%, 0, 0)";
+
+
+        // Force browser to apply
+        // the starting position.
+
+        void nextImage.offsetWidth;
+
+
+        // ------------------------------------------------
+        // TRANSITION
+        // ------------------------------------------------
+
+        const transition =
+          `transform ${GLOBAL_TRANSITION_MS}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
+
+
+        nextImage.style.transition =
+          transition;
+
+
+        imageElement.style.transition =
+          transition;
+
+
+        // New image enters
+        // from the LEFT.
+
+        nextImage.style.transform =
+          "translate3d(0, 0, 0)";
+
+
+        // Current image exits
+        // to the RIGHT.
+
+        imageElement.style.transform =
+          "translate3d(100%, 0, 0)";
+
+
+        // ------------------------------------------------
+        // COMPLETE TRANSITION
+        // ------------------------------------------------
+
+        setTimeout(() => {
+
+          if (
+            slideshow.destroyed
+          ) {
+            return;
+          }
+
+
+          // Make the new image
+          // the permanent image.
+
+          imageElement.src =
+            targetUrl;
+
+
+          imageElement.style.transition =
+            "none";
+
+
+          imageElement.style.transform =
+            "translate3d(0, 0, 0)";
+
+
+          // Reset second image.
+
+          slideshow.reset();
+
+
+          // Update current index.
+
+          slideshow.currentIndex =
+            targetIndex;
+
+
+          slideshow.nextIndex =
+            null;
+
+
+          slideshow.busy =
+            false;
+
+
+          // Prepare another image
+          // before the next global tick.
+
+          slideshow.prepareNext();
+
+        }, GLOBAL_TRANSITION_MS + 40);
+      };
+
+
+    // ==================================================
+    // HOVER PAUSE
+    // ==================================================
+
+    const handleMouseEnter =
+      () => {
+
+        slideshow.paused = true;
+      };
+
+
+    const handleMouseLeave =
+      () => {
+
+        slideshow.paused = false;
+      };
+
+
+    card.addEventListener(
       "mouseenter",
-      pauseSlideshow
+      handleMouseEnter
     );
 
-    card.removeEventListener(
+
+    card.addEventListener(
       "mouseleave",
-      resumeSlideshow
+      handleMouseLeave
     );
 
-    document.removeEventListener(
-      "visibilitychange",
-      handleVisibilityChange
+
+    // ==================================================
+    // CLEANUP
+    // ==================================================
+
+    slideshow.destroy =
+      function () {
+
+        slideshow.destroyed =
+          true;
+
+
+        card.removeEventListener(
+          "mouseenter",
+          handleMouseEnter
+        );
+
+
+        card.removeEventListener(
+          "mouseleave",
+          handleMouseLeave
+        );
+
+
+        nextImage.remove();
+      };
+
+
+    // ==================================================
+    // REGISTER SLIDESHOW
+    // ==================================================
+
+    synchronizedSlideshows.push(
+      slideshow
     );
 
-    nextImage.remove();
-  };
 
-  // --------------------------------------------------
-  // START
-  // --------------------------------------------------
+    // ------------------------------------------------
+    // PRELOAD FIRST RANDOM NEXT IMAGE
+    // ------------------------------------------------
 
-  prepareNext().then(() => {
-    if (!destroyed) {
-      scheduleNext();
+    slideshow.prepareNext();
+  }
+
+
+  // ==================================================
+  // START GLOBAL SLIDESHOW CLOCK
+  // ==================================================
+
+  function startGlobalSlideshowClock() {
+
+    // Prevent duplicate timers.
+
+    if (globalSlideshowTimer) {
+      return;
     }
-  });
-}
 
-  // --------------------------------------------------
+
+    globalSlideshowTimer =
+      setInterval(() => {
+
+        // Don't animate hidden tabs.
+
+        if (document.hidden) {
+          return;
+        }
+
+
+        // ------------------------------------------------
+        // IMPORTANT:
+        //
+        // Every slideshow receives the SAME timer event.
+        // ------------------------------------------------
+
+        synchronizedSlideshows.forEach(
+          (slideshow) => {
+
+            slideshow.transition();
+
+          }
+        );
+
+
+      }, GLOBAL_SLIDE_INTERVAL);
+  }
+
+
+  // ==================================================
   // LOAD CATEGORIES
-  // --------------------------------------------------
+  // ==================================================
 
   try {
-    const res = await fetch(
-      "/api/categories",
-      {
-        cache: "no-store"
-      }
-    );
+
+    const res =
+      await fetch(
+        "/api/categories",
+        {
+          cache: "no-store"
+        }
+      );
+
 
     if (!res.ok) {
+
       throw new Error(
         `HTTP ${res.status}`
       );
+
     }
 
-    categories = await res.json();
 
-    if (!Array.isArray(categories)) {
+    categories =
+      await res.json();
+
+
+    if (
+      !Array.isArray(categories)
+    ) {
+
       throw new Error(
         "Invalid categories data"
       );
+
     }
+
 
     // ------------------------------------------------
     // NO CATEGORIES
     // ------------------------------------------------
 
-    if (categories.length === 0) {
+    if (
+      categories.length === 0
+    ) {
+
       portfolioGrid.innerHTML = `
         <p class="grid-message">
           No portfolio items available yet.
@@ -531,49 +765,73 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // ------------------------------------------------
+
+    // ==================================================
     // BUILD FILTER TABS
-    // ------------------------------------------------
+    // ==================================================
 
-    categories.forEach((cat) => {
-      const button =
-        document.createElement("button");
+    categories.forEach(
+      (cat) => {
 
-      button.type = "button";
+        const button =
+          document.createElement(
+            "button"
+          );
 
-      button.dataset.filter =
-        normalize(cat.name);
 
-      button.textContent =
-        cat.name;
+        button.type =
+          "button";
 
-      filterTabs.appendChild(button);
-    });
 
-    // ------------------------------------------------
+        button.dataset.filter =
+          normalize(cat.name);
+
+
+        button.textContent =
+          cat.name;
+
+
+        filterTabs.appendChild(
+          button
+        );
+
+      }
+    );
+
+
+    // ==================================================
     // ACTIVATE "ALL"
-    // ------------------------------------------------
+    // ==================================================
 
     filterTabs
       .querySelectorAll("button")
-      .forEach((btn) => {
-        btn.classList.toggle(
-          "active",
-          btn.dataset.filter === "all"
-        );
-      });
+      .forEach(
+        (btn) => {
 
-    // ------------------------------------------------
+          btn.classList.toggle(
+            "active",
+            btn.dataset.filter ===
+              "all"
+          );
+
+        }
+      );
+
+
+    // ==================================================
     // INITIAL RENDER
-    // ------------------------------------------------
+    // ==================================================
 
     renderCards("all");
 
+
   } catch (error) {
+
     console.error(
       "❌ Failed to load categories:",
       error
     );
+
 
     portfolioGrid.innerHTML = `
       <p class="grid-message">
@@ -583,34 +841,53 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
   }
 
-  // --------------------------------------------------
+
+  // ==================================================
   // RENDER PORTFOLIO CARDS
-  // --------------------------------------------------
+  // ==================================================
 
   function renderCards(filter) {
-    // Stop existing slideshows before rebuilding
+
+    // ------------------------------------------------
+    // CLEAN UP PREVIOUS SLIDESHOWS
+    // ------------------------------------------------
+
     clearSlideshowTimers();
 
-    portfolioGrid.innerHTML = "";
+
+    // Clear grid.
+
+    portfolioGrid.innerHTML =
+      "";
+
 
     // ------------------------------------------------
     // FILTER CATEGORIES
     // ------------------------------------------------
 
     const visibleCategories =
-      categories.filter((cat) => {
-        return (
-          filter === "all" ||
-          normalize(cat.name) ===
-            normalize(filter)
-        );
-      });
+      categories.filter(
+        (cat) => {
+
+          return (
+            filter === "all" ||
+            normalize(cat.name) ===
+              normalize(filter)
+          );
+
+        }
+      );
+
 
     // ------------------------------------------------
     // NO RESULTS
     // ------------------------------------------------
 
-    if (visibleCategories.length === 0) {
+    if (
+      visibleCategories.length ===
+      0
+    ) {
+
       portfolioGrid.innerHTML = `
         <p class="grid-message">
           No portfolio items in this category.
@@ -620,196 +897,286 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // ------------------------------------------------
-    // CREATE CATEGORY CARDS
-    // ------------------------------------------------
 
-    visibleCategories.forEach((cat) => {
-      const images =
-        Array.isArray(cat.images) &&
-        cat.images.length > 0
-          ? cat.images.filter(Boolean)
-          : [];
+    // ==================================================
+    // CREATE CARDS
+    // ==================================================
 
-      // ------------------------------------------------
-      // CARD
-      // ------------------------------------------------
+    visibleCategories.forEach(
+      (cat) => {
 
-      const card =
-        document.createElement("article");
+        // ------------------------------------------------
+        // GET IMAGES
+        // ------------------------------------------------
 
-      card.className =
-        "portfolio-card";
+        const images =
+          Array.isArray(cat.images) &&
+          cat.images.length > 0
+            ? cat.images.filter(Boolean)
+            : [];
 
-      // ------------------------------------------------
-      // CARD IMAGE
-      // ------------------------------------------------
 
-      if (images.length > 0) {
-        const image =
-          document.createElement("img");
+        // ------------------------------------------------
+        // CREATE CARD
+        // ------------------------------------------------
 
-        image.src =
-          imageUrl(images[0]);
+        const card =
+          document.createElement(
+            "article"
+          );
 
-        image.alt =
-          cat.name ||
-          "Bleeve Creations portfolio";
 
-        image.loading = "lazy";
+        card.className =
+          "portfolio-card";
 
-        image.decoding = "async";
 
-        image.onerror = () => {
-          image.style.display = "none";
+        // ==================================================
+        // CARD IMAGE
+        // ==================================================
+
+        if (
+          images.length > 0
+        ) {
+
+          const image =
+            document.createElement(
+              "img"
+            );
+
+
+          image.src =
+            imageUrl(images[0]);
+
+
+          image.alt =
+            cat.name ||
+            "Bleeve Creations portfolio";
+
+
+          image.loading =
+            "lazy";
+
+
+          image.decoding =
+            "async";
+
+
+          // ------------------------------------------------
+          // IMAGE ERROR
+          // ------------------------------------------------
+
+          image.onerror =
+            () => {
+
+              image.style.display =
+                "none";
+
+              card.classList.add(
+                "no-image"
+              );
+
+            };
+
+
+          card.appendChild(
+            image
+          );
+
+
+          // ------------------------------------------------
+          // START SYNCHRONIZED SLIDESHOW
+          // ------------------------------------------------
+
+          if (
+            images.length > 1
+          ) {
+
+            startSynchronizedSlideshow(
+              image,
+              images,
+              card
+            );
+
+          }
+
+        } else {
 
           card.classList.add(
             "no-image"
           );
-        };
 
-        card.appendChild(image);
-
-        // ------------------------------------------------
-        // START SLIDESHOW
-        // ------------------------------------------------
-
-        if (images.length > 1) {
-          startCategorySlideshow(
-            image,
-            images
-          );
         }
 
-      } else {
-        card.classList.add(
-          "no-image"
-        );
-      }
 
-      // ------------------------------------------------
-      // DARK IMAGE OVERLAY
-      // ------------------------------------------------
+        // ==================================================
+        // DARK OVERLAY
+        // ==================================================
 
-      const overlay =
-        document.createElement("div");
+        const overlay =
+          document.createElement(
+            "div"
+          );
 
-      overlay.className =
-        "portfolio-card-overlay";
 
-      // ------------------------------------------------
-      // CATEGORY NAME
-      // ------------------------------------------------
+        overlay.className =
+          "portfolio-card-overlay";
 
-      const categoryName =
-        document.createElement("h3");
 
-      categoryName.className =
-        "portfolio-category-name";
+        // ==================================================
+        // CATEGORY NAME
+        // ==================================================
 
-      categoryName.textContent =
-        cat.name || "Untitled";
+        const categoryName =
+          document.createElement(
+            "h3"
+          );
 
-      overlay.appendChild(
-        categoryName
-      );
 
-      // ------------------------------------------------
-      // PHOTO COUNT
-      // ------------------------------------------------
+        categoryName.className =
+          "portfolio-category-name";
 
-      if (images.length > 0) {
-        const photoCount =
-          document.createElement("span");
 
-        photoCount.className =
-          "portfolio-photo-count";
+        categoryName.textContent =
+          cat.name ||
+          "Untitled";
 
-        photoCount.textContent =
-          `${images.length} ${
-            images.length === 1
-              ? "photo"
-              : "photos"
-          }`;
 
         overlay.appendChild(
-          photoCount
+          categoryName
         );
-      }
 
-      // Add overlay to card
-      card.appendChild(
-        overlay
-      );
 
-      // ------------------------------------------------
-      // ACCESSIBILITY
-      // ------------------------------------------------
+        // ==================================================
+        // PHOTO COUNT
+        // ==================================================
 
-      card.setAttribute(
-        "role",
-        "link"
-      );
+        if (
+          images.length > 0
+        ) {
 
-      card.setAttribute(
-        "tabindex",
-        "0"
-      );
+          const photoCount =
+            document.createElement(
+              "span"
+            );
 
-      // ------------------------------------------------
-      // CLICK → CATEGORY PAGE
-      // ------------------------------------------------
 
-      card.addEventListener(
-        "click",
-        () => {
-          goToCategory(cat);
+          photoCount.className =
+            "portfolio-photo-count";
+
+
+          photoCount.textContent =
+            `${images.length} ${
+              images.length === 1
+                ? "photo"
+                : "photos"
+            }`;
+
+
+          overlay.appendChild(
+            photoCount
+          );
+
         }
-      );
 
-      // ------------------------------------------------
-      // KEYBOARD → CATEGORY PAGE
-      // ------------------------------------------------
 
-      card.addEventListener(
-        "keydown",
-        (event) => {
-          if (
-            event.key === "Enter" ||
-            event.key === " "
-          ) {
-            event.preventDefault();
+        // Add overlay.
+
+        card.appendChild(
+          overlay
+        );
+
+
+        // ==================================================
+        // ACCESSIBILITY
+        // ==================================================
+
+        card.setAttribute(
+          "role",
+          "link"
+        );
+
+
+        card.setAttribute(
+          "tabindex",
+          "0"
+        );
+
+
+        // ==================================================
+        // CLICK → CATEGORY
+        // ==================================================
+
+        card.addEventListener(
+          "click",
+          () => {
 
             goToCategory(cat);
+
           }
-        }
-      );
+        );
 
-      // ------------------------------------------------
-      // ADD CARD TO GRID
-      // ------------------------------------------------
 
-      portfolioGrid.appendChild(
-        card
-      );
-    });
+        // ==================================================
+        // KEYBOARD → CATEGORY
+        // ==================================================
+
+        card.addEventListener(
+          "keydown",
+          (event) => {
+
+            if (
+              event.key === "Enter" ||
+              event.key === " "
+            ) {
+
+              event.preventDefault();
+
+              goToCategory(cat);
+
+            }
+
+          }
+        );
+
+
+        // ==================================================
+        // ADD CARD TO GRID
+        // ==================================================
+
+        portfolioGrid.appendChild(
+          card
+        );
+
+      }
+    );
+
+
+    // ------------------------------------------------
+    // START ONE GLOBAL CLOCK
+    // ------------------------------------------------
+
+    startGlobalSlideshowClock();
   }
 
-  // --------------------------------------------------
+
+  // ==================================================
   // FILTER TABS
-  // --------------------------------------------------
+  // ==================================================
 
   filterTabs.addEventListener(
     "click",
     (event) => {
+
       const button =
         event.target.closest(
           "button"
         );
 
+
       if (!button) {
         return;
       }
+
 
       // ------------------------------------------------
       // UPDATE ACTIVE TAB
@@ -817,23 +1184,30 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       filterTabs
         .querySelectorAll("button")
-        .forEach((btn) => {
-          btn.classList.remove(
-            "active"
-          );
-        });
+        .forEach(
+          (btn) => {
+
+            btn.classList.remove(
+              "active"
+            );
+
+          }
+        );
+
 
       button.classList.add(
         "active"
       );
 
+
       // ------------------------------------------------
-      // RENDER SELECTED CATEGORY
+      // RENDER FILTERED CARDS
       // ------------------------------------------------
 
       renderCards(
         button.dataset.filter
       );
+
     }
   );
 });
