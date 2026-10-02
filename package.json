@@ -9,7 +9,9 @@
     "drive-to-cloudinary": "node scripts/drive-to-cloudinary.js",
     "drive-to-cloudinary:dry": "node scripts/drive-to-cloudinary.js --dry",
     "migrate:dry": "node scripts/migrate.js --dry",
-    "migrate": "node scripts/migrate.js"
+    "migrate": "node scripts/migrate.js",
+    "organize-cloudinary": "node scripts/organize-cloudinary-folders.js",
+    "organize-cloudinary:dry": "node scripts/organize-cloudinary-folders.js --dry"
   },
   "dependencies": {
     "cloudinary": "^2.11.0",

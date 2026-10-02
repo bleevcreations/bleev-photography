@@ -30,13 +30,17 @@ export function uploadImage({ folder, name, buffer }) {
   const public_id = `${ROOT}/${folder}/${slug(name)}-${rand()}`;
   return new Promise((resolve, reject) => {
     cloudinary.uploader
-      .upload_stream({ public_id, resource_type: 'image', overwrite: false }, (err, result) => {
-        if (err || !result) {
-          console.error('Cloudinary upload failed:', err);
-          return reject(httpError(502, 'Cloudinary error while uploading a file'));
+      .upload_stream(
+        // asset_folder puts the photo in a real folder in the Media Library (dynamic folder mode).
+        { public_id, asset_folder: `${ROOT}/${folder}`, resource_type: 'image', overwrite: false },
+        (err, result) => {
+          if (err || !result) {
+            console.error('Cloudinary upload failed:', err);
+            return reject(httpError(502, 'Cloudinary error while uploading a file'));
+          }
+          resolve(result.public_id);
         }
-        resolve(result.public_id);
-      })
+      )
       .end(buffer);
   });
 }

@@ -3,6 +3,8 @@ import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { httpError } from './http.js';
 
+
+
 function init() {
   if (getApps().length) return;
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
@@ -27,7 +29,8 @@ export async function requireAdmin(req) {
   let decoded;
   try {
     decoded = await getAuth().verifyIdToken(token);
-  } catch {
+  } catch (err) {
++    console.error('verifyIdToken failed:', err.code, err.message);
     throw httpError(401, 'Session expired. Please log in again.');
   }
 
