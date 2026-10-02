@@ -52,89 +52,117 @@ document.addEventListener("DOMContentLoaded", async () => {
   // START CATEGORY SLIDESHOW
   // Each category card has its own independent slideshow.
   // Every change picks a RANDOM photo (never the one that is
-  // already showing). The next photo is downloaded BEFORE the
-  // fade starts, so the card never fades back in on the old
-  // picture.
+  // already showing) and slides it in from the LEFT, pushing
+  // the current photo out to the RIGHT. The next photo is
+  // downloaded BEFORE the slide starts, so the card never
+  // shows an empty gap.
   // --------------------------------------------------
 
- function startCategorySlideshow(imageElement, imageIds, startDelay = 0) {
-  if (!imageElement || imageIds.length <= 1) return;
-
-  // Respect visitors who turned off animations
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-  const SLIDE_MS = 6000; // time each photo stays on screen
-  const FADE_MS = 800;   // crossfade duration
-
-  let currentIndex = 0;
-  let busy = false;
-
-  // Second image layered on top of the first, used for the crossfade
-  const layer = imageElement.cloneNode(false);
-  layer.removeAttribute("src");
-  layer.loading = "eager";
-  layer.alt = "";
-  layer.setAttribute("aria-hidden", "true");
-  layer.style.cssText =
-    `position:absolute;inset:0;width:100%;height:100%;object-fit:cover;` +
-    `opacity:0;pointer-events:none;transition:opacity ${FADE_MS}ms ease;`;
-  imageElement.after(layer);
-
-  const preload = (id) =>
-    new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => resolve(true);
-      img.onerror = () => resolve(false);
-      img.src = imageUrl(id);
-    });
-
-  // A random photo that isn't the one currently showing
-  const pickNext = () => {
-    let next;
-    do {
-      next = Math.floor(Math.random() * imageIds.length);
-    } while (next === currentIndex);
-    return next;
-  };
-
-  const advance = async () => {
-    if (document.hidden || busy) return;
-    busy = true;
-
-    const nextIndex = pickNext();
-    const url = imageUrl(imageIds[nextIndex]);
-
-    if (!(await preload(imageIds[nextIndex]))) {
-      busy = false; // broken image: try another one next tick
+  function startCategorySlideshow(imageElement, imageIds, startDelay = 0) {
+    if (!imageElement || imageIds.length <= 1) {
       return;
     }
 
-    layer.src = url;
-    await layer.decode().catch(() => {});
-    layer.style.opacity = "1"; // crossfade in over the old photo
+    // Respect visitors who turned off animations
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
 
-    setTimeout(async () => {
-      imageElement.src = url; // make the bottom photo match
-      await imageElement.decode().catch(() => {});
+    const SLIDE_MS = 12000;     // time each photo stays on screen
+    const SLIDE_ANIM_MS = 1200; // how long the slide itself takes
 
-      // hide the top layer instantly, then restore its transition
-      layer.style.transition = "none";
-      layer.style.opacity = "0";
-      void layer.offsetWidth;
-      layer.style.transition = `opacity ${FADE_MS}ms ease`;
+    // The card clips the photos while they slide
+    const card = imageElement.parentElement;
+    card.style.overflow = "hidden";
 
-      currentIndex = nextIndex;
-      busy = false;
-    }, FADE_MS + 50);
-  };
+    if (getComputedStyle(card).position === "static") {
+      card.style.position = "relative";
+    }
 
-  // Stagger start times so the cards don't all change at once
-  const starter = setTimeout(() => {
-    slideshowTimers.push(setInterval(advance, SLIDE_MS));
-  }, startDelay);
+    let currentIndex = 0;
+    let busy = false; // don't start a new change while one is still running
 
-  slideshowTimers.push(starter);
-}
+    // Second image that waits off-screen to the left
+    const layer = imageElement.cloneNode(false);
+    layer.removeAttribute("src");
+    layer.loading = "eager";
+    layer.alt = "";
+    layer.setAttribute("aria-hidden", "true");
+    layer.style.cssText =
+      "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" +
+      "transform:translateX(-100%);visibility:hidden;pointer-events:none;";
+    imageElement.after(layer);
+
+    // Download a photo in the background (it lands in the browser cache)
+    const preload = (id) =>
+      new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = imageUrl(id);
+      });
+
+    // A random photo that isn't the one currently showing
+    const pickNext = () => {
+      let next;
+
+      do {
+        next = Math.floor(Math.random() * imageIds.length);
+      } while (next === currentIndex);
+
+      return next;
+    };
+
+    const advance = async () => {
+      if (document.hidden || busy) return; // don't animate in background tabs
+
+      busy = true;
+
+      const nextIndex = pickNext();
+      const url = imageUrl(imageIds[nextIndex]);
+
+      if (!(await preload(imageIds[nextIndex]))) {
+        busy = false; // broken image: try another one next tick
+        return;
+      }
+
+      layer.src = url;
+      await layer.decode().catch(() => {});
+
+      layer.style.visibility = "visible";
+      void layer.offsetWidth; // apply the starting position before animating
+
+      // New photo slides in from the left, current one slides out to the right
+      const slide = `transform ${SLIDE_ANIM_MS}ms ease-in-out`;
+      layer.style.transition = slide;
+      imageElement.style.transition = slide;
+      layer.style.transform = "translateX(0)";
+      imageElement.style.transform = "translateX(100%)";
+
+      setTimeout(async () => {
+        // Make the bottom photo match, then quietly reset the top layer
+        imageElement.src = url;
+        await imageElement.decode().catch(() => {});
+
+        imageElement.style.transition = "none";
+        imageElement.style.transform = "";
+
+        layer.style.transition = "none";
+        layer.style.visibility = "hidden";
+        layer.style.transform = "translateX(-100%)";
+
+        currentIndex = nextIndex;
+        busy = false;
+      }, SLIDE_ANIM_MS + 50);
+    };
+
+    // Stagger start times so the cards don't all change at once
+    const starter = setTimeout(() => {
+      slideshowTimers.push(setInterval(advance, SLIDE_MS));
+    }, startDelay);
+
+    slideshowTimers.push(starter);
+  }
 
   // --------------------------------------------------
   // LOAD CATEGORIES
@@ -246,10 +274,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         image.loading = "lazy";
         image.decoding = "async";
 
-        // Smooth slideshow transition
-        image.style.transition = "opacity 0.4s ease";
-        image.style.opacity = "1";
-
         image.onerror = () => {
           image.style.display = "none";
           card.classList.add("no-image");
@@ -263,7 +287,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // ----------------------------------------------
 
         if (images.length > 1) {
-          startCategorySlideshow(image, images, (index % 5) * 800);
+          startCategorySlideshow(image, images, Math.random() * 12000);
         }
       } else {
         card.classList.add("no-image");
