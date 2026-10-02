@@ -15,7 +15,7 @@ export const safeName = (s) =>
   String(s).replace(/[\\/:*?"<>|]/g, '-').trim().slice(0, 120) || 'untitled';
 
 // "My Photo (1).JPG" -> "my-photo-1"  (public IDs should stay URL-friendly)
-const slug = (s) =>
+export const slug = (s) =>
   String(s)
     .replace(/\.[^.]+$/, '')
     .toLowerCase()

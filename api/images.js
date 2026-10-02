@@ -1,5 +1,10 @@
 import { db, FieldValue, requireAdmin } from './_lib/firebase.js';
-import { uploadImage, deleteImage, safeName } from './_lib/cloudinary.js';
+import {
+  uploadImage,
+  deleteImage,
+  safeName,
+  slug,
+} from './_lib/cloudinary.js';
 import { route, readBody, httpError, methodNotAllowed } from './_lib/http.js';
 
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
@@ -27,11 +32,13 @@ export default route(async (req, res) => {
     if (!buffer.length) throw httpError(400, 'Empty file');
 
     const name = safeName(req.query.name || `photo-${Date.now()}.jpg`);
-    const publicId = await uploadImage({ folder: `categories/${categoryId}`, name, buffer });
+    const categoryFolder = slug(data.name);
 
-    await ref.update({
-      images: FieldValue.arrayUnion({ publicId, name }),
-    });
+const publicId = await uploadImage({
+  folder: `categories/${categoryFolder}`,
+  name,
+  buffer
+});
     return res.status(200).json({ success: true, fileId: publicId });
   }
 
