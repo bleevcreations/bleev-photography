@@ -9,8 +9,8 @@ const WIDTHS = [400, 800, 1200, 1600];
 // Redirects to Cloudinary's CDN; the redirect itself is cached at the edge.
 export default route(async (req, res) => {
   const id = String(req.query.id || '');
-  if (!/^[A-Za-z0-9_\-/]{5,200}$/.test(id) || id.includes('..') || !id.startsWith(`${ROOT}/`)) {
-     console.error('Bad image id:', JSON.stringify(id), 'ROOT =', ROOT);
+  if (!/^[A-Za-z0-9_\-/ ]{5,200}$/.test(id) || id.includes('..') || !id.startsWith(`${ROOT}/`)) {
+    console.error('Bad image id:', JSON.stringify(id), 'ROOT =', ROOT);
     throw httpError(400, 'Bad image id');
   }
 
