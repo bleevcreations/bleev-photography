@@ -50,8 +50,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --------------------------------------------------
   // START CATEGORY SLIDESHOW
-  // Each category card has its own independent slideshow.
-  // Every change picks a RANDOM photo (never the one that is
+  // Each category card has its own slideshow, and all cards
+  // change at the SAME moment. Every change picks a RANDOM photo (never the one that is
   // already showing) and slides it in from the LEFT, pushing
   // the current photo out to the RIGHT. The next photo is
   // downloaded BEFORE the slide starts, so the card never
@@ -113,18 +113,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       return next;
     };
 
+    // Choose and download the NEXT photo in advance, while the current one is
+    // on screen, so every card is ready the instant the shared tick arrives.
+    let nextIndex = pickNext();
+    let ready = preload(imageIds[nextIndex]);
+
     const advance = async () => {
       if (document.hidden || busy) return; // don't animate in background tabs
 
       busy = true;
 
-      const nextIndex = pickNext();
-      const url = imageUrl(imageIds[nextIndex]);
+      const target = nextIndex;
+      const loaded = await ready;
 
-      if (!(await preload(imageIds[nextIndex]))) {
-        busy = false; // broken image: try another one next tick
+      if (!loaded) {
+        // broken image: choose another one and try again on the next tick
+        nextIndex = pickNext();
+        ready = preload(imageIds[nextIndex]);
+        busy = false;
         return;
       }
+
+      const url = imageUrl(imageIds[target]);
 
       layer.src = url;
       await layer.decode().catch(() => {});
@@ -146,17 +156,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         imageElement.style.transition = "none";
         imageElement.style.transform = "";
+        void imageElement.offsetWidth;
+        imageElement.style.transition = ""; // give the hover zoom back to the stylesheet
 
         layer.style.transition = "none";
         layer.style.visibility = "hidden";
         layer.style.transform = "translateX(-100%)";
 
-        currentIndex = nextIndex;
+        currentIndex = target;
+
+        // line up the next random photo for the following tick
+        nextIndex = pickNext();
+        ready = preload(imageIds[nextIndex]);
+
         busy = false;
       }, SLIDE_ANIM_MS + 50);
     };
 
-    // Stagger start times so the cards don't all change at once
+    // All cards start on the same tick so they slide together
     const starter = setTimeout(() => {
       slideshowTimers.push(setInterval(advance, SLIDE_MS));
     }, startDelay);
@@ -287,7 +304,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // ----------------------------------------------
 
         if (images.length > 1) {
-          startCategorySlideshow(image, images, Math.random() * 12000);
+          startCategorySlideshow(image, images); // all cards start together
         }
       } else {
         card.classList.add("no-image");
