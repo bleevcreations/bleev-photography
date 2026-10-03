@@ -254,7 +254,7 @@ p {
 .portfolio-header {
   max-width: 1500px;
   margin: 0 auto 40px;
-  text-align: left;
+  text-align: center;
 }
 
 .portfolio-header h2 {
