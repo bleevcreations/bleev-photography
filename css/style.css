@@ -243,8 +243,17 @@ p {
   width: 100%;
   min-height: 90vh;
   padding: 100px 5% 120px;
-  background: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #eef1f5,
+      #f8f9fb
+    );
+
+  display: flex;
+  justify-content: center;
 }
+
 
 
 /* ---------------------------------------------------------
