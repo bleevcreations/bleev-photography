@@ -1,5 +1,5 @@
-// Shared by admin-panel.html and admin-about.html.
-// - sends visitors who aren't logged in to admin-login.html
+// Shared by admin/panel.html and admin/about.html.
+// - sends visitors who aren't logged in to /admin/login.html
 // - adminFetch(): fetch() that attaches the Firebase ID token the API checks
 // - prepareImage(): shrinks big photos so each upload stays under Vercel's 4.5 MB request limit
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -24,7 +24,7 @@ window.adminReady = new Promise((resolve) => (resolveReady = resolve));
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    window.location.replace("admin-login.html");
+    window.location.replace("/admin/login.html");
     return;
   }
   document.documentElement.style.visibility = "visible";
@@ -42,7 +42,7 @@ window.adminFetch = async (url, options = {}) => {
 
 window.adminLogout = async () => {
   await signOut(auth);
-  window.location.replace("admin-login.html");
+   window.location.replace("/homepage.html");
 };
 
 window.prepareImage = async (file, maxSize = 2400, limit = 3.5 * 1024 * 1024) => {

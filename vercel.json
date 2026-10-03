@@ -1,7 +1,47 @@
 {
   "functions": {
-    "api/images.js": { "maxDuration": 30 },
-    "api/about.js": { "maxDuration": 30 },
-    "api/image.js": { "maxDuration": 30 }
-  }
+    "api/images.js": {
+      "maxDuration": 30
+    },
+    "api/about.js": {
+      "maxDuration": 30
+    },
+    "api/image.js": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin/login.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/admin-login.html",
+      "destination": "/admin/login.html",
+      "permanent": false
+    },
+    {
+      "source": "/admin-panel.html",
+      "destination": "/admin/panel.html",
+      "permanent": false
+    },
+    {
+      "source": "/admin-about.html",
+      "destination": "/admin/about.html",
+      "permanent": false
+    }
+  ],
+  "headers": [
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ]
 }
