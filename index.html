@@ -1,117 +1,799 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BLEEV CREATIONS</title>
-  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: url('assets/logos/logo3.jpg') no-repeat center center/cover;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
 
-    .overlay {
-      background: rgba(0, 0, 0, 0.6);
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  <meta name="viewport" content="width=1366">
 
-    .branding {
-      color: white;
-      text-align: center;
-      padding: 40px 20px;
-      border-radius: 12px;
-      max-width: 700px;
-    }
+  <title>Bleev Creations</title>
 
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 4rem;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 5px;
-      background: linear-gradient(90deg, #ff6a00, rgba(255, 215, 0, 0.5), #ee0979);
+  <link
+    rel="icon"
+    type="image/png"
+    href="assets/logos/favicon.png"
+  />
 
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  />
 
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-      animation: glow 3s ease-in-out infinite alternate;
-      background-size: 300% 300%;
-      background-position: center;
-    }
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
 
-    @keyframes glow {
-      0% {
-        text-shadow: 2px 2px 4px rgba(255, 106, 0, 0.6);
-      }
-      100% {
-        text-shadow: 2px 2px 12px rgba(255, 215, 0, 0.5);
-      }
-    }
+  <script
+    src="js/main.js"
+    defer
+  ></script>
 
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      font-style: italic;
-      letter-spacing: 1px;
-      line-height: 1.4;
-      opacity: 0.9;
-    }
+  
 
-    .get-started-btn {
-      background-color: #ffffff;
-      color: #000;
-      padding: 15px 30px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      text-transform: uppercase;
-      font-weight: bold;
-      transition: all 0.3s ease-in-out;
-    }
-
-    .get-started-btn:hover {
-      background-color: #000;
-      color: #fff;
-      border: 1px solid #fff;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 2.5rem;
-      }
-
-      p {
-        font-size: 1rem;
-      }
-
-      .get-started-btn {
-        width: 80%;
-      }
-    }
-  </style>
 </head>
+
+
 <body>
-  <div class="overlay">
-    <div class="branding">
-      <h1>BLEEV CREATIONS</h1>
-      <p>Capturing Moments. Creating Stories. One Frame at a Time.</p>
-      <a href="homepage.html">
-        <button class="get-started-btn">Get Started</button>
-      </a>
+
+  <!-- =========================================================
+       NAVIGATION
+       ========================================================= -->
+
+  <header class="navbar">
+
+    <div class="logo">
+      Bleev Creations
     </div>
+
+    <nav>
+
+      <ul class="nav-links">
+
+        <li>
+          <a href="#home">
+            Home
+          </a>
+        </li>
+
+        <li>
+          <a href="#portfolio">
+            Portfolio
+          </a>
+        </li>
+
+        <li>
+          <a href="#about">
+            About
+          </a>
+        </li>
+
+        <li>
+          <a href="#contact">
+            Contact
+          </a>
+        </li>
+
+      </ul>
+
+    </nav>
+
+  </header>
+
+
+  <!-- =========================================================
+       HERO SECTION
+       ========================================================= -->
+
+  <header
+    class="hero"
+    id="home"
+  >
+  </header>
+
+
+  <!-- =========================================================
+       PORTFOLIO SECTION
+       ========================================================= -->
+
+  <section
+    class="portfolio-section"
+    id="portfolio"
+  >
+
+    <div class="portfolio-header">
+
+      <h2>
+        Portfolio 
+      </h2>
+      
+      <div
+        class="filter-tabs"
+        id="filterTabs"
+      >
+
+        <button
+          type="button"
+          class="active"
+          data-filter="all"
+        >
+          All
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="portfolio-grid"
+      id="portfolioGrid"
+    >
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       ABOUT SECTION
+       ========================================================= -->
+
+  <section
+    class="about-section"
+    id="about"
+  >
+
+    <div class="about-card">
+
+
+      <!-- Profile Picture -->
+
+      <div class="about-profile">
+
+        <div class="profile-frame">
+
+          <img
+            id="aboutImg"
+            src=""
+            alt="Bleev Creations"
+            hidden
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- About Content -->
+
+      <div class="about-text">
+
+        <span class="about-label">
+          ABOUT BLEEV CREATIONS
+        </span>
+
+
+        <h2>
+
+          <a
+            href="about.html"
+            class="text"
+          >
+            About Me
+          </a>
+
+        </h2>
+
+
+        <p id="aboutText">
+          Loading about description...
+        </p>
+
+
+        <a
+          href="about.html"
+          class="btn"
+        >
+          View More
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       CONTACT SECTION
+       ========================================================= -->
+
+  <section
+    class="contact-section"
+    id="contact"
+  >
+
+    <div class="contact-card">
+
+
+      <!-- =====================================================
+           LEFT SIDE — CONTACT INFORMATION
+           ===================================================== -->
+
+      <div class="contact-info">
+
+        <span class="contact-label">
+          GET IN TOUCH
+        </span>
+
+
+        <h2>
+
+          Let's Create Something
+
+          <span>
+            Beautiful
+          </span>
+
+        </h2>
+
+
+        <p class="contact-description">
+
+          Have a photography project, event,
+          portrait session, or creative idea
+          in mind? Get in touch and let's bring
+          it to life.
+
+        </p>
+
+
+        <!-- Contact Details -->
+
+        <div class="contact-details">
+
+
+          <!-- WhatsApp -->
+
+          <a
+            href="https://wa.me/254768572974"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-detail"
+          >
+
+            <span class="contact-icon whatsapp-icon">
+
+              <i class="fab fa-whatsapp"></i>
+
+            </span>
+
+
+            <span>
+
+              <small>
+                WhatsApp
+              </small>
+
+              <strong>
+                Chat with me
+              </strong>
+
+            </span>
+
+          </a>
+
+
+          <!-- Email -->
+
+          <a
+            href="mailto:bleevcreationsmedia@gmail.com"
+            class="contact-detail"
+          >
+
+            <span class="contact-icon email-icon">
+
+              <i class="fas fa-envelope"></i>
+
+            </span>
+
+
+            <span>
+
+              <small>
+                Email
+              </small>
+
+              <strong>
+                Send an email
+              </strong>
+
+            </span>
+
+          </a>
+
+        </div>
+
+
+        <!-- =================================================
+             SOCIAL MEDIA
+             ================================================= -->
+
+        <div class="social-contact">
+
+          <h3>
+            Follow Bleev Creations
+          </h3>
+
+
+          <div class="social-icons">
+
+
+            <!-- WhatsApp -->
+
+            <a
+              href="https://wa.me/254768572974"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon whatsapp"
+              aria-label="WhatsApp"
+            >
+
+              <i class="fab fa-whatsapp"></i>
+
+            </a>
+
+
+            <!-- Instagram -->
+
+            <a
+              href="https://www.instagram.com/bleevcreations?igsh=MXFndXlyZjVhMDVzNQ=="
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon instagram"
+              aria-label="Instagram"
+            >
+
+              <i class="fab fa-instagram"></i>
+
+            </a>
+
+
+            <!-- Facebook -->
+
+            <a
+              href="https://www.facebook.com/profile.php?id=100090282535869"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon facebook"
+              aria-label="Facebook"
+            >
+
+              <i class="fab fa-facebook-f"></i>
+
+            </a>
+
+
+            <!-- TikTok -->
+
+            <a
+              href="https://www.tiktok.com/@bleevcreations"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-icon tiktok"
+              aria-label="TikTok"
+            >
+
+              <i class="fab fa-tiktok"></i>
+
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           RIGHT SIDE — CONTACT FORM
+           ===================================================== -->
+
+      <div class="contact-form-container">
+
+
+        <div class="form-heading">
+
+          <h3>
+            Send a Message
+          </h3>
+
+          <p>
+            Tell me a little about what
+            you have in mind.
+          </p>
+
+        </div>
+
+
+        <form
+          class="contact-form"
+          id="contactForm"
+        >
+
+
+          <!-- Name -->
+
+          <div class="form-group">
+
+            <label for="userName">
+              Your Name
+            </label>
+
+            <input
+              type="text"
+              name="name"
+              id="userName"
+              placeholder="Enter your name"
+              autocomplete="name"
+              required
+            />
+
+          </div>
+
+
+          <!-- Email -->
+
+          <div class="form-group">
+
+            <label for="userEmail">
+              Email Address
+            </label>
+
+            <input
+              type="email"
+              name="email"
+              id="userEmail"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            />
+
+          </div>
+
+
+          <!-- Message -->
+
+          <div class="form-group">
+
+            <label for="userMessage">
+              Your Message
+            </label>
+
+            <textarea
+              name="message"
+              id="userMessage"
+              placeholder="Tell me about your photography project..."
+              rows="5"
+              required
+            ></textarea>
+
+          </div>
+
+
+          <!-- Submit -->
+
+          <button
+            type="submit"
+            class="contact-submit"
+          >
+
+            <i class="fab fa-whatsapp"></i>
+
+            Send via WhatsApp
+
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+
+  <footer>
+
+    <p>
+
+      © <span id="year"></span>
+      Bleev Creations.
+      All Rights Reserved
+
+    </p>
+
+
+    <div class="powered-by">
+      Capturing Your Moments.
+    </div>
+
+  </footer>
+
+
+  <!-- =========================================================
+       CONTACT FORM → WHATSAPP
+       ========================================================= -->
+
+  <script>
+
+    const contactForm =
+      document.getElementById("contactForm");
+
+    if (contactForm) {
+
+      contactForm.addEventListener(
+        "submit",
+        function (e) {
+
+          e.preventDefault();
+
+
+          const name =
+            document
+              .getElementById("userName")
+              .value
+              .trim();
+
+
+          const email =
+            document
+              .getElementById("userEmail")
+              .value
+              .trim();
+
+
+          const message =
+            document
+              .getElementById("userMessage")
+              .value
+              .trim();
+
+
+          const fullMessage =
+            `Hello, I'm ${name} (${email})\n\n${message}`;
+
+
+          const phoneNumber =
+            "254768572974";
+
+
+          const whatsappURL =
+            `https://wa.me/${phoneNumber}?text=${encodeURIComponent(fullMessage)}`;
+
+
+          window.open(
+            whatsappURL,
+            "_blank"
+          );
+
+        }
+      );
+
+    }
+
+  </script>
+
+
+  <!-- =========================================================
+       DYNAMIC FOOTER YEAR + ABOUT INFORMATION
+       ========================================================= -->
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        /* Dynamic footer year */
+
+        const yearElement =
+          document.getElementById("year");
+
+        if (yearElement) {
+
+          yearElement.textContent =
+            new Date().getFullYear();
+
+        }
+
+
+        /* Load About information */
+
+        const aboutText =
+          document.getElementById("aboutText");
+
+        const aboutImg =
+          document.getElementById("aboutImg");
+
+
+        fetch("/api/about")
+
+          .then((response) => {
+
+            if (!response.ok) {
+
+              throw new Error(
+                `HTTP ${response.status}`
+              );
+
+            }
+
+            return response.json();
+
+          })
+
+          .then((data) => {
+
+
+            /* About description */
+
+            if (aboutText) {
+
+              aboutText.textContent =
+                data.description || "";
+
+            }
+
+
+            /* About profile picture */
+
+            if (
+              data.profilePicture &&
+              aboutImg
+            ) {
+
+              aboutImg.src =
+                "/api/image?id=" +
+                encodeURIComponent(
+                  data.profilePicture
+                );
+
+              aboutImg.hidden = false;
+
+            }
+
+          })
+
+          .catch((error) => {
+
+            console.error(
+              "❌ Failed to load about information:",
+              error
+            );
+
+
+            if (aboutText) {
+
+              aboutText.textContent =
+                "Could not load this information. Please try again later.";
+
+            }
+
+          });
+
+      }
+    );
+
+  </script>
+
+
+  <!-- =========================================================
+       FLOATING REVIEW BUTTON
+       ========================================================= -->
+
+  <a
+    href="random-reviews.html"
+    class="floating-review-btn"
+    title="Check Random Reviews"
+  >
+
+    <i class="fas fa-star"></i>
+
+    Check Reviews
+
+  </a>
+
+
+  <!-- =========================================================
+       FLOATING WHATSAPP BUTTON
+       ========================================================= -->
+
+  <a
+    href="https://wa.me/254768572974"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="floating-whatsapp"
+    title="Chat with Bleev Creations on WhatsApp"
+    aria-label="Chat with Bleev Creations on WhatsApp"
+  >
+
+    <i class="fab fa-whatsapp"></i>
+
+  </a>
+
+
+  <!-- =========================================================
+       PORTFOLIO JAVASCRIPT
+       ========================================================= -->
+
+  <script
+    src="js/portfolio.js"
+    defer
+  ></script>
+
+
+  <!-- =========================================================
+       PORTFOLIO LIGHTBOX
+       ========================================================= -->
+
+  <div
+    class="cat-lightbox"
+    id="catLightbox"
+  >
+
+    <button
+      id="lbClose"
+      title="Close"
+      aria-label="Close"
+    >
+      &times;
+    </button>
+
+
+    <div class="lb-body">
+
+      <h3 id="lbTitle"></h3>
+
+
+      <img
+        id="lbMainImg"
+        src=""
+        alt=""
+      />
+
+
+      <div id="lbThumbs"></div>
+
+    </div>
+
+
+    <button
+      id="lbPrev"
+      class="lb-nav-btn"
+      title="Previous"
+      aria-label="Previous image"
+    >
+      &#10094;
+    </button>
+
+
+    <button
+      id="lbNext"
+      class="lb-nav-btn"
+      title="Next"
+      aria-label="Next image"
+    >
+      &#10095;
+    </button>
+
   </div>
+
+
 </body>
+
 </html>
