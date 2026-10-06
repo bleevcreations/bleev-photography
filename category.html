@@ -1026,11 +1026,21 @@
        ========================================================= -->
 
   <footer>
-  <p>
-    © 2022   Bleev Creations. 
-    All Rights Reserved
-  </p>
-</footer>
+
+    <p>
+
+      © <span id="year"></span>
+      Bleev Creations.
+      All Rights Reserved
+
+    </p>
+
+
+    <div class="powered-by">
+      Capturing Your Moments.
+    </div>
+
+  </footer>
 
 
 
@@ -1078,6 +1088,25 @@
        ========================================================= -->
 
   <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        /* Dynamic footer year */
+
+        const yearElement =
+          document.getElementById("year");
+
+        if (yearElement) {
+
+          yearElement.textContent =
+            new Date().getFullYear();
+
+        }
+      }
+    );
+
 
     /* =========================================================
        VARIABLES
