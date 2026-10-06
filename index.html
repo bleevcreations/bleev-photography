@@ -612,64 +612,59 @@
        CONTACT FORM → WHATSAPP
        ========================================================= -->
 
-  <script>
+ <script>
+  document.addEventListener("DOMContentLoaded", () => {
 
     const contactForm =
       document.getElementById("contactForm");
 
-    if (contactForm) {
-
-      contactForm.addEventListener(
-        "submit",
-        function (e) {
-
-          e.preventDefault();
-
-
-          const name =
-            document
-              .getElementById("userName")
-              .value
-              .trim();
-
-
-          const email =
-            document
-              .getElementById("userEmail")
-              .value
-              .trim();
-
-
-          const message =
-            document
-              .getElementById("userMessage")
-              .value
-              .trim();
-
-
-          const fullMessage =
-            `Hello, I'm ${name} (${email})\n\n${message}`;
-
-
-          const phoneNumber =
-            "254768572974";
-
-
-          const whatsappURL =
-            `https://wa.me/${phoneNumber}?text=${encodeURIComponent(fullMessage)}`;
-
-
-          window.open(
-            whatsappURL,
-            "_blank"
-          );
-
-        }
-      );
-
+    if (!contactForm) {
+      return;
     }
 
-  </script>
+    contactForm.addEventListener("submit", (e) => {
+
+      e.preventDefault();
+
+      const name =
+        document.getElementById("userName").value.trim();
+
+      const email =
+        document.getElementById("userEmail").value.trim();
+
+      const message =
+        document.getElementById("userMessage").value.trim();
+
+
+      /* Build WhatsApp message */
+
+      const fullMessage =
+        `Hello, I'm ${name} (${email}).
+
+${message}`;
+
+
+      /* WhatsApp number */
+
+      const phoneNumber =
+        "254768572974";
+
+
+      /* Build WhatsApp URL */
+
+      const whatsappURL =
+        `https://wa.me/${phoneNumber}?text=${encodeURIComponent(fullMessage)}`;
+
+
+      /* Navigate directly to WhatsApp */
+
+      window.location.href =
+        whatsappURL;
+
+    });
+
+  });
+</script>
 
 
   <!-- =========================================================
