@@ -33,9 +33,9 @@
     body {
       margin: 0;
       min-height: 100vh;
-      
-       display: flex;
-        flex-direction: column;
+
+      display: flex;
+      flex-direction: column;
 
       font-family:
         Arial,
@@ -707,7 +707,10 @@
 
 
     /*
-     * Load random reviews.
+     * Load ALL reviews.
+     *
+     * The API returns all reviews in
+     * randomized order when random=1.
      */
 
     async function fetchRandomReviews() {
@@ -738,7 +741,10 @@
          * No reviews
          */
 
-        if (!data.length) {
+        if (
+          !Array.isArray(data) ||
+          data.length === 0
+        ) {
           reviewsContainer.innerHTML = `
             <p class="reviews-message">
               No reviews found yet.
@@ -750,17 +756,17 @@
 
 
         /*
-         * Create review cards.
+         * Create all review cards inside a
+         * DocumentFragment first.
          *
-         * The API now returns:
-         *
-         * {
-         *   name,
-         *   text,
-         *   rating,
-         *   created_at
-         * }
+         * This avoids repeatedly updating
+         * the live DOM when there are many
+         * reviews.
          */
+
+        const fragment =
+          document.createDocumentFragment();
+
 
         data.forEach((review) => {
           const card =
@@ -830,10 +836,19 @@
             </div>
           `;
 
-          reviewsContainer.appendChild(
-            card
-          );
+
+          fragment.appendChild(card);
         });
+
+
+        /*
+         * Add all cards to the page
+         * in one DOM operation.
+         */
+
+        reviewsContainer.appendChild(
+          fragment
+        );
 
       } catch (error) {
         console.error(
