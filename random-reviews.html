@@ -127,6 +127,22 @@
     }
 
     /* =========================================================
+   REVIEW COUNT
+   ========================================================= */
+
+.reviews-count {
+  margin-top: 10px;
+
+  color: #4e4376;
+
+  font-size: 0.85rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.04em;
+}
+
+    /* =========================================================
        REVIEWS GRID
        ========================================================= */
 
@@ -611,6 +627,9 @@
       A few words from people who have experienced
       Bleev Creations.
     </p>
+    <div id="reviewsCount" class="reviews-count">
+  Loading review count...
+</div>
   </header>
 
 
@@ -732,9 +751,12 @@
         }
 
         const data =
-          await response.json();
+  await response.json();
 
-        reviewsContainer.innerHTML = "";
+reviewsContainer.innerHTML = "";
+
+const reviewsCount =
+  document.getElementById("reviewsCount");
 
 
         /*
@@ -753,6 +775,29 @@
 
           return;
         }
+
+        if (
+  !Array.isArray(data) ||
+  data.length === 0
+) {
+  reviewsContainer.innerHTML = `
+    <p class="reviews-message">
+      No reviews found yet.
+    </p>
+  `;
+
+  if (reviewsCount) {
+    reviewsCount.textContent =
+      "0 Reviews";
+  }
+
+  return;
+}
+
+if (reviewsCount) {
+  reviewsCount.textContent =
+    `${data.length} Review${data.length === 1 ? "" : "s"}`;
+}
 
 
         /*
