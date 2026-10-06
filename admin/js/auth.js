@@ -42,7 +42,7 @@ window.adminFetch = async (url, options = {}) => {
 
 window.adminLogout = async () => {
   await signOut(auth);
-   window.location.replace("/homepage.html");
+   window.location.replace("/index.html");
 };
 
 window.prepareImage = async (file, maxSize = 2400, limit = 3.5 * 1024 * 1024) => {
