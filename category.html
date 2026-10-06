@@ -1,19 +1,26 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Category | Bleev Creations</title>
+
   <link rel="icon" type="image/png" href="assets/logos/favicon.png">
 
   <link rel="stylesheet" href="css/style.css" />
+
   <link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
->
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  >
 
   <style>
+
     /* =========================================================
        GLOBAL
        ========================================================= */
@@ -29,29 +36,32 @@
       color: #222;
     }
 
+
     /* =========================================================
        CATEGORY HEADER
        ========================================================= */
 
     #categoryHeader {
-  position: sticky;
-  z-index: 10;
 
-  min-height: 380px;
+      position: sticky;
+      z-index: 10;
+      min-height: 380px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-  background-color: #052a4a;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+      background-color: #052a4a;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
 
-  overflow: hidden;
-}
+      overflow: hidden;
+
+    }
 
     #categoryHeader::before {
+
       content: "";
 
       position: absolute;
@@ -66,9 +76,11 @@
         );
 
       z-index: 1;
+
     }
 
     .header-overlay {
+
       position: relative;
       z-index: 2;
 
@@ -76,9 +88,11 @@
       padding: 40px 20px;
 
       text-align: center;
+
     }
 
     #categoryTitle {
+
       margin: 0;
 
       color: #ffffff;
@@ -89,20 +103,28 @@
         Georgia,
         serif;
 
-      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-size:
+        clamp(2.5rem, 6vw, 5rem);
+
       font-weight: 700;
 
       letter-spacing: 0.04em;
+
       line-height: 1.1;
 
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      text-shadow:
+        0 4px 20px
+        rgba(0, 0, 0, 0.5);
+
     }
+
 
     /* =========================================================
        GALLERY SECTION
        ========================================================= */
 
     .gallery-section {
+
       padding: 4rem 2rem;
 
       background:
@@ -112,9 +134,11 @@
           #f8f8f8 55%,
           #f0eef5 100%
         );
+
     }
 
     .gallery-section h2 {
+
       margin: 0 0 2rem;
 
       text-align: center;
@@ -127,23 +151,34 @@
         Georgia,
         serif;
 
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-size:
+        clamp(1.8rem, 4vw, 2.8rem);
+
       font-weight: 700;
+
     }
 
     #averageRating {
+
       display: inline-block;
 
       margin-left: 8px;
 
       color: #d4af37;
 
-      font-family: Arial, Helvetica, sans-serif;
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
       font-size: 0.85em;
+
       font-weight: 700;
+
     }
 
     .gallery-grid {
+
       display: grid;
 
       grid-template-columns:
@@ -152,10 +187,13 @@
       gap: 1.2rem;
 
       max-width: 1400px;
+
       margin: 0 auto;
+
     }
 
     .gallery-grid img {
+
       display: block;
 
       width: 100%;
@@ -168,44 +206,95 @@
       cursor: pointer;
 
       box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.12);
+        0 8px 25px
+        rgba(0, 0, 0, 0.12);
 
       transition:
         transform 0.35s ease,
         box-shadow 0.35s ease;
+
     }
 
     .gallery-grid img:hover {
-      transform: translateY(-5px) scale(1.01);
+
+      transform:
+        translateY(-5px)
+        scale(1.01);
 
       box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.2);
+        0 15px 35px
+        rgba(0, 0, 0, 0.2);
+
     }
 
-    
 
     /* =========================================================
        REVIEWS SECTION
        ========================================================= */
 
     .reviews-section {
-      padding: 3rem 2rem;
+
+      position: relative;
+
+      padding: 4rem 2rem 4.5rem;
 
       background:
+        radial-gradient(
+          circle at 10% 10%,
+          rgba(78, 67, 118, 0.35),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at 90% 80%,
+          rgba(43, 88, 118, 0.35),
+          transparent 35%
+        ),
         linear-gradient(
           135deg,
           #052a4a 0%,
-          #173f5f 45%,
+          #173f5f 48%,
           #4e4376 100%
         );
 
       color: #ffffff;
+
+      overflow: hidden;
+
+    }
+
+    .reviews-section::before {
+
+      content: "";
+
+      position: absolute;
+
+      width: 280px;
+      height: 280px;
+
+      top: -140px;
+      right: -80px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(255, 255, 255, 0.05);
+
+      filter: blur(5px);
+
+      pointer-events: none;
+
     }
 
     .reviews-section > h2 {
-      margin: 0 0 2rem;
+
+      position: relative;
+      z-index: 1;
+
+      margin: 0;
 
       text-align: center;
+
+      color: #ffffff;
 
       font-family:
         "Playfair Display",
@@ -213,137 +302,293 @@
         Georgia,
         serif;
 
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size:
+        clamp(2rem, 5vw, 3rem);
+
       font-weight: 700;
+
+      line-height: 1.15;
+
     }
+
+    .reviews-section > h2::after {
+
+      content:
+        "Real experiences from our clients";
+
+      display: block;
+
+      margin-top: 10px;
+
+      color:
+        rgba(255, 255, 255, 0.65);
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-size: 0.8rem;
+
+      font-weight: 400;
+
+      letter-spacing: 0.04em;
+
+    }
+
 
     /* =========================================================
        REVIEWS GRID
        ========================================================= */
 
     #reviews-list {
+
+      position: relative;
+      z-index: 1;
+
       display: grid;
 
       grid-template-columns:
         repeat(2, minmax(0, 1fr));
 
-      gap: 1.2rem;
+      gap: 14px;
 
-      max-width: 1100px;
-      margin: 1.5rem auto 0;
+      width: min(
+        100%,
+        1000px
+      );
+
+      margin:
+        2rem auto 0;
+
     }
 
-    .review {
-      padding: 1.3rem;
 
-      margin-bottom: 0;
+    /* =========================================================
+       REVIEW CARD
+       ========================================================= */
+
+    .review {
+
+      position: relative;
+
+      min-width: 0;
+
+      display: flex;
+
+      flex-direction: column;
+
+      padding: 18px;
+
+      margin: 0;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+      border-radius: 17px;
 
       background:
         linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.12),
-          rgba(255, 255, 255, 0.05)
+          145deg,
+          rgba(255, 255, 255, 0.14),
+          rgba(255, 255, 255, 0.055)
         );
 
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
 
-      border-radius: 10px;
-
-      color: #f5f5f5;
-
-      box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.15);
-
-      transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
-    }
-
-    .review:hover {
-      transform: translateY(-3px);
-
-      box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.22);
-    }
-
-    .review.hidden-review {
-      display: none;
-    }
-
-    .review strong {
-      display: block;
-
-      margin-bottom: 7px;
+      -webkit-backdrop-filter: blur(12px);
 
       color: #ffffff;
 
-      font-size: 1rem;
+      box-shadow:
+        0 10px 28px
+        rgba(0, 0, 0, 0.18);
+
+      overflow: hidden;
+
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+
+    }
+
+    .review::before {
+
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 3px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #d4af37,
+          rgba(212, 175, 55, 0.15)
+        );
+
+    }
+
+    .review:hover {
+
+      transform:
+        translateY(-4px);
+
+      border-color:
+        rgba(255, 255, 255, 0.25);
+
+      box-shadow:
+        0 16px 35px
+        rgba(0, 0, 0, 0.25);
+
+    }
+
+    .review.hidden-review {
+
+      display: none;
+
+    }
+
+    .review strong {
+
+      display: block;
+
+      margin: 0 0 8px;
+
+      color: #ffffff;
+
+      font-size: 0.9rem;
+
       font-weight: 700;
+
+      line-height: 1.3;
+
+      white-space: nowrap;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+
     }
 
     .review > div {
-      margin-bottom: 10px;
+
+      margin: 0 0 10px;
 
       color: #d4af37;
 
+      font-size: 0.78rem;
+
       letter-spacing: 1px;
+
+      line-height: 1;
+
     }
 
     .review p {
-      margin: 0 0 10px;
 
-      color: rgba(255, 255, 255, 0.9);
+      margin: 0;
 
-      line-height: 1.6;
+      color:
+        rgba(255, 255, 255, 0.88);
+
+      font-family:
+        "Playfair Display",
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 0.88rem;
+
+      line-height: 1.55;
+
+      overflow-wrap: anywhere;
+
     }
 
     .review small {
-      color: rgba(255, 255, 255, 0.6);
+
+      display: block;
+
+      margin-top: 14px;
+      padding-top: 10px;
+
+      border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+      color:
+        rgba(255, 255, 255, 0.48);
+
+      font-size: 0.68rem;
+
+      line-height: 1.3;
+
     }
+
 
     /* =========================================================
        VIEW ALL REVIEWS BUTTON
        ========================================================= */
 
     .reviews-toggle-container {
+
+      position: relative;
+      z-index: 1;
+
       display: flex;
 
       justify-content: center;
 
-      margin-top: 2rem;
+      margin-top: 1.7rem;
+
     }
 
     #reviewsToggle {
-      padding: 11px 26px;
 
-      font-size: 0.9rem;
-      font-weight: 700;
+      padding:
+        10px 23px;
 
-      letter-spacing: 0.05em;
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.22);
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 255, 255, 0.08);
 
       color: #ffffff;
 
-      background:
-        linear-gradient(
-          135deg,
-          #2b5876,
-          #4e4376
-        );
+      font-size: 0.8rem;
 
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      font-weight: 700;
 
-      border-radius: 30px;
+      letter-spacing: 0.04em;
 
       cursor: pointer;
 
+      backdrop-filter: blur(8px);
+
+      -webkit-backdrop-filter: blur(8px);
+
       transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease,
-        background 0.3s ease;
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+
     }
 
     #reviewsToggle:hover {
-      transform: translateY(-2px);
+
+      transform:
+        translateY(-2px);
 
       background:
         linear-gradient(
@@ -353,17 +598,34 @@
         );
 
       box-shadow:
-        0 7px 20px rgba(212, 175, 55, 0.3);
+        0 8px 20px
+        rgba(212, 175, 55, 0.25);
+
     }
 
+
     /* =========================================================
-       REVIEW FORM
+       REVIEW FORM AREA
        ========================================================= */
 
     .reviews-section h3 {
-      max-width: 700px;
 
-      margin: 3rem auto 1rem;
+      position: relative;
+      z-index: 1;
+
+      width: min(
+        100%,
+        700px
+      );
+
+      margin:
+        3.5rem auto 1.2rem;
+
+      padding-top: 2rem;
+
+      border-top:
+        1px solid
+        rgba(255, 255, 255, 0.12);
 
       color: #ffffff;
 
@@ -373,92 +635,180 @@
         Georgia,
         serif;
 
-      font-size: 1.6rem;
+      font-size:
+        clamp(1.4rem, 4vw, 1.8rem);
+
+      text-align: center;
+
     }
 
     #review-form {
-      max-width: 700px;
+
+      position: relative;
+      z-index: 1;
+
+      width: min(
+        100%,
+        700px
+      );
 
       margin: 0 auto;
+
+      padding: 22px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.13);
+
+      border-radius: 18px;
+
+      background:
+        rgba(255, 255, 255, 0.07);
+
+      backdrop-filter: blur(12px);
+
+      -webkit-backdrop-filter: blur(12px);
+
+      box-shadow:
+        0 12px 35px
+        rgba(0, 0, 0, 0.18);
+
     }
+
+
+    /* =========================================================
+       FORM INPUTS
+       ========================================================= */
 
     #review-form input,
     #review-form textarea {
+
       width: 100%;
 
-      margin-bottom: 1rem;
-      padding: 13px 15px;
+      margin-bottom: 12px;
 
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding:
+        12px 14px;
 
-      border-radius: 7px;
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.15);
 
-      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
 
-      color: #222;
+      background:
+        rgba(255, 255, 255, 0.94);
 
-      font-family: inherit;
+      color: #222222;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-size: 0.88rem;
 
       outline: none;
+
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+    }
+
+    #review-form input::placeholder,
+    #review-form textarea::placeholder {
+
+      color: #8a8a8a;
+
     }
 
     #review-form input:focus,
     #review-form textarea:focus {
+
       border-color: #d4af37;
 
       box-shadow:
-        0 0 0 3px rgba(212, 175, 55, 0.15);
+        0 0 0 3px
+        rgba(212, 175, 55, 0.14);
+
     }
 
     #review-form textarea {
-      min-height: 130px;
+
+      min-height: 110px;
 
       resize: vertical;
+
     }
+
 
     /* =========================================================
        STAR RATING
        ========================================================= */
 
     .star-rating {
+
       display: flex;
+
+      align-items: center;
+
+      justify-content: center;
 
       gap: 5px;
 
-      margin-bottom: 1rem;
+      margin:
+        2px 0 15px;
+
     }
 
     .star-rating label {
-      color: #888;
 
-      font-size: 1.7rem;
+      color:
+        rgba(255, 255, 255, 0.3);
+
+      font-size: 1.55rem;
+
+      line-height: 1;
 
       cursor: pointer;
 
       transition:
         color 0.2s ease,
         transform 0.2s ease;
+
     }
 
     .star-rating label:hover {
-      transform: scale(1.1);
+
+      transform:
+        scale(1.12);
+
     }
 
     .star-rating label.active {
+
       color: #d4af37;
+
     }
+
 
     /* =========================================================
        SUBMIT BUTTON
        ========================================================= */
 
     #review-form button[type="submit"] {
-      display: inline-block;
 
-      padding: 12px 28px;
+      display: block;
+
+      width: 100%;
+
+      padding:
+        12px 20px;
 
       border: none;
-      border-radius: 30px;
+
+      border-radius: 999px;
 
       background:
         linear-gradient(
@@ -469,49 +819,69 @@
 
       color: #ffffff;
 
-      font-size: 0.95rem;
+      font-size: 0.88rem;
+
       font-weight: 700;
 
       cursor: pointer;
 
+      box-shadow:
+        0 6px 18px
+        rgba(0, 0, 0, 0.18);
+
       transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
     }
 
     #review-form button[type="submit"]:hover {
-      transform: translateY(-2px);
+
+      transform:
+        translateY(-2px);
 
       box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.25);
+        0 9px 24px
+        rgba(0, 0, 0, 0.25);
+
     }
+
 
     /* =========================================================
        LIGHTBOX
        ========================================================= */
 
     #lightbox {
+
       display: none;
 
       position: fixed;
+
       inset: 0;
 
       z-index: 9999;
 
       align-items: center;
+
       justify-content: center;
 
       padding: 30px;
 
-      background: rgba(0, 0, 0, 0.92);
+      background:
+        rgba(0, 0, 0, 0.92);
+
     }
 
     #lightbox.active {
+
       display: flex;
+
     }
 
     #lightbox img {
+
       max-width: 90vw;
+
       max-height: 85vh;
 
       object-fit: contain;
@@ -519,12 +889,15 @@
       border-radius: 5px;
 
       box-shadow:
-        0 15px 50px rgba(0, 0, 0, 0.5);
+        0 15px 50px
+        rgba(0, 0, 0, 0.5);
+
     }
 
     .lightbox-close,
     .lightbox-prev,
     .lightbox-next {
+
       position: absolute;
 
       border: none;
@@ -542,45 +915,63 @@
       transition:
         color 0.2s ease,
         transform 0.2s ease;
+
     }
 
     .lightbox-close:hover,
     .lightbox-prev:hover,
     .lightbox-next:hover {
+
       color: #d4af37;
 
-      transform: scale(1.1);
+      transform:
+        scale(1.1);
+
     }
 
     .lightbox-close {
+
       top: 20px;
       right: 30px;
+
     }
 
     .lightbox-prev {
+
       left: 25px;
       top: 50%;
 
-      transform: translateY(-50%);
+      transform:
+        translateY(-50%);
+
     }
 
     .lightbox-next {
+
       right: 25px;
       top: 50%;
 
-      transform: translateY(-50%);
+      transform:
+        translateY(-50%);
+
     }
 
     .lightbox-prev:hover,
     .lightbox-next:hover {
-      transform: translateY(-50%) scale(1.1);
+
+      transform:
+        translateY(-50%)
+        scale(1.1);
+
     }
+
 
     /* =========================================================
        FOOTER
        ========================================================= */
 
     footer {
+
       padding: 1.5rem 1rem;
 
       text-align: center;
@@ -593,10 +984,13 @@
           #4e4376
         );
 
-      color: rgba(255, 255, 255, 0.85);
+      color:
+        rgba(255, 255, 255, 0.85);
+
     }
 
     footer p {
+
       margin: 0;
 
       font-family:
@@ -608,291 +1002,472 @@
       font-size: 0.9rem;
 
       letter-spacing: 0.04em;
+
     }
 
+
     /* =========================================================
-   FLOATING WHATSAPP BUTTON
-   ========================================================= */
+       FLOATING WHATSAPP BUTTON
+       ========================================================= */
 
-.floating-whatsapp {
-  position: fixed;
-  right: 25px;
-  bottom: 90px;
+    .floating-whatsapp {
 
-  width: 58px;
-  height: 58px;
+      position: fixed;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+      right: 25px;
+      bottom: 90px;
 
-  background: #25D366;
-  color: #ffffff;
+      width: 58px;
+      height: 58px;
 
-  border-radius: 50%;
-  text-decoration: none;
+      display: flex;
 
-  font-size: 30px;
+      align-items: center;
+      justify-content: center;
 
-  box-shadow:
-    0 5px 18px rgba(0, 0, 0, 0.25);
+      background: #25D366;
 
-  z-index: 9999;
+      color: #ffffff;
 
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    background-color 0.3s ease;
-}
+      border-radius: 50%;
 
-/* Hover */
-.floating-whatsapp:hover {
-  background: #20b957;
-  color: #ffffff;
+      text-decoration: none;
 
-  transform:
-    translateY(-4px)
-    scale(1.05);
+      font-size: 30px;
 
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.3);
-}
+      box-shadow:
+        0 5px 18px
+        rgba(0, 0, 0, 0.25);
 
-/* WhatsApp icon */
-.floating-whatsapp i {
-  margin: 0;
-  line-height: 1;
-}
+      z-index: 9999;
 
-/* Pulse ring */
-.floating-whatsapp::before {
-  content: "";
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        background-color 0.3s ease;
 
-  position: absolute;
-  inset: -4px;
+    }
 
-  border: 2px solid rgba(37, 211, 102, 0.45);
+    .floating-whatsapp:hover {
 
-  border-radius: 50%;
+      background: #20b957;
 
-  animation: whatsappPulse 2s infinite;
+      color: #ffffff;
 
-  pointer-events: none;
-}
+      transform:
+        translateY(-4px)
+        scale(1.05);
 
-@keyframes whatsappPulse {
+      box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.3);
 
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
+    }
 
-  70% {
-    transform: scale(1.25);
-    opacity: 0;
-  }
+    .floating-whatsapp i {
 
-  100% {
-    transform: scale(1.25);
-    opacity: 0;
-  }
+      margin: 0;
 
-}
+      line-height: 1;
 
-/* Mobile */
-@media (max-width: 600px) {
+    }
 
-  .floating-whatsapp {
-    right: 18px;
-    bottom: 78px;
+    .floating-whatsapp::before {
 
-    width: 54px;
-    height: 54px;
+      content: "";
 
-    font-size: 27px;
-  }
+      position: absolute;
 
-}
+      inset: -4px;
+
+      border:
+        2px solid
+        rgba(37, 211, 102, 0.45);
+
+      border-radius: 50%;
+
+      animation:
+        whatsappPulse 2s infinite;
+
+      pointer-events: none;
+
+    }
+
+    @keyframes whatsappPulse {
+
+      0% {
+
+        transform: scale(1);
+
+        opacity: 0.8;
+
+      }
+
+      70% {
+
+        transform: scale(1.25);
+
+        opacity: 0;
+
+      }
+
+      100% {
+
+        transform: scale(1.25);
+
+        opacity: 0;
+
+      }
+
+    }
+
+    @media (max-width: 600px) {
+
+      .floating-whatsapp {
+
+        right: 18px;
+        bottom: 78px;
+
+        width: 54px;
+        height: 54px;
+
+        font-size: 27px;
+
+      }
+
+    }
+
 
     /* =========================================================
        RESPONSIVE
        ========================================================= */
 
     @media (max-width: 900px) {
+
       .gallery-grid {
+
         grid-template-columns:
           repeat(2, minmax(0, 1fr));
+
       }
 
       .gallery-grid img {
+
         height: 280px;
+
       }
+
     }
 
+
     @media (max-width: 700px) {
+
       #categoryHeader {
+
         min-height: 300px;
+
       }
 
       .gallery-section {
+
         padding: 3rem 1rem;
+
       }
 
       .reviews-section {
-        padding: 3rem 1rem;
+
+        padding:
+          3rem 1rem 3.5rem;
+
       }
 
       #reviews-list {
-        grid-template-columns: 1fr;
+
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+
+        margin-top: 1.5rem;
+
+      }
+
+      .review {
+
+        padding: 14px;
+
+        border-radius: 14px;
+
+      }
+
+      .review strong {
+
+        font-size: 0.78rem;
+
+        margin-bottom: 7px;
+
+      }
+
+      .review > div {
+
+        font-size: 0.67rem;
+
+        letter-spacing: 0.5px;
+
+        margin-bottom: 8px;
+
+      }
+
+      .review p {
+
+        font-size: 0.78rem;
+
+        line-height: 1.45;
+
+      }
+
+      .review small {
+
+        margin-top: 11px;
+
+        padding-top: 8px;
+
+        font-size: 0.6rem;
+
       }
 
       .gallery-grid {
-         grid-template-columns: repeat(2, minmax(0, 1fr));
-         gap: 0.5rem;
+
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+
+        gap: 0.5rem;
+
       }
 
       .gallery-grid img {
-         height: auto;
-         aspect-ratio: 4 / 5;
+
+        height: auto;
+
+        aspect-ratio: 4 / 5;
+
       }
 
       .lightbox-prev {
+
         left: 10px;
+
       }
 
       .lightbox-next {
+
         right: 10px;
+
       }
 
       .lightbox-close {
+
         right: 15px;
+
       }
+
     }
 
+
     @media (max-width: 480px) {
+
       #categoryHeader {
+
         min-height: 260px;
+
       }
 
       #categoryTitle {
+
         font-size: 2.3rem;
+
       }
 
       #reviewsToggle {
+
         width: 100%;
+
         max-width: 250px;
+
       }
+
     }
-    
-  /* =========================================================
-   FLOATING REVIEWS BUTTON
-   ========================================================= */
 
-.floating-reviews-btn {
-  position: fixed;
 
-  right: 24px;
-  bottom: 24px;
+    @media (max-width: 360px) {
 
-  z-index: 999;
+      #reviews-list {
 
-  display: flex;
-  align-items: center;
-  gap: 8px;
+        grid-template-columns: 1fr;
 
-  padding: 12px 18px;
+      }
 
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 30px;
+      .review {
 
-  background:
-    linear-gradient(
-      135deg,
-      #2b5876,
-      #4e4376
-    );
+        padding: 16px;
 
-  color: #ffffff;
+      }
 
-  font-family:
-    "Playfair Display",
-    "Cormorant Garamond",
-    Georgia,
-    serif;
+      .review p {
 
-  font-size: 0.9rem;
-  font-weight: 700;
+        font-size: 0.84rem;
 
-  letter-spacing: 0.04em;
+        line-height: 1.5;
 
-  cursor: pointer;
+      }
 
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.25);
+    }
 
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    background 0.3s ease;
-}
 
-.floating-reviews-btn:hover {
-  transform: translateY(-3px);
+    /* =========================================================
+       FLOATING REVIEWS BUTTON
+       ========================================================= */
 
-  background:
-    linear-gradient(
-      135deg,
-      #d4af37,
-      #b89225
-    );
+    .floating-reviews-btn {
 
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.3);
-}
+      position: fixed;
 
-.floating-reviews-btn span {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 1rem;
-}
+      right: 24px;
+      bottom: 24px;
 
-@media (max-width: 600px) {
-  .floating-reviews-btn {
-    right: 15px;
-    bottom: 15px;
+      z-index: 999;
 
-    padding: 11px 15px;
+      display: flex;
 
-    font-size: 0.8rem;
-  }
-}
+      align-items: center;
+
+      gap: 8px;
+
+      padding: 12px 18px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+      border-radius: 30px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2b5876,
+          #4e4376
+        );
+
+      color: #ffffff;
+
+      font-family:
+        "Playfair Display",
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 0.9rem;
+
+      font-weight: 700;
+
+      letter-spacing: 0.04em;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.25);
+
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        background 0.3s ease;
+
+    }
+
+    .floating-reviews-btn:hover {
+
+      transform:
+        translateY(-3px);
+
+      background:
+        linear-gradient(
+          135deg,
+          #d4af37,
+          #b89225
+        );
+
+      box-shadow:
+        0 12px 30px
+        rgba(0, 0, 0, 0.3);
+
+    }
+
+    .floating-reviews-btn span {
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      font-size: 1rem;
+
+    }
+
+    @media (max-width: 600px) {
+
+      .floating-reviews-btn {
+
+        right: 15px;
+        bottom: 15px;
+
+        padding: 11px 15px;
+
+        font-size: 0.8rem;
+
+      }
+
+    }
 
   </style>
+
 </head>
+
 
 <body>
 
+
   <!-- =========================================================
-     FLOATING REVIEWS BUTTON
-     ========================================================= -->
+       FLOATING REVIEWS BUTTON
+       ========================================================= -->
 
   <button
-  type="button"
-  class="floating-reviews-btn"
-  id="floatingReviewsBtn"
-  aria-label="Go to reviews"
-    >
-      <span>★</span>
-      Reviews
-    </button>
+    type="button"
+    class="floating-reviews-btn"
+    id="floatingReviewsBtn"
+    aria-label="Go to reviews"
+  >
+
+    <span>★</span>
+    Reviews
+
+  </button>
+
 
   <!-- =========================================================
        CATEGORY HEADER
        ========================================================= -->
 
   <header id="categoryHeader">
+
     <div class="header-overlay">
-      <h1 id="categoryTitle">Category</h1>
+
+      <h1 id="categoryTitle">
+        Category
+      </h1>
+
     </div>
+
   </header>
 
 
@@ -902,6 +1477,7 @@
 
   <main>
 
+
     <!-- =======================================================
          GALLERY
          ======================================================= -->
@@ -909,28 +1485,36 @@
     <section class="gallery-section">
 
       <h2 id="categoryName">
+
         Loading...
+
         <span id="averageRating"></span>
+
       </h2>
+
 
       <div
         id="categoryGallery"
-        class="gallery-grid">
-      </div>
+        class="gallery-grid"
+      ></div>
 
     </section>
 
+
     <!-- Floating WhatsApp Button -->
-<a
-  href="https://wa.me/254768572974"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="floating-whatsapp"
-  title="Chat with Bleev Creations on WhatsApp"
-  aria-label="Chat with Bleev Creations on WhatsApp"
->
-  <i class="fab fa-whatsapp"></i>
-</a>
+
+    <a
+      href="https://wa.me/254768572974"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="floating-whatsapp"
+      title="Chat with Bleev Creations on WhatsApp"
+      aria-label="Chat with Bleev Creations on WhatsApp"
+    >
+
+      <i class="fab fa-whatsapp"></i>
+
+    </a>
 
 
     <!-- =======================================================
@@ -939,25 +1523,34 @@
 
     <section class="reviews-section">
 
-      <h2>What Clients Say</h2>
+      <h2>
+        What Clients Say
+      </h2>
+
 
       <!-- Reviews are dynamically inserted here -->
+
       <div id="reviews-list"></div>
 
 
       <!-- View All / Show Less -->
+
       <div
         id="reviews-toggle-container"
         class="reviews-toggle-container"
         style="display: none;"
       >
+
         <button
           id="reviewsToggle"
           type="button"
           data-expanded="false"
         >
+
           View All Reviews
+
         </button>
+
       </div>
 
 
@@ -965,7 +1558,10 @@
            REVIEW FORM
            ===================================================== -->
 
-      <h3>Leave a Review</h3>
+      <h3>
+        Leave a Review
+      </h3>
+
 
       <form id="review-form">
 
@@ -976,6 +1572,7 @@
           placeholder="Your Name"
           required
         />
+
 
         <textarea
           id="reviewText"
@@ -989,13 +1586,28 @@
 
         <div class="star-rating">
 
-          <label data-value="1">★</label>
-          <label data-value="2">★</label>
-          <label data-value="3">★</label>
-          <label data-value="4">★</label>
-          <label data-value="5">★</label>
+          <label data-value="1">
+            ★
+          </label>
+
+          <label data-value="2">
+            ★
+          </label>
+
+          <label data-value="3">
+            ★
+          </label>
+
+          <label data-value="4">
+            ★
+          </label>
+
+          <label data-value="5">
+            ★
+          </label>
 
         </div>
+
 
         <input
           type="hidden"
@@ -1004,11 +1616,13 @@
           value="5"
         />
 
+
         <input
           type="hidden"
           id="reviewCategoryId"
           name="category_id"
         />
+
 
         <button type="submit">
           Submit Review
@@ -1029,19 +1643,24 @@
 
     <p>
 
-      © <span id="year"></span>
+      ©
+
+      <span id="year"></span>
+
       Bleev Creations.
+
       All Rights Reserved
 
     </p>
 
 
     <div class="powered-by">
+
       Capturing Your Moments.
+
     </div>
 
   </footer>
-
 
 
   <!-- =========================================================
@@ -1058,6 +1677,7 @@
       &times;
     </button>
 
+
     <button
       class="lightbox-prev"
       type="button"
@@ -1066,11 +1686,13 @@
       &#10094;
     </button>
 
+
     <img
       id="lightboxImage"
       src=""
       alt="Gallery image"
     />
+
 
     <button
       class="lightbox-next"
@@ -1104,6 +1726,7 @@
             new Date().getFullYear();
 
         }
+
       }
     );
 
@@ -1112,29 +1735,38 @@
        VARIABLES
        ========================================================= */
 
-    const params = new URLSearchParams(window.location.search);
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
 
-    const categoryId = params.get("id");
+    const categoryId =
+      params.get("id");
 
     let imageList = [];
 
     let currentIndex = 0;
 
 
-
-      /* =========================================================
+    /* =========================================================
        FLOATING REVIEWS BUTTON — scroll to reviews
        ========================================================= */
 
     document
       .getElementById("floatingReviewsBtn")
-      .addEventListener("click", () => {
+      .addEventListener(
+        "click",
+        () => {
 
-        document
-          .querySelector(".reviews-section")
-          .scrollIntoView({ behavior: "smooth", block: "start" });
+          document
+            .querySelector(".reviews-section")
+            .scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
 
-      });
+        }
+      );
 
 
     /* =========================================================
@@ -1145,43 +1777,71 @@
 
       if (!categoryId) {
 
-        document.getElementById("categoryTitle").textContent =
+        document
+          .getElementById("categoryTitle")
+          .textContent =
           "Category Not Found";
 
-        document.getElementById("categoryName").textContent =
+        document
+          .getElementById("categoryName")
+          .textContent =
           "Category Not Found";
 
         return;
+
       }
+
 
       try {
 
         const response =
           await fetch(
-            `/api/categories?id=${encodeURIComponent(categoryId)}`
+            `/api/categories?id=${encodeURIComponent(
+              categoryId
+            )}`
           );
 
+
         if (!response.ok) {
-          throw new Error("Failed to load category.");
+
+          throw new Error(
+            "Failed to load category."
+          );
+
         }
 
-        const data = await response.json();
+
+        const data =
+          await response.json();
+
 
         if (!data.category) {
-          throw new Error("Category not found.");
+
+          throw new Error(
+            "Category not found."
+          );
+
         }
 
-        const cat = data.category;
+
+        const cat =
+          data.category;
 
 
         /* =====================================================
            CATEGORY INFORMATION
            ===================================================== */
 
-        document.getElementById("categoryTitle").textContent =
+        document
+          .getElementById("categoryTitle")
+          .textContent =
           cat.name;
 
-        document.getElementById("categoryName").childNodes[0].textContent =
+
+        document
+          .getElementById("categoryName")
+          .childNodes[0]
+          .textContent =
           cat.name + " ";
 
 
@@ -1189,7 +1849,8 @@
            CATEGORY IMAGES
            ===================================================== */
 
-        imageList = cat.images || [];
+        imageList =
+          cat.images || [];
 
 
         /* =====================================================
@@ -1197,15 +1858,25 @@
            ===================================================== */
 
         const categoryHeader =
-          document.getElementById("categoryHeader");
+          document.getElementById(
+            "categoryHeader"
+          );
+
 
         if (imageList.length > 0) {
 
           const randomIndex =
-            Math.floor(Math.random() * imageList.length);
+            Math.floor(
+              Math.random() *
+              imageList.length
+            );
+
 
           categoryHeader.style.backgroundImage =
-  `url("/api/image?id=${encodeURIComponent(imageList[randomIndex])}")`;
+            `url("/api/image?id=${encodeURIComponent(
+              imageList[randomIndex]
+            )}")`;
+
         }
 
 
@@ -1214,31 +1885,45 @@
            ===================================================== */
 
         const gallery =
-          document.getElementById("categoryGallery");
+          document.getElementById(
+            "categoryGallery"
+          );
+
 
         if (imageList.length === 0) {
 
           gallery.innerHTML = `
+
             <p style="
               grid-column: 1 / -1;
               text-align: center;
               color: #666;
             ">
+
               No images available for this category.
+
             </p>
+
           `;
 
         } else {
 
           gallery.innerHTML =
+
             imageList.map(
               (image, index) => `
+
                 <img
-                  src="/api/image?id=${encodeURIComponent(image)}"
-                  alt="${cat.name} - Photo ${index + 1}"
+                  src="/api/image?id=${encodeURIComponent(
+                    image
+                  )}"
+                  alt="${cat.name} - Photo ${
+                    index + 1
+                  }"
                   loading="lazy"
                   data-index="${index}"
                 />
+
               `
             ).join("");
 
@@ -1250,26 +1935,39 @@
            ===================================================== */
 
         document
-          .querySelectorAll("#categoryGallery img")
-          .forEach((img) => {
+          .querySelectorAll(
+            "#categoryGallery img"
+          )
+          .forEach(
+            (img) => {
 
-            img.addEventListener("click", () => {
+              img.addEventListener(
+                "click",
+                () => {
 
-              currentIndex =
-                Number(img.dataset.index);
+                  currentIndex =
+                    Number(
+                      img.dataset.index
+                    );
 
-              openLightbox();
+                  openLightbox();
 
-            });
+                }
+              );
 
-          });
+            }
+          );
 
 
         /* =====================================================
            REVIEW CATEGORY ID
            ===================================================== */
 
-        document.getElementById("reviewCategoryId").value =
+        document
+          .getElementById(
+            "reviewCategoryId"
+          )
+          .value =
           categoryId;
 
 
@@ -1283,10 +1981,18 @@
 
         console.error(error);
 
-        document.getElementById("categoryTitle").textContent =
+        document
+          .getElementById(
+            "categoryTitle"
+          )
+          .textContent =
           "Unable to Load Category";
 
-        document.getElementById("categoryName").textContent =
+        document
+          .getElementById(
+            "categoryName"
+          )
+          .textContent =
           "Unable to Load Category";
 
       }
@@ -1298,28 +2004,46 @@
        LOAD REVIEWS
        ========================================================= */
 
-    async function loadReviews(updateAvg = false) {
+    async function loadReviews(
+      updateAvg = false
+    ) {
 
       const container =
-        document.getElementById("reviews-list");
+        document.getElementById(
+          "reviews-list"
+        );
+
 
       const toggleContainer =
-        document.getElementById("reviews-toggle-container");
+        document.getElementById(
+          "reviews-toggle-container"
+        );
+
 
       const toggleButton =
-        document.getElementById("reviewsToggle");
+        document.getElementById(
+          "reviewsToggle"
+        );
 
 
       try {
 
         const response =
           await fetch(
-            `/api/reviews?category_id=${encodeURIComponent(categoryId)}`
+            `/api/reviews?category_id=${encodeURIComponent(
+              categoryId
+            )}`
           );
 
+
         if (!response.ok) {
-          throw new Error("Failed to load reviews.");
+
+          throw new Error(
+            "Failed to load reviews."
+          );
+
         }
+
 
         const reviews =
           await response.json();
@@ -1329,64 +2053,123 @@
            NO REVIEWS
            ===================================================== */
 
-        if (!reviews || reviews.length === 0) {
+        if (
+          !reviews ||
+          reviews.length === 0
+        ) {
 
           container.innerHTML = `
+
             <div
               class="review"
-              style="grid-column: 1 / -1; text-align: center;"
+              style="
+                grid-column: 1 / -1;
+                text-align: center;
+              "
             >
+
               <p>
-                No reviews yet. Be the first to leave a review.
+
+                No reviews yet.
+                Be the first to leave a review.
+
               </p>
+
             </div>
+
           `;
 
-          toggleContainer.style.display = "none";
+
+          toggleContainer.style.display =
+            "none";
+
 
           if (updateAvg) {
 
-            document.getElementById("averageRating").textContent =
+            document
+              .getElementById(
+                "averageRating"
+              )
+              .textContent =
               "";
 
           }
 
+
           return;
+
         }
 
 
         /* =====================================================
            RENDER REVIEWS
-           
            First 4 are visible.
            Remaining reviews receive hidden-review.
            ===================================================== */
 
         container.innerHTML =
+
           reviews.map(
             (r, index) => `
-              <div
-                class="review ${index >= 4 ? "hidden-review" : ""}"
+
+              <article
+                class="review ${
+                  index >= 4
+                    ? "hidden-review"
+                    : ""
+                }"
               >
 
                 <strong>
-                  ${escapeHtml(r.name)}
+
+                  ${escapeHtml(
+                    r.name
+                  )}
+
                 </strong>
 
-                <div>
-                  ${"⭐".repeat(Number(r.rating))}
-                  ${"☆".repeat(5 - Number(r.rating))}
+
+                <div
+                  aria-label="${Number(
+                    r.rating
+                  )} out of 5 stars"
+                >
+
+                  ${"★".repeat(
+                    Number(
+                      r.rating
+                    )
+                  )}
+
+                  ${"☆".repeat(
+                    5 -
+                    Number(
+                      r.rating
+                    )
+                  )}
+
                 </div>
 
+
                 <p>
-                  ${escapeHtml(r.text)}
+
+                  "${escapeHtml(
+                    r.text
+                  )}"
+
                 </p>
 
+
                 <small>
-                  ${escapeHtml(r.date)}
+
+                  ${escapeHtml(
+                    r.date
+                  )}
+
                 </small>
 
-              </div>
+              </article>
+
             `
           ).join("");
 
@@ -1395,9 +2178,12 @@
            VIEW ALL BUTTON
            ===================================================== */
 
-        if (reviews.length > 4) {
+        if (
+          reviews.length > 4
+        ) {
 
-          toggleContainer.style.display = "flex";
+          toggleContainer.style.display =
+            "flex";
 
           toggleButton.textContent =
             "View All Reviews";
@@ -1415,7 +2201,6 @@
 
         /* =====================================================
            AVERAGE RATING
-           
            Calculated using ALL reviews, not only
            the four currently visible.
            ===================================================== */
@@ -1424,35 +2209,70 @@
 
           const total =
             reviews.reduce(
-              (sum, review) =>
-                sum + Number(review.rating),
+              (
+                sum,
+                review
+              ) =>
+                sum +
+                Number(
+                  review.rating
+                ),
               0
             );
 
-          const average =
-            total / reviews.length;
 
-          document.getElementById("averageRating").textContent =
-            `★ ${average.toFixed(1)} (${reviews.length})`;
+          const average =
+            total /
+            reviews.length;
+
+
+          document
+            .getElementById(
+              "averageRating"
+            )
+            .textContent =
+            `★ ${average.toFixed(
+              1
+            )} · ${
+              reviews.length
+            } review${
+              reviews.length === 1
+                ? ""
+                : "s"
+            }`;
 
         }
+
 
       } catch (error) {
 
         console.error(error);
 
+
         container.innerHTML = `
+
           <div
             class="review"
-            style="grid-column: 1 / -1; text-align: center;"
+            style="
+              grid-column: 1 / -1;
+              text-align: center;
+            "
           >
+
             <p>
-              Unable to load reviews at the moment.
+
+              Unable to load reviews
+              at the moment.
+
             </p>
+
           </div>
+
         `;
 
-        toggleContainer.style.display = "none";
+
+        toggleContainer.style.display =
+          "none";
 
       }
 
@@ -1464,83 +2284,106 @@
        ========================================================= */
 
     document
-      .getElementById("reviewsToggle")
-      .addEventListener("click", () => {
+      .getElementById(
+        "reviewsToggle"
+      )
+      .addEventListener(
+        "click",
+        () => {
 
-        const reviews =
-          document.querySelectorAll(
-            "#reviews-list .review"
-          );
-
-        const button =
-          document.getElementById("reviewsToggle");
-
-        const isExpanded =
-          button.dataset.expanded === "true";
-
-
-        /* =====================================================
-           SHOW ALL
-           ===================================================== */
-
-        if (!isExpanded) {
-
-          reviews.forEach((review) => {
-
-            review.classList.remove(
-              "hidden-review"
+          const reviews =
+            document.querySelectorAll(
+              "#reviews-list .review"
             );
 
-          });
 
-          button.textContent =
-            "Show Less";
+          const button =
+            document.getElementById(
+              "reviewsToggle"
+            );
 
-          button.dataset.expanded =
+
+          const isExpanded =
+            button.dataset.expanded ===
             "true";
 
-        }
 
+          /* ===================================================
+             SHOW ALL
+             =================================================== */
 
-        /* =====================================================
-           SHOW ONLY FIRST 4
-           ===================================================== */
+          if (!isExpanded) {
 
-        else {
+            reviews.forEach(
+              (review) => {
 
-          reviews.forEach(
-            (review, index) => {
-
-              if (index >= 4) {
-
-                review.classList.add(
+                review.classList.remove(
                   "hidden-review"
                 );
 
               }
-
-            }
-          );
-
-          button.textContent =
-            "View All Reviews";
-
-          button.dataset.expanded =
-            "false";
+            );
 
 
-          /* Scroll back to reviews */
+            button.textContent =
+              "Show Less";
 
-          document
-            .getElementById("reviews-list")
-            .scrollIntoView({
-              behavior: "smooth",
-              block: "start"
-            });
+
+            button.dataset.expanded =
+              "true";
+
+          }
+
+
+          /* ===================================================
+             SHOW ONLY FIRST 4
+             =================================================== */
+
+          else {
+
+            reviews.forEach(
+              (
+                review,
+                index
+              ) => {
+
+                if (
+                  index >= 4
+                ) {
+
+                  review.classList.add(
+                    "hidden-review"
+                  );
+
+                }
+
+              }
+            );
+
+
+            button.textContent =
+              "View All Reviews";
+
+
+            button.dataset.expanded =
+              "false";
+
+
+            /* Scroll back to reviews */
+
+            document
+              .getElementById(
+                "reviews-list"
+              )
+              .scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+              });
+
+          }
 
         }
-
-      });
+      );
 
 
     /* =========================================================
@@ -1548,108 +2391,142 @@
        ========================================================= */
 
     document
-      .getElementById("review-form")
-      .addEventListener("submit", async (event) => {
+      .getElementById(
+        "review-form"
+      )
+      .addEventListener(
+        "submit",
+        async (event) => {
 
-        event.preventDefault();
-
-        const form =
-          event.target;
-
-        const formData =
-          new FormData(form);
+          event.preventDefault();
 
 
-        try {
+          const form =
+            event.target;
 
-          const response =
-            await fetch(
-              "/api/reviews",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(
-                  Object.fromEntries(formData)
-                )
-              }
+
+          const formData =
+            new FormData(form);
+
+
+          try {
+
+            const response =
+              await fetch(
+                "/api/reviews",
+                {
+
+                  method: "POST",
+
+                  headers: {
+                    "Content-Type":
+                      "application/json"
+                  },
+
+                  body:
+                    JSON.stringify(
+                      Object.fromEntries(
+                        formData
+                      )
+                    )
+
+                }
+              );
+
+
+            const result =
+              await response.json();
+
+
+            if (
+              !response.ok ||
+              result.success === false
+            ) {
+
+              throw new Error(
+                result.message ||
+                "Unable to submit review."
+              );
+
+            }
+
+
+            alert(
+              result.message ||
+              "Thank you for your review!"
             );
 
 
-          const result =
-            await response.json();
+            /* Reset form */
+
+            form.reset();
 
 
-          if (!response.ok || result.success === false) {
+            document
+              .getElementById(
+                "reviewRating"
+              )
+              .value =
+              "5";
 
-            throw new Error(
-              result.message ||
-              "Unable to submit review."
+
+            /* Reset stars */
+
+            document
+              .querySelectorAll(
+                ".star-rating label"
+              )
+              .forEach(
+                (star) => {
+
+                  star.classList.remove(
+                    "active"
+                  );
+
+                }
+              );
+
+
+            document
+              .querySelectorAll(
+                ".star-rating label"
+              )
+              .forEach(
+                (star) => {
+
+                  if (
+                    Number(
+                      star.dataset.value
+                    ) <= 5
+                  ) {
+
+                    star.classList.add(
+                      "active"
+                    );
+
+                  }
+
+                }
+              );
+
+
+            /* Reload reviews */
+
+            await loadReviews(true);
+
+          } catch (error) {
+
+            console.error(error);
+
+            alert(
+              error.message ||
+              "Unable to submit your review."
             );
 
           }
 
-
-          alert(
-            result.message ||
-            "Thank you for your review!"
-          );
-
-
-          /* Reset form */
-
-          form.reset();
-
-          document.getElementById(
-            "reviewRating"
-          ).value = "5";
-
-
-          /* Reset stars */
-
-          document
-            .querySelectorAll(".star-rating label")
-            .forEach((star) => {
-
-              star.classList.remove(
-                "active"
-              );
-
-            });
-
-
-          document
-            .querySelectorAll(".star-rating label")
-            .forEach((star) => {
-
-              if (
-                Number(star.dataset.value) <= 5
-              ) {
-
-                star.classList.add(
-                  "active"
-                );
-
-              }
-
-            });
-
-
-          /* Reload reviews */
-
-          await loadReviews(true);
-
-        } catch (error) {
-
-          console.error(error);
-
-          alert(
-            error.message ||
-            "Unable to submit your review."
-          );
-
         }
-
-      });
+      );
 
 
     /* =========================================================
@@ -1661,78 +2538,102 @@
         ".star-rating label"
       );
 
+
     const ratingInput =
       document.getElementById(
         "reviewRating"
       );
 
 
-    function updateStars(value) {
+    function updateStars(
+      value
+    ) {
 
-      stars.forEach((star) => {
+      stars.forEach(
+        (star) => {
 
-        const starValue =
-          Number(star.dataset.value);
+          const starValue =
+            Number(
+              star.dataset.value
+            );
 
-        if (starValue <= value) {
 
-          star.classList.add(
-            "active"
-          );
+          if (
+            starValue <= value
+          ) {
 
-        } else {
+            star.classList.add(
+              "active"
+            );
 
-          star.classList.remove(
-            "active"
-          );
+          } else {
+
+            star.classList.remove(
+              "active"
+            );
+
+          }
 
         }
-
-      });
+      );
 
     }
 
 
-    stars.forEach((star) => {
+    stars.forEach(
+      (star) => {
 
-      star.addEventListener(
-        "mouseenter",
-        () => {
+        star.addEventListener(
+          "mouseenter",
+          () => {
 
-          updateStars(
-            Number(star.dataset.value)
-          );
+            updateStars(
+              Number(
+                star.dataset.value
+              )
+            );
 
-        }
-      );
+          }
+        );
 
 
-      star.addEventListener(
-        "click",
-        () => {
+        star.addEventListener(
+          "click",
+          () => {
 
-          const value =
-            Number(star.dataset.value);
+            const value =
+              Number(
+                star.dataset.value
+              );
 
-          ratingInput.value =
-            value;
 
-          updateStars(value);
+            ratingInput.value =
+              value;
 
-        }
-      );
 
-    });
+            updateStars(
+              value
+            );
+
+          }
+        );
+
+      }
+    );
 
 
     document
-      .querySelector(".star-rating")
+      .querySelector(
+        ".star-rating"
+      )
       .addEventListener(
         "mouseleave",
         () => {
 
           updateStars(
-            Number(ratingInput.value)
+            Number(
+              ratingInput.value
+            )
           );
 
         }
@@ -1755,6 +2656,7 @@
         "lightbox"
       );
 
+
     const lightboxImage =
       document.getElementById(
         "lightboxImage"
@@ -1767,15 +2669,22 @@
         !imageList.length ||
         !imageList[currentIndex]
       ) {
+
         return;
+
       }
 
+
       lightboxImage.src =
-  `/api/image?id=${encodeURIComponent(imageList[currentIndex])}`;
+        `/api/image?id=${encodeURIComponent(
+          imageList[currentIndex]
+        )}`;
+
 
       lightbox.classList.add(
         "active"
       );
+
 
       document.body.style.overflow =
         "hidden";
@@ -1789,6 +2698,7 @@
         "active"
       );
 
+
       document.body.style.overflow =
         "";
 
@@ -1798,12 +2708,20 @@
     function showPreviousImage() {
 
       if (!imageList.length) {
+
         return;
+
       }
 
+
       currentIndex =
-        (currentIndex - 1 + imageList.length) %
+        (
+          currentIndex -
+          1 +
+          imageList.length
+        ) %
         imageList.length;
+
 
       openLightbox();
 
@@ -1813,12 +2731,19 @@
     function showNextImage() {
 
       if (!imageList.length) {
+
         return;
+
       }
 
+
       currentIndex =
-        (currentIndex + 1) %
+        (
+          currentIndex +
+          1
+        ) %
         imageList.length;
+
 
       openLightbox();
 
@@ -1830,7 +2755,9 @@
        ========================================================= */
 
     document
-      .querySelector(".lightbox-close")
+      .querySelector(
+        ".lightbox-close"
+      )
       .addEventListener(
         "click",
         closeLightbox
@@ -1838,7 +2765,9 @@
 
 
     document
-      .querySelector(".lightbox-prev")
+      .querySelector(
+        ".lightbox-prev"
+      )
       .addEventListener(
         "click",
         showPreviousImage
@@ -1846,7 +2775,9 @@
 
 
     document
-      .querySelector(".lightbox-next")
+      .querySelector(
+        ".lightbox-next"
+      )
       .addEventListener(
         "click",
         showNextImage
@@ -1862,7 +2793,8 @@
       (event) => {
 
         if (
-          event.target === lightbox
+          event.target ===
+          lightbox
         ) {
 
           closeLightbox();
@@ -1886,12 +2818,15 @@
             "active"
           )
         ) {
+
           return;
+
         }
 
 
         if (
-          event.key === "Escape"
+          event.key ===
+          "Escape"
         ) {
 
           closeLightbox();
@@ -1900,7 +2835,8 @@
 
 
         if (
-          event.key === "ArrowLeft"
+          event.key ===
+          "ArrowLeft"
         ) {
 
           showPreviousImage();
@@ -1909,7 +2845,8 @@
 
 
         if (
-          event.key === "ArrowRight"
+          event.key ===
+          "ArrowRight"
         ) {
 
           showNextImage();
@@ -1926,18 +2863,46 @@
        as HTML.
        ========================================================= */
 
-    function escapeHtml(value) {
+    function escapeHtml(
+      value
+    ) {
 
-      if (value === null || value === undefined) {
+      if (
+        value === null ||
+        value === undefined
+      ) {
+
         return "";
+
       }
 
+
       return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+
+        .replace(
+          /</g,
+          "&lt;"
+        )
+
+        .replace(
+          />/g,
+          "&gt;"
+        )
+
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+
+        .replace(
+          /'/g,
+          "&#039;"
+        );
 
     }
 
@@ -1951,4 +2916,5 @@
   </script>
 
 </body>
+
 </html>

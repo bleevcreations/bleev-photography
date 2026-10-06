@@ -2,66 +2,425 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Random Reviews</title>
-  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
-  <link rel="stylesheet" href="css/style.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Customer Reviews | Bleev Creations</title>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="assets/logos/favicon.png"
+  />
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
   <style>
+    /* =========================================================
+       PAGE
+       ========================================================= */
+
     body {
-      font-family: 'Arial', sans-serif;
-      padding: 20px;
-      background-color: #f5f5f5;
+      margin: 0;
+      min-height: 100vh;
+
+      font-family:
+        Arial,
+        sans-serif;
+
+      background:
+        radial-gradient(
+          circle at top left,
+          rgba(78, 67, 118, 0.12),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(43, 88, 118, 0.14),
+          transparent 35%
+        ),
+        #f4f6f8;
+
+      color: #1f2933;
     }
 
-    h1 {
+    /* =========================================================
+       HEADER
+       ========================================================= */
+
+    .reviews-header {
+      max-width: 1100px;
+
+      margin:
+        0 auto;
+
+      padding:
+        55px 20px 30px;
+
       text-align: center;
-      color: #333;
-      margin-bottom: 30px;
     }
+
+    .reviews-eyebrow {
+      display: block;
+
+      margin-bottom: 8px;
+
+      font-family:
+        "Playfair Display",
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 0.78rem;
+
+      font-weight: 700;
+
+      letter-spacing: 0.18em;
+
+      color: #4e4376;
+
+      text-transform: uppercase;
+    }
+
+    .reviews-header h1 {
+      margin: 0;
+
+      font-family:
+        "Playfair Display",
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size:
+        clamp(2rem, 6vw, 3.2rem);
+
+      line-height: 1.1;
+
+      color: #052a4a;
+    }
+
+    .reviews-header p {
+      max-width: 560px;
+
+      margin:
+        12px auto 0;
+
+      color: #68737d;
+
+      font-size:
+        clamp(0.9rem, 2vw, 1rem);
+
+      line-height: 1.6;
+    }
+
+    /* =========================================================
+       REVIEWS GRID
+       ========================================================= */
+
+    #reviewsContainer {
+      width: min(
+        100% - 32px,
+        1100px
+      );
+
+      margin:
+        0 auto 40px;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+      gap: 16px;
+    }
+
+    /* =========================================================
+       REVIEW CARD
+       ========================================================= */
 
     .review-card {
-      background: #fff;
-      border-radius: 10px;
+      position: relative;
+
+      min-width: 0;
+
+      display: flex;
+
+      flex-direction: column;
+
       padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.8);
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.98),
+          rgba(248, 250, 252, 0.94)
+        );
+
+      box-shadow:
+        0 8px 24px
+        rgba(5, 42, 74, 0.08),
+        0 2px 6px
+        rgba(5, 42, 74, 0.04);
+
+      overflow: hidden;
+
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
     }
 
-    .review-category {
-      font-weight: bold;
-      color: #555;
+    .review-card::before {
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 3px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #2b5876,
+          #4e4376
+        );
     }
 
-    .review-text {
-      margin-top: 10px;
-      font-size: 16px;
-      color: #333;
+    .review-card:hover {
+      transform:
+        translateY(-4px);
+
+      box-shadow:
+        0 14px 30px
+        rgba(5, 42, 74, 0.12),
+        0 4px 10px
+        rgba(5, 42, 74, 0.06);
+    }
+
+    /* =========================================================
+       RATING
+       ========================================================= */
+
+    .review-rating {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      margin-bottom: 12px;
     }
 
     .rating-stars {
-      color: #fbc02d;
+      color: #e9a900;
+
+      font-size: 0.9rem;
+
+      letter-spacing: 2px;
+
+      line-height: 1;
     }
+
+    .review-quote {
+      color: rgba(43, 88, 118, 0.18);
+
+      font-family: Georgia, serif;
+
+      font-size: 2rem;
+
+      line-height: 0.6;
+    }
+
+    /* =========================================================
+       REVIEW TEXT
+       ========================================================= */
+
+    .review-text {
+      margin: 0;
+
+      color: #3d4650;
+
+      font-family:
+        "Playfair Display",
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 0.96rem;
+
+      line-height: 1.55;
+
+      flex: 1;
+
+      overflow-wrap: anywhere;
+    }
+
+    /* =========================================================
+       REVIEWER
+       ========================================================= */
+
+    .reviewer {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-top: 18px;
+
+      padding-top: 13px;
+
+      border-top:
+        1px solid
+        rgba(5, 42, 74, 0.08);
+    }
+
+    .reviewer-avatar {
+      width: 32px;
+      height: 32px;
+
+      flex:
+        0 0 32px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2b5876,
+          #4e4376
+        );
+
+      color: #ffffff;
+
+      font-size: 0.75rem;
+    }
+
+    .reviewer-info {
+      min-width: 0;
+    }
+
+    .reviewer-name {
+      margin: 0;
+
+      color: #052a4a;
+
+      font-size: 0.84rem;
+
+      font-weight: 700;
+
+      white-space: nowrap;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+    }
+
+    .reviewer-label {
+      margin-top: 2px;
+
+      color: #89939c;
+
+      font-size: 0.7rem;
+    }
+
+    /* =========================================================
+       EMPTY / ERROR MESSAGE
+       ========================================================= */
+
+    .reviews-message {
+      grid-column: 1 / -1;
+
+      padding: 35px 20px;
+
+      text-align: center;
+
+      color: #68737d;
+
+      background: rgba(255, 255, 255, 0.75);
+
+      border-radius: 16px;
+    }
+
+    /* =========================================================
+       BACK LINK
+       ========================================================= */
 
     .back-link {
       display: block;
-      text-align: center;
-      margin-top: 30px;
-      font-size: 16px;
-      color: #007bff;
+
+      width: fit-content;
+
+      margin:
+        0 auto 45px;
+
+      padding:
+        9px 16px;
+
+      border-radius: 999px;
+
+      color: #ffffff;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2b5876,
+          #4e4376
+        );
+
+      font-size: 0.85rem;
+
       text-decoration: none;
+
+      box-shadow:
+        0 5px 14px
+        rgba(43, 88, 118, 0.18);
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
     .back-link:hover {
-      text-decoration: underline;
+      transform:
+        translateY(-2px);
+
+      box-shadow:
+        0 8px 18px
+        rgba(43, 88, 118, 0.24);
     }
 
-     /* =========================================================
+    /* =========================================================
        FOOTER
        ========================================================= */
 
     footer {
-      padding: 1.5rem 1rem;
+      padding:
+        1.5rem 1rem;
 
       text-align: center;
 
@@ -73,7 +432,8 @@
           #4e4376
         );
 
-      color: rgba(255, 255, 255, 0.85);
+      color:
+        rgba(255, 255, 255, 0.85);
     }
 
     footer p {
@@ -89,71 +449,407 @@
 
       letter-spacing: 0.04em;
     }
-  </style>
-</head>
-<body>
 
-  <h1>🌟 Random User Reviews</h1>
-  <div id="reviewsContainer">
-    <p>Loading reviews...</p>
-  </div>
-  <a href="homepage.html" class="back-link">&larr; Back to Homepage</a>
+    footer .powered-by {
+      margin-top: 5px;
 
-  <footer>
-  <p>
-    © Copyright 2022
-    &nbsp;|&nbsp;
-    Bleev Creations 
-    &nbsp;|&nbsp;
-    All Rights Reserved
-  </p>
-</footer>
+      font-size: 0.75rem;
 
-  <script>
-    // Reviews are public input, so escape before putting them into innerHTML
-    const esc = (v) => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+      opacity: 0.75;
+    }
 
-    async function fetchRandomReviews() {
-      const reviewsContainer = document.getElementById("reviewsContainer");
-      try {
-        const response = await fetch('/api/reviews?random=1');
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
+    /* =========================================================
+       TABLET
+       ========================================================= */
 
-        reviewsContainer.innerHTML = '';
-
-        // If no reviews
-        if (!data.length) {
-          reviewsContainer.innerHTML = "<p>No reviews found.</p>";
-          return;
-        }
-
-        data.forEach(item => {
-          if (item.review) {
-            const card = document.createElement("div");
-            card.className = "review-card";
-
-            // Create rating stars
-            const stars = "★".repeat(item.review.rating) + "☆".repeat(5 - item.review.rating);
-
-            card.innerHTML = `
-              <div class="review-category">(${esc(item.category_name)})</div>
-              <div class="rating-stars">${stars}</div>
-              <div class="review-text">"${esc(item.review.text)}"</div>
-              <div class="reviewer-name" style="margin-top:10px; font-style:italic; color:#555;">— ${esc(item.review.name)}</div>
-            `;
-
-            reviewsContainer.appendChild(card);
-          }
-        });
-      } catch (err) {
-        console.error("Failed to fetch reviews:", err);
-        reviewsContainer.innerHTML = "<p>Failed to load reviews.</p>";
+    @media (max-width: 850px) {
+      #reviewsContainer {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
       }
     }
 
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 600px) {
+      .reviews-header {
+        padding:
+          38px 16px 24px;
+      }
+
+      .reviews-header h1 {
+        font-size: 2rem;
+      }
+
+      .reviews-header p {
+        font-size: 0.86rem;
+      }
+
+      #reviewsContainer {
+        width:
+          calc(100% - 24px);
+
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+
+        margin-bottom: 30px;
+      }
+
+      .review-card {
+        padding: 15px;
+
+        border-radius: 14px;
+      }
+
+      .review-rating {
+        margin-bottom: 9px;
+      }
+
+      .rating-stars {
+        font-size: 0.72rem;
+
+        letter-spacing: 1px;
+      }
+
+      .review-quote {
+        font-size: 1.6rem;
+      }
+
+      .review-text {
+        font-size: 0.82rem;
+
+        line-height: 1.45;
+      }
+
+      .reviewer {
+        gap: 7px;
+
+        margin-top: 13px;
+
+        padding-top: 10px;
+      }
+
+      .reviewer-avatar {
+        width: 27px;
+        height: 27px;
+
+        flex-basis: 27px;
+
+        font-size: 0.62rem;
+      }
+
+      .reviewer-name {
+        font-size: 0.72rem;
+      }
+
+      .reviewer-label {
+        font-size: 0.62rem;
+      }
+
+      .back-link {
+        margin-bottom: 30px;
+
+        font-size: 0.78rem;
+      }
+    }
+
+    /* =========================================================
+       VERY SMALL PHONES
+       ========================================================= */
+
+    @media (max-width: 360px) {
+      #reviewsContainer {
+        grid-template-columns:
+          1fr;
+      }
+
+      .review-card {
+        padding: 17px;
+      }
+
+      .review-text {
+        font-size: 0.88rem;
+      }
+    }
+
+    /* =========================================================
+       REDUCED MOTION
+       ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+      .review-card,
+      .back-link {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =======================================================
+       HEADER
+       ======================================================= -->
+
+  <header class="reviews-header">
+    <span class="reviews-eyebrow">
+      BLEEV CREATIONS
+    </span>
+
+    <h1>
+      Customer Reviews
+    </h1>
+
+    <p>
+      A few words from people who have experienced
+      Bleev Creations.
+    </p>
+  </header>
+
+
+  <!-- =======================================================
+       REVIEWS
+       ======================================================= -->
+
+  <main>
+    <div id="reviewsContainer">
+      <p class="reviews-message">
+        Loading reviews...
+      </p>
+    </div>
+  </main>
+
+
+  <!-- =======================================================
+       BACK LINK
+       ======================================================= -->
+
+  <a
+    href="index.html"
+    class="back-link"
+  >
+    &larr; Back to Homepage
+  </a>
+
+
+  <!-- =======================================================
+       FOOTER
+       ======================================================= -->
+
+  <footer>
+    <p>
+      ©
+      <span id="year"></span>
+      Bleev Creations.
+      All Rights Reserved
+    </p>
+
+    <div class="powered-by">
+      Capturing Your Moments.
+    </div>
+  </footer>
+
+
+  <!-- =======================================================
+       JAVASCRIPT
+       ======================================================= -->
+
+  <script>
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+        const yearElement =
+          document.getElementById("year");
+
+        if (yearElement) {
+          yearElement.textContent =
+            new Date().getFullYear();
+        }
+      }
+    );
+
+
+    /*
+     * Reviews are public input, so escape
+     * all user-provided content before
+     * inserting it into innerHTML.
+     */
+
+    const esc = (value) =>
+      String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+
+    /*
+     * Create a small avatar using the
+     * reviewer's first letter.
+     */
+
+    const getInitial = (name) => {
+      const value =
+        String(name || "").trim();
+
+      return value
+        ? value.charAt(0).toUpperCase()
+        : "?";
+    };
+
+
+    /*
+     * Load random reviews.
+     */
+
+    async function fetchRandomReviews() {
+      const reviewsContainer =
+        document.getElementById(
+          "reviewsContainer"
+        );
+
+      try {
+        const response =
+          await fetch(
+            "/api/reviews?random=1"
+          );
+
+        if (!response.ok) {
+          throw new Error(
+            "Network response was not ok"
+          );
+        }
+
+        const data =
+          await response.json();
+
+        reviewsContainer.innerHTML = "";
+
+
+        /*
+         * No reviews
+         */
+
+        if (!data.length) {
+          reviewsContainer.innerHTML = `
+            <p class="reviews-message">
+              No reviews found yet.
+            </p>
+          `;
+
+          return;
+        }
+
+
+        /*
+         * Create review cards.
+         *
+         * The API now returns:
+         *
+         * {
+         *   name,
+         *   text,
+         *   rating,
+         *   created_at
+         * }
+         */
+
+        data.forEach((review) => {
+          const card =
+            document.createElement("article");
+
+          card.className =
+            "review-card";
+
+
+          const rating =
+            Math.max(
+              0,
+              Math.min(
+                5,
+                Number(review.rating) || 0
+              )
+            );
+
+
+          const stars =
+            "★".repeat(rating) +
+            "☆".repeat(5 - rating);
+
+
+          const initial =
+            getInitial(review.name);
+
+
+          card.innerHTML = `
+            <div class="review-rating">
+              <div
+                class="rating-stars"
+                aria-label="${rating} out of 5 stars"
+              >
+                ${stars}
+              </div>
+
+              <span
+                class="review-quote"
+                aria-hidden="true"
+              >
+                &ldquo;
+              </span>
+            </div>
+
+            <p class="review-text">
+              "${esc(review.text)}"
+            </p>
+
+            <div class="reviewer">
+              <div
+                class="reviewer-avatar"
+                aria-hidden="true"
+              >
+                ${esc(initial)}
+              </div>
+
+              <div class="reviewer-info">
+                <p class="reviewer-name">
+                  ${esc(review.name)}
+                </p>
+
+                <div class="reviewer-label">
+                  Verified customer review
+                </div>
+              </div>
+            </div>
+          `;
+
+          reviewsContainer.appendChild(
+            card
+          );
+        });
+
+      } catch (error) {
+        console.error(
+          "Failed to fetch reviews:",
+          error
+        );
+
+        reviewsContainer.innerHTML = `
+          <p class="reviews-message">
+            Failed to load reviews.
+            Please try again later.
+          </p>
+        `;
+      }
+    }
+
+
     fetchRandomReviews();
   </script>
+
 </body>
 </html>
