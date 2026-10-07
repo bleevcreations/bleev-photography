@@ -641,9 +641,6 @@
       A few words from people who have experienced
       Bleev Creations.
     </p>
-    <div id="reviewsCount" class="reviews-count">
-  Loading review count...
-</div>
   </header>
 
 
@@ -769,49 +766,7 @@
 
 reviewsContainer.innerHTML = "";
 
-const reviewsCount =
-  document.getElementById("reviewsCount");
-
-
-        /*
-         * No reviews
-         */
-
-        if (
-          !Array.isArray(data) ||
-          data.length === 0
-        ) {
-          reviewsContainer.innerHTML = `
-            <p class="reviews-message">
-              No reviews found yet.
-            </p>
-          `;
-
-          return;
-        }
-
-        if (
-  !Array.isArray(data) ||
-  data.length === 0
-) {
-  reviewsContainer.innerHTML = `
-    <p class="reviews-message">
-      No reviews found yet.
-    </p>
-  `;
-
-  if (reviewsCount) {
-    reviewsCount.textContent =
-      "0 Reviews";
-  }
-
-  return;
-}
-
-if (reviewsCount) {
-  reviewsCount.textContent =
-    `${data.length} Review${data.length === 1 ? "" : "s"}`;
-}
+  
 
 
         /*

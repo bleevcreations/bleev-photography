@@ -226,6 +226,113 @@
 
       box-shadow: var(--shadow);
     }
+
+        .admin-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .admin-nav a {
+      background: var(--primary);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-size: 0.95rem;
+      box-shadow: var(--shadow);
+    }
+
+    .admin-nav a.logout {
+      background: crimson;
+    }
+
+    @media (max-width: 600px) {
+
+      body { padding: 1rem; }
+
+      h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+      }
+
+      .admin-nav a {
+        flex: 1 1 calc(50% - 0.6rem);
+        text-align: center;
+        padding: 0.7rem 0.5rem;
+      }
+
+      form {
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+      }
+
+      #categoryList { gap: 1rem; }
+
+      .category-entry {
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.6rem;
+      }
+
+      .category-entry > strong,
+      .category-entry > .image-grid {
+        grid-column: 1 / -1;
+      }
+
+      .category-entry > strong {
+        font-size: 1.05rem;
+        overflow-wrap: anywhere;
+      }
+
+      .category-entry > br { display: none; }
+
+      .category-entry > button {
+        margin-top: 0;
+        padding: 0.7rem 0.3rem;
+        font-size: 0.85rem;
+      }
+
+      .category-entry .image-grid {
+        gap: 6px;
+        margin-top: 0;
+      }
+
+      .category-entry .image-grid img.preview {
+        aspect-ratio: 1 / 1;
+        height: auto;
+      }
+
+      .category-entry .image-grid button {
+        top: 4px;
+        right: 4px;
+        width: 30px;
+        height: 30px;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        line-height: 1;
+      }
+
+      .modal-content {
+        width: calc(100% - 2rem);
+        margin: 6vh auto;
+        padding: 1.25rem;
+      }
+
+      .modal-content button { width: 100%; }
+
+      #previewImages img,
+      #newImagePreview img {
+        width: calc(33.333% - 10px);
+      }
+    }
   </style>
   <style>html { visibility: hidden; }</style>
 </head>
@@ -236,58 +343,10 @@
        ADMIN NAVIGATION
        ========================================================= -->
 
-  <div style="text-align: right; margin-bottom: 1rem;">
-
-    <a
-      href="about.html"
-      style="
-        background: var(--primary);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius);
-        text-decoration: none;
-        font-size: 0.95rem;
-        box-shadow: var(--shadow);
-        margin-right: 1rem;
-      "
-    >
-      Edit About Page
-    </a>
-
-   <a
-      href="reviews.html"
-      style="
-        background: var(--primary);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius);
-        text-decoration: none;
-        font-size: 0.95rem;
-        box-shadow: var(--shadow);
-        margin-right: 1rem;
-      "
-       >
-      Manage Reviews
-    </a>
-
-    <a
-      href="#"
-+      onclick="adminLogout(); return false;"
-      style="
-        background: crimson;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius);
-        font-size: 0.95rem;
-        border: none;
-        cursor: pointer;
-        box-shadow: var(--shadow);
-        text-decoration: none;
-      "
-    >
-      Logout
-    </a>
-
+  <div class="admin-nav">
+    <a href="about.html">Edit About Page</a>
+    <a href="reviews.html">Manage Reviews</a>
+    <a href="#" class="logout" onclick="adminLogout(); return false;">Logout</a>
   </div>
 
 
