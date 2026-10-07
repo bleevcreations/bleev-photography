@@ -610,42 +610,40 @@
        ========================================================= -->
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("contactForm");
-  const status = document.getElementById("formStatus");
-  if (!form || !status) return;
+document.addEventListener("submit", (e) => {
+  const form = e.target;
+  if (!(form instanceof HTMLFormElement) || !form.classList.contains("contact-form")) return;
 
-  const PHONE = "254768572974";
+  e.preventDefault();
 
+  const status = form.querySelector(".form-status");
   const showError = (msg) => {
     status.textContent = msg;
     status.className = "form-status error";
   };
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+  // read the fields of THIS form by their name="" (not by id)
+  const data = new FormData(form);
+  const name = String(data.get("name") || "").trim();
+  const email = String(data.get("email") || "").trim();
+  const message = String(data.get("message") || "").trim();
 
-    const name = form.querySelector("#userName").value.trim();
-    const email = form.querySelector("#userEmail").value.trim();
-    const message = form.querySelector("#userMessage").value.trim();
+  if (!name || !message) return showError("Please enter your name and your message.");
+  if (!/^\S+@\S+\.\S+$/.test(email)) return showError("Please enter a valid email address.");
 
-    if (!name || !message) return showError("Please enter your name and your message.");
-    if (!/^\S+@\S+\.\S+$/.test(email)) return showError("Please enter a valid email address.");
+  const text = `Hello, I'm ${name} (${email}).\n\n${message}`;
+  const url = `https://wa.me/254768572974?text=${encodeURIComponent(text)}`;
 
-    const text = `Hello, I'm ${name} (${email}).\n\n${message}`;
-    const url = `https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`;
+  status.className = "form-status";
+  status.textContent = "Opening WhatsApp... ";
+  const link = document.createElement("a");
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.textContent = "Tap here if it doesn't open.";
+  status.appendChild(link);
 
-    status.className = "form-status";
-    status.textContent = "Opening WhatsApp... ";
-    const link = document.createElement("a");
-    link.href = url;
-    link.target = "_blank";
-    link.rel = "noopener";
-    link.textContent = "Tap here if it doesn't open.";
-    status.appendChild(link);
-
-    window.location.href = url;
-  });
+  window.location.href = url;
 });
 </script>
 
