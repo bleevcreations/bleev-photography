@@ -73,8 +73,18 @@ export default route(async (req, res) => {
       const allReviews =
         snap.docs.map((doc) => doc.data());
 
-      const shuffledReviews =
-        shuffle(allReviews);
+// pinned reviews first (most recently pinned on top),
+      // everything else in random order
+      const time = (t) => t?.toMillis?.() ?? 0;
+
+      const pinnedReviews = allReviews
+        .filter((review) => review.pinned)
+        .sort((a, b) => time(b.pinnedAt) - time(a.pinnedAt));
+
+      const shuffledReviews = [
+        ...pinnedReviews,
+        ...shuffle(allReviews.filter((review) => !review.pinned)),
+      ];
 
       return res
         .status(200)
@@ -88,6 +98,7 @@ export default route(async (req, res) => {
               review.createdAt
                 .toDate()
                 .toISOString(),
+                pinned: !!review.pinned,
           }))
         );
     }

@@ -61,6 +61,20 @@
        HEADER
        ========================================================= */
 
+    .review-card.pinned::before { background: linear-gradient(90deg, #e9a900, #f5c542); }
+    .pin-badge {
+      align-self: flex-start;
+      margin-bottom: 8px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: #fff3cf;
+      color: #8a6100;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+
     .reviews-header {
       max-width: 1100px;
 
@@ -817,8 +831,9 @@ if (reviewsCount) {
           const card =
             document.createElement("article");
 
-          card.className =
-            "review-card";
+          card.className = review.pinned
+            ? "review-card pinned"
+            : "review-card";
 
 
           const rating =
@@ -841,6 +856,7 @@ if (reviewsCount) {
 
 
           card.innerHTML = `
+          ${review.pinned ? '<div class="pin-badge">📌 Featured</div>' : ""}
             <div class="review-rating">
               <div
                 class="rating-stars"

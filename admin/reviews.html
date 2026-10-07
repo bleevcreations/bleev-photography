@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Reviews</title>
+  <link rel="icon" type="image/png" href="../assets/logos/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --primary: #0066cc;
+      --bg: #f4f6f8;
+      --text: #333;
+      --radius: 8px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 1.25rem;
+      color: var(--text);
+    }
+
+    .topbar {
+      max-width: 900px;
+      margin: 0 auto 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.6rem;
+    }
+
+    .nav-btn {
+      background: var(--primary);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-size: 0.95rem;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-btn.danger { background: crimson; }
+
+    h2 {
+      text-align: center;
+      margin: 0.5rem 0 0.25rem;
+      color: var(--primary);
+    }
+
+    .sub {
+      text-align: center;
+      margin: 0 0 1.25rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* ---------- toolbar ---------- */
+
+    .toolbar {
+      max-width: 900px;
+      margin: 0 auto 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .toolbar select,
+    .toolbar input {
+      padding: 0.55rem 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      background: #fff;
+    }
+
+    .toolbar input { flex: 1; min-width: 160px; }
+
+    #summary {
+      width: 100%;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    /* ---------- review list ---------- */
+
+    #reviewList {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .message {
+      text-align: center;
+      color: #777;
+      padding: 2rem 1rem;
+      background: #fff;
+      border-radius: var(--radius);
+    }
+
+    .review {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1rem 1.1rem;
+      border-left: 4px solid transparent;
+    }
+
+    .review.pinned { border-left-color: #e9a900; background: #fffdf5; }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .stars { color: #e9a900; letter-spacing: 1px; font-size: 1rem; }
+    .stars .off { color: #d9dde3; }
+
+    .tag {
+      background: #eaf2fb;
+      color: #1b5c9c;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+    }
+
+    .tag.pin { background: #fff1cc; color: #8a6100; font-weight: 600; }
+
+    .date { margin-left: auto; color: #999; font-size: 0.8rem; }
+
+    .text {
+      margin: 0 0 0.6rem;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .foot {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+    }
+
+    .who { font-weight: 600; font-size: 0.9rem; }
+
+    .actions { display: flex; gap: 0.5rem; }
+
+    .actions button {
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.45rem 0.95rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .actions .pin-btn.on { background: #8a6100; }
+    .actions .del-btn { background: crimson; }
+    .actions button:disabled { opacity: 0.55; cursor: wait; }
+
+    @media (max-width: 520px) {
+      body { padding: 0.75rem; }
+      .date { margin-left: 0; width: 100%; }
+      .actions { width: 100%; }
+      .actions button { flex: 1; }
+    }
+  </style>
+  <style>html { visibility: hidden; }</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="nav-btn" href="panel.html">Portfolio Panel</a>
+    <a class="nav-btn" href="about.html">Edit About Page</a>
+    <a class="nav-btn danger" href="#" onclick="adminLogout(); return false;">Logout</a>
+  </div>
+
+  <h2>Manage Reviews</h2>
+  <p class="sub">Pinned reviews are shown first on the public Customer Reviews page.</p>
+
+  <div class="toolbar">
+    <select id="categoryFilter" aria-label="Filter by category">
+      <option value="">All categories</option>
+    </select>
+    <input id="search" type="search" placeholder="Search name or review..." aria-label="Search reviews" />
+    <div id="summary"></div>
+  </div>
+
+  <div id="reviewList">
+    <p class="message">Loading reviews...</p>
+  </div>
+
+  <script type="module" src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const listEl = document.getElementById("reviewList");
+      const filterEl = document.getElementById("categoryFilter");
+      const searchEl = document.getElementById("search");
+      const summaryEl = document.getElementById("summary");
+
+      let reviews = [];
+
+      // Reviews are public input: everything goes in as textContent, never as HTML.
+      const el = (tag, className, text) => {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+      };
+
+      // Talks to the API with the admin login token and turns failures into errors.
+      async function api(path, options) {
+        const res = await adminFetch(path, options);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.success === false) {
+          throw new Error(data.message || "Something went wrong. Please try again.");
+        }
+        return data;
+      }
+
+      const time = (v) => (v ? Date.parse(v) : 0);
+
+      function sorted(list) {
+        return [...list].sort(
+          (a, b) =>
+            Number(b.pinned) - Number(a.pinned) ||
+            time(b.pinned_at) - time(a.pinned_at) ||
+            time(b.created_at) - time(a.created_at)
+        );
+      }
+
+      function fillCategories() {
+        const current = filterEl.value;
+        const names = [...new Set(reviews.map((r) => r.category_name))].sort();
+        filterEl.length = 1; // keep "All categories"
+        names.forEach((n) => filterEl.appendChild(new Option(n, n)));
+        filterEl.value = names.includes(current) ? current : "";
+      }
+
+      function card(r) {
+        const box = el("article", "review" + (r.pinned ? " pinned" : ""));
+
+        const meta = el("div", "meta");
+        const stars = el("span", "stars");
+        stars.setAttribute("aria-label", `${r.rating} out of 5 stars`);
+        for (let i = 1; i <= 5; i++) stars.appendChild(el("span", i <= r.rating ? "" : "off", "★"));
+        meta.appendChild(stars);
+        meta.appendChild(el("span", "tag", r.category_name));
+        if (r.pinned) meta.appendChild(el("span", "tag pin", "📌 Pinned"));
+        if (r.created_at) {
+          meta.appendChild(
+            el("span", "date", new Date(r.created_at).toLocaleString("en-GB", {
+              day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+            }))
+          );
+        }
+        box.appendChild(meta);
+
+        box.appendChild(el("p", "text", r.text));
+
+        const foot = el("div", "foot");
+        foot.appendChild(el("span", "who", "— " + r.name));
+
+        const actions = el("div", "actions");
+
+        const pinBtn = el("button", "pin-btn" + (r.pinned ? " on" : ""), r.pinned ? "Unpin" : "Pin");
+        pinBtn.type = "button";
+        pinBtn.addEventListener("click", async () => {
+          pinBtn.disabled = true;
+          try {
+            await api(`/api/admin-reviews?id=${encodeURIComponent(r.id)}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ pinned: !r.pinned }),
+            });
+            r.pinned = !r.pinned;
+            r.pinned_at = r.pinned ? new Date().toISOString() : null;
+            render();
+          } catch (err) {
+            alert(err.message);
+            pinBtn.disabled = false;
+          }
+        });
+
+        const delBtn = el("button", "del-btn", "Delete");
+        delBtn.type = "button";
+        delBtn.addEventListener("click", async () => {
+          if (!confirm(`Delete the review by ${r.name}?\nThis cannot be undone.`)) return;
+          delBtn.disabled = true;
+          try {
+            await api(`/api/admin-reviews?id=${encodeURIComponent(r.id)}`, { method: "DELETE" });
+            reviews = reviews.filter((x) => x.id !== r.id);
+            fillCategories();
+            render();
+          } catch (err) {
+            alert(err.message);
+            delBtn.disabled = false;
+          }
+        });
+
+        actions.append(pinBtn, delBtn);
+        foot.appendChild(actions);
+        box.appendChild(foot);
+        return box;
+      }
+
+      function render() {
+        const category = filterEl.value;
+        const q = searchEl.value.trim().toLowerCase();
+
+        const shown = sorted(reviews).filter(
+          (r) =>
+            (!category || r.category_name === category) &&
+            (!q || `${r.name} ${r.text}`.toLowerCase().includes(q))
+        );
+
+        listEl.replaceChildren();
+        if (!shown.length) {
+          listEl.appendChild(
+            el("p", "message", reviews.length ? "No reviews match your filter." : "There are no reviews yet.")
+          );
+        } else {
+          shown.forEach((r) => listEl.appendChild(card(r)));
+        }
+
+        const pinnedCount = reviews.filter((r) => r.pinned).length;
+        summaryEl.textContent =
+          `Showing ${shown.length} of ${reviews.length} review${reviews.length === 1 ? "" : "s"} · ${pinnedCount} pinned`;
+      }
+
+      filterEl.addEventListener("change", render);
+      searchEl.addEventListener("input", render);
+
+      try {
+        await window.adminReady; // wait until the login check finishes
+        reviews = await api("/api/admin-reviews");
+        fillCategories();
+        render();
+      } catch (err) {
+        listEl.replaceChildren(el("p", "message", "Could not load reviews: " + err.message));
+      }
+    });
+  </script>
+</body>
+</html>
