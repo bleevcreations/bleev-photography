@@ -43,7 +43,7 @@ const toReview = (d) => ({
   name: d.name,
   text: d.text,
   rating: Number(d.rating) || 0,
-  date: formatDate(d.createdAt.toDate()),
+  date: d.createdAt?.toDate ? formatDate(d.createdAt.toDate()) : '',
 });
 
 export default route(async (req, res) => {
@@ -95,9 +95,7 @@ export default route(async (req, res) => {
             rating:
               Number(review.rating) || 0,
             created_at:
-              review.createdAt
-                .toDate()
-                .toISOString(),
+              review.createdAt?.toDate?.().toISOString() ?? null,
                 pinned: !!review.pinned,
           }))
         );
@@ -142,8 +140,8 @@ export default route(async (req, res) => {
         .map((doc) => doc.data())
         .sort(
           (a, b) =>
-            b.createdAt.toMillis() -
-            a.createdAt.toMillis()
+            (b.createdAt?.toMillis?.() ?? 0) -
+            (a.createdAt?.toMillis?.() ?? 0)
         );
 
     const recent =
