@@ -343,9 +343,7 @@
 
         <p class="contact-description">
 
-          Have a photography project, event,
-          portrait session, or creative idea
-          in mind? Get in touch and let's bring
+          Redy to bring your vision to life?<br> Get in touch and let's bring
           it to life.
 
         </p>
@@ -492,17 +490,14 @@
           </h3>
 
           <p>
-            Tell me a little about what
+            Tell us a little about what
             you have in mind.
           </p>
 
         </div>
 
 
-        <form
-          class="contact-form"
-          id="contactForm"
-        >
+        <form class="contact-form" id="contactForm" novalidate>
 
 
           <!-- Name -->
@@ -556,7 +551,7 @@
             <textarea
               name="message"
               id="userMessage"
-              placeholder="Tell me about your photography project..."
+              placeholder="Tell us about your visual project..."
               rows="5"
               required
             ></textarea>
@@ -576,6 +571,8 @@
             Send via WhatsApp
 
           </button>
+
+          <p id="formStatus" class="form-status" role="alert" aria-live="polite"></p>
 
         </form>
 
@@ -612,58 +609,44 @@
        CONTACT FORM → WHATSAPP
        ========================================================= -->
 
- <script>
-  document.addEventListener("DOMContentLoaded", () => {
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("contactForm");
+  const status = document.getElementById("formStatus");
+  if (!form || !status) return;
 
-    const contactForm =
-      document.getElementById("contactForm");
+  const PHONE = "254768572974";
 
-    if (!contactForm) {
-      return;
-    }
+  const showError = (msg) => {
+    status.textContent = msg;
+    status.className = "form-status error";
+  };
 
-    contactForm.addEventListener("submit", (e) => {
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-      e.preventDefault();
+    const name = form.querySelector("#userName").value.trim();
+    const email = form.querySelector("#userEmail").value.trim();
+    const message = form.querySelector("#userMessage").value.trim();
 
-      const name =
-        document.getElementById("userName").value.trim();
+    if (!name || !message) return showError("Please enter your name and your message.");
+    if (!/^\S+@\S+\.\S+$/.test(email)) return showError("Please enter a valid email address.");
 
-      const email =
-        document.getElementById("userEmail").value.trim();
+    const text = `Hello, I'm ${name} (${email}).\n\n${message}`;
+    const url = `https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`;
 
-      const message =
-        document.getElementById("userMessage").value.trim();
+    status.className = "form-status";
+    status.textContent = "Opening WhatsApp... ";
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = "Tap here if it doesn't open.";
+    status.appendChild(link);
 
-
-      /* Build WhatsApp message */
-
-      const fullMessage =
-        `Hello, I'm ${name} (${email}).
-
-${message}`;
-
-
-      /* WhatsApp number */
-
-      const phoneNumber =
-        "254768572974";
-
-
-      /* Build WhatsApp URL */
-
-      const whatsappURL =
-        `https://wa.me/${phoneNumber}?text=${encodeURIComponent(fullMessage)}`;
-
-
-      /* Navigate directly to WhatsApp */
-
-      window.location.href =
-        whatsappURL;
-
-    });
-
+    window.location.href = url;
   });
+});
 </script>
 
 

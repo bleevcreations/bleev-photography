@@ -2314,6 +2314,9 @@ body:has(#categoryGallery) > header h1 {
   font-weight: 600;
 }
 
+.form-status { margin-top: 12px; font-size: 0.9rem; text-align: center; color: #2b5876; }
+.form-status.error { color: #b00020; }
+
 .contact-form input,
 .contact-form textarea {
   width: 100%;
@@ -2938,5 +2941,12 @@ footer .powered-by {
   .gallery-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
+  }
+}
+
+@media (hover: none) {
+  .contact-card:hover,
+  .contact-submit:hover {
+    transform: none;
   }
 }
