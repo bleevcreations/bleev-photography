@@ -2601,26 +2601,33 @@ footer .powered-by {
 @media (max-width: 700px) {
 
   footer {
+    display: grid;
+    justify-content: start;      /* one column, only as wide as the copyright line */
     text-align: left;
-    padding: 28px 16px 30px;
+    padding: 44px 16px 30px;     /* top padding makes room for the decorative line */
   }
 
+  /* decorative line back in the middle of the screen */
   footer::before {
-    align-self: center;
-    margin: 10px;             /* decorative line moves to the left edge too */
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
   }
 
   footer p {
-    font-size: clamp(0.55rem, 2.5vw, 0.9rem); 
+    font-size: clamp(0.55rem, 2.5vw, 0.9rem);
     letter-spacing: 0.03em;
-    white-space: nowrap;          /* stays on one line */
+    white-space: nowrap;
   }
 
+  /* centred under the copyright line */
   footer .powered-by {
     text-align: center;
     margin-top: 6px;
     font-size: 0.62rem;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;      /* was 0.14em: a little tighter so it clears the button */
     white-space: nowrap;
   }
 }
