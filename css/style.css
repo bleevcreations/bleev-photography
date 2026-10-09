@@ -2597,21 +2597,22 @@ footer .powered-by {
     rgba(255, 255, 255, 0.65);
 }
 
-/* Phones: keep the footer text clear of the floating buttons, on one line */
+/* Phones: compact footer, text on the left, clear of the floating buttons */
 @media (max-width: 700px) {
 
   footer {
-    padding: 28px 12px 160px;     /* extra room at the bottom for the floating buttons */
+    text-align: left;
+    padding: 28px 16px 30px;
   }
 
   footer::before {
-    margin-bottom: 14px;
+    margin: 0 0 14px;             /* decorative line moves to the left edge too */
   }
 
   footer p {
-    font-size: clamp(0.6rem, 3.2vw, 1.1rem);
+    font-size: clamp(0.6rem, 2.9vw, 1rem);
     letter-spacing: 0.03em;
-    white-space: nowrap;          /* never wraps to a second line */
+    white-space: nowrap;          /* stays on one line */
   }
 
   footer .powered-by {
