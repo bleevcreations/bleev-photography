@@ -2597,6 +2597,31 @@ footer .powered-by {
     rgba(255, 255, 255, 0.65);
 }
 
+/* Phones: keep the footer text clear of the floating buttons, on one line */
+@media (max-width: 700px) {
+
+  footer {
+    padding: 28px 12px 160px;     /* extra room at the bottom for the floating buttons */
+  }
+
+  footer::before {
+    margin-bottom: 14px;
+  }
+
+  footer p {
+    font-size: clamp(0.6rem, 3.2vw, 1.1rem);
+    letter-spacing: 0.03em;
+    white-space: nowrap;          /* never wraps to a second line */
+  }
+
+  footer .powered-by {
+    margin-top: 6px;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    white-space: nowrap;
+  }
+}
+
 
 /* =========================================================
    PRICE
