@@ -2606,6 +2606,7 @@ footer .powered-by {
   }
 
   footer::before {
+    align-self: center;
     margin: 10px;             /* decorative line moves to the left edge too */
   }
 
@@ -2616,6 +2617,7 @@ footer .powered-by {
   }
 
   footer .powered-by {
+    text-align: center;
     margin-top: 6px;
     font-size: 0.62rem;
     letter-spacing: 0.14em;
