@@ -2606,11 +2606,11 @@ footer .powered-by {
   }
 
   footer::before {
-    margin: 0 0 14px;             /* decorative line moves to the left edge too */
+    margin: 10px;             /* decorative line moves to the left edge too */
   }
 
   footer p {
-    font-size: clamp(0.6rem, 2.9vw, 1rem);
+    font-size: clamp(0.55rem, 2.5vw, 0.9rem); 
     letter-spacing: 0.03em;
     white-space: nowrap;          /* stays on one line */
   }
