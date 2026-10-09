@@ -32,6 +32,20 @@ async function assertUniqueName(name, exceptId) {
   if (clash) throw httpError(409, 'A category with that name already exists.');
 }
 
+// Placed categories (position 0, 1, 2 ...) come last, in that order.
+// Categories you haven't placed yet (e.g. a brand-new one) come first,
+// newest first, which is how the list worked before.
+function sortCategories(docs) {
+  const placed = (doc) => typeof doc.data().position === 'number';
+  const created = (doc) => doc.data().createdAt?.toMillis?.() ?? 0;
+
+  return [...docs].sort((a, b) => {
+    if (placed(a) !== placed(b)) return placed(a) ? 1 : -1;
+    if (placed(a)) return a.data().position - b.data().position;
+    return created(b) - created(a);
+  });
+}
+
 export default route(async (req, res) => {
   const id = req.query.id ? String(req.query.id) : null;
 
@@ -47,13 +61,32 @@ export default route(async (req, res) => {
       return res.status(200).json({ success: true, category: toPublic(doc) });
     }
 
-    const snap = await col().orderBy('createdAt', 'desc').get();
-    return res.status(200).json(snap.docs.map(toPublic));
+    const snap = await col().get();
+    return res.status(200).json(sortCategories(snap.docs).map(toPublic));
   }
 
   // ---------- admin writes ----------
-  if (!['POST', 'PUT', 'DELETE'].includes(req.method)) throw methodNotAllowed();
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) throw methodNotAllowed();
   await requireAdmin(req);
+
+  // PATCH /api/categories   body { "order": ["id1", "id2", ...] }
+  if (req.method === 'PATCH') {
+    const { order } = await readJson(req);
+    if (!Array.isArray(order) || order.some((x) => typeof x !== 'string')) {
+      throw httpError(400, '"order" must be a list of category ids.');
+    }
+
+    const snap = await col().get();
+    const known = new Set(snap.docs.map((d) => d.id));
+    const wanted = [...new Set(order)].filter((x) => known.has(x));
+    // anything the list didn't mention goes after, in its current order
+    const rest = sortCategories(snap.docs).map((d) => d.id).filter((x) => !wanted.includes(x));
+
+    const batch = db().batch();
+    [...wanted, ...rest].forEach((categoryId, i) => batch.update(col().doc(categoryId), { position: i }));
+    await batch.commit();
+    return res.status(200).json({ success: true });
+  }
 
   if (req.method === 'POST') {
     const { name: rawName } = await readJson(req);

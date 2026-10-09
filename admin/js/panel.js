@@ -293,6 +293,42 @@ if (addForm) {
 
 }
 
+// =========================================================
+// Arrange Categories (the order shown on the portfolio)
+// =========================================================
+
+let categoryOrder = [];   // category ids, in the order they are shown
+
+async function saveCategoryOrder(order) {
+  try {
+    const res = await adminFetch("/api/categories", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ order })
+    });
+    const result = await res.json();
+    if (!result.success) throw new Error(result.error || "Could not save the new order.");
+    loadCategories();
+  } catch (err) {
+    console.error("Reorder failed:", err);
+    alert(err.message || "Could not save the new order.");
+  }
+}
+
+function moveCategory(id, step) {
+  const from = categoryOrder.indexOf(id);
+  const to = from + step;
+  if (from < 0 || to < 0 || to >= categoryOrder.length) return;
+
+  const next = [...categoryOrder];
+  [next[from], next[to]] = [next[to], next[from]];
+  saveCategoryOrder(next);
+}
+
+function moveCategoryToTop(id) {
+  if (!categoryOrder.includes(id) || categoryOrder[0] === id) return;
+  saveCategoryOrder([id, ...categoryOrder.filter((x) => x !== id)]);
+}
 
 // =========================================================
 // Load Categories
@@ -316,8 +352,11 @@ async function loadCategories() {
 
     const categories = await res.json();
 
+    // ids in the order they are shown (used by the move buttons)
+    categoryOrder = categories.map((c) => c.id);
 
-    categories.forEach(cat => {
+
+    categories.forEach((cat, index) => {
 
       const div = document.createElement("div");
 
@@ -363,9 +402,23 @@ async function loadCategories() {
 
       div.innerHTML = `
 
-        <strong>
-          ${escapeHtml(cat.name || "")}
-        </strong>
+        <div class="category-head">
+          <strong>
+            ${index + 1}. ${escapeHtml(cat.name || "")}
+          </strong>
+
+          <span class="order-btns">
+            <button type="button" title="Move to the top"
+              onclick="moveCategoryToTop('${cat.id}')"
+              ${index === 0 ? "disabled" : ""}>⤒</button>
+            <button type="button" title="Move up"
+              onclick="moveCategory('${cat.id}', -1)"
+              ${index === 0 ? "disabled" : ""}>▲</button>
+            <button type="button" title="Move down"
+              onclick="moveCategory('${cat.id}', 1)"
+              ${index === categories.length - 1 ? "disabled" : ""}>▼</button>
+          </span>
+        </div>
 
         <div class="image-grid">
           ${imagesHtml}
