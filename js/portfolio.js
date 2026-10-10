@@ -311,25 +311,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       overlay.appendChild(categoryName);
 
-      // ------------------------------------------------
-      // PHOTO COUNT — BOTTOM RIGHT
-      // ------------------------------------------------
 
-      if (imageIds.length > 0) {
-        const photoCount = document.createElement("span");
-
-        photoCount.className =
-          "portfolio-photo-count";
-
-        photoCount.textContent =
-          `${imageIds.length} ${
-            imageIds.length === 1
-              ? "photo"
-              : "photos"
-          }`;
-
-        overlay.appendChild(photoCount);
-      }
 
       card.appendChild(overlay);
 

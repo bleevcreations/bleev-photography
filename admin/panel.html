@@ -352,7 +352,64 @@
       line-height: 1;
     }
 
-    .order-btns button:disabled { opacity: 0.35; cursor: default; }
+    .order-btns button:disabled { opacity: 0.35; cursor: default; 
+    }
+
+        .photo-num {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      min-width: 22px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .photo-num.cover {
+      background: #e9a900;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .photo-move {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      bottom: 4px;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .category-entry .image-grid .photo-move button {
+      position: static;
+      width: 28px;
+      height: 28px;
+      margin: 0;
+      padding: 0;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      font-size: 0.8rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .category-entry .image-grid .photo-move button:hover:not(:disabled) {
+      background: var(--primary);
+    }
+
+    .category-entry .image-grid .photo-move button:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
   </style>
   <style>html { visibility: hidden; }</style>
 </head>
@@ -404,7 +461,7 @@
     <div class="form-group">
 
       <label for="imageUpload">
-        Upload Images
+        Upload Images<br>OR<br>Drag Images here
       </label>
 
       <input

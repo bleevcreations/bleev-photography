@@ -1031,40 +1031,6 @@ function pickNextIndex() {
           categoryName
         );
 
-
-        // ==================================================
-        // PHOTO COUNT
-        // ==================================================
-
-        if (
-          images.length > 0
-        ) {
-
-          const photoCount =
-            document.createElement(
-              "span"
-            );
-
-
-          photoCount.className =
-            "portfolio-photo-count";
-
-
-          photoCount.textContent =
-            `${images.length} ${
-              images.length === 1
-                ? "photo"
-                : "photos"
-            }`;
-
-
-          overlay.appendChild(
-            photoCount
-          );
-
-        }
-
-
         // Add overlay.
 
         card.appendChild(

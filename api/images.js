@@ -9,6 +9,7 @@ import {
 import {
   route,
   readBody,
+  readJson,
   httpError,
   methodNotAllowed,
 } from './_lib/http.js';
@@ -22,11 +23,15 @@ const ALLOWED = [
 // POST /api/images?categoryId=..&name=photo.jpg
 //      (raw image bytes as the body)
 //
+// PATCH /api/images?categoryId=..
+//      body { "order": ["publicId1", "publicId2", ...] }
+//      (save the order of the photos)
+//
 // DELETE /api/images?categoryId=..&fileId=..
 //      (fileId = the image's Cloudinary public ID)
 
 export default route(async (req, res) => {
-  if (!['POST', 'DELETE'].includes(req.method)) {
+  if (!['POST', 'PATCH', 'DELETE'].includes(req.method)) {
     throw methodNotAllowed();
   }
 
@@ -130,6 +135,54 @@ export default route(async (req, res) => {
     return res.status(200).json({
       success: true,
       fileId: publicId,
+    });
+  }
+
+  // ---------------------------------------------------------
+  // REORDER IMAGES
+  // ---------------------------------------------------------
+
+  if (req.method === 'PATCH') {
+    const { order } = await readJson(req);
+
+    if (
+      !Array.isArray(order) ||
+      order.some((x) => typeof x !== 'string')
+    ) {
+      throw httpError(
+        400,
+        '"order" must be a list of photo ids.'
+      );
+    }
+
+    // Read + write in one transaction, so a photo
+    // uploaded at the same moment is not lost.
+    await db().runTransaction(async (tx) => {
+      const current =
+        (await tx.get(ref)).data().images || [];
+
+      const byId = new Map(
+        current.map((img) => [img.publicId, img])
+      );
+
+      const mentioned = new Set(order);
+
+      const placed = [...mentioned]
+        .filter((id) => byId.has(id))
+        .map((id) => byId.get(id));
+
+      // Photos not mentioned are kept, at the end.
+      const rest = current.filter(
+        (img) => !mentioned.has(img.publicId)
+      );
+
+      tx.update(ref, {
+        images: [...placed, ...rest],
+      });
+    });
+
+    return res.status(200).json({
+      success: true,
     });
   }
 

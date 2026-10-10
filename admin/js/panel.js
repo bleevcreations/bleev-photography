@@ -330,6 +330,52 @@ function moveCategoryToTop(id) {
   saveCategoryOrder([id, ...categoryOrder.filter((x) => x !== id)]);
 }
 
+
+// =========================================================
+// Arrange Photos inside a category
+// (the first photo is the one shown first on the portfolio card)
+// =========================================================
+
+let imageOrders = {};   // categoryId -> photo ids, in the order shown
+
+async function saveImageOrder(categoryId, order) {
+  const scrollY = window.scrollY;   // stay where you are after the list reloads
+  try {
+    const res = await adminFetch(
+      `/api/images?categoryId=${encodeURIComponent(categoryId)}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order })
+      }
+    );
+    const result = await res.json();
+    if (!result.success) throw new Error(result.error || "Could not save the new photo order.");
+
+    await loadCategories();
+    window.scrollTo(0, scrollY);
+  } catch (err) {
+    console.error("Photo reorder failed:", err);
+    alert(err.message || "Could not save the new photo order.");
+  }
+}
+
+function moveImage(categoryId, index, step) {
+  const order = imageOrders[categoryId] || [];
+  const to = index + step;
+  if (index < 0 || to < 0 || to >= order.length) return;
+
+  const next = [...order];
+  [next[index], next[to]] = [next[to], next[index]];
+  saveImageOrder(categoryId, next);
+}
+
+function moveImageToFirst(categoryId, index) {
+  const order = imageOrders[categoryId] || [];
+  if (index <= 0 || index >= order.length) return;
+  saveImageOrder(categoryId, [order[index], ...order.filter((_, i) => i !== index)]);
+}
+
 // =========================================================
 // Load Categories
 // =========================================================
@@ -367,8 +413,10 @@ async function loadCategories() {
       // Images
       // -----------------------------------------------------
 
+      imageOrders[cat.id] = (cat.images || []).map(String);
+
       const imagesHtml = (cat.images || [])
-        .map(img => {
+        .map((img, i) => {
 
           const safeImage = String(img)
             .replace(/'/g, "\\'")
@@ -389,6 +437,24 @@ async function loadCategories() {
               >
                 ✖
               </button>
+
+              +              <span class="photo-num ${i === 0 ? "cover" : ""}">
+                ${i === 0 ? "★ 1" : i + 1}
+              </span>
+
+              <div class="photo-move">
+                <button type="button" title="Make this the first photo"
+                  onclick="moveImageToFirst('${cat.id}', ${i})"
+                  ${i === 0 ? "disabled" : ""}>⇤</button>
+                <button type="button" title="Move earlier"
+                  onclick="moveImage('${cat.id}', ${i}, -1)"
+                  ${i === 0 ? "disabled" : ""}>◀</button>
+                <button type="button" title="Move later"
+                  onclick="moveImage('${cat.id}', ${i}, 1)"
+                  ${i === (cat.images || []).length - 1 ? "disabled" : ""}>▶</button>
+              </div>
+
+
             </div>
           `;
 
