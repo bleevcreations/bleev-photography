@@ -437,8 +437,7 @@ async function loadCategories() {
               >
                 ✖
               </button>
-
-              +              <span class="photo-num ${i === 0 ? "cover" : ""}">
+              <span class="photo-num ${i === 0 ? "cover" : ""}">
                 ${i === 0 ? "★ 1" : i + 1}
               </span>
 
