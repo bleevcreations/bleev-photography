@@ -2985,3 +2985,24 @@ footer .powered-by {
     transform: none;
   }
 }
+
+/* Portfolio cards: category name tucked into the bottom-left corner, smaller */
+.portfolio-card-overlay {
+  padding: 10px 12px;
+}
+
+.portfolio-category-name {
+  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+
+  .portfolio-card-overlay {
+    padding: 8px 10px;
+  }
+
+  .portfolio-category-name {
+    font-size: 0.8rem;
+  }
+}
