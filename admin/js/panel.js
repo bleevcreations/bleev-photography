@@ -332,14 +332,24 @@ function moveCategoryToTop(id) {
 
 
 // =========================================================
-// Arrange Photos inside a category
+// Arrange Photos inside a category: drag and drop
 // (the first photo is the one shown first on the portfolio card)
+// Needs SortableJS (loaded in panel.html before this file)
 // =========================================================
 
 let imageOrders = {};   // categoryId -> photo ids, in the order shown
 
-async function saveImageOrder(categoryId, order) {
-  const scrollY = window.scrollY;   // stay where you are after the list reloads
+// Re-number the badges after a photo has been dragged
+function renumberPhotos(grid) {
+  [...grid.children].forEach((tile, i) => {
+    const badge = tile.querySelector(".photo-num");
+    if (!badge) return;
+    badge.textContent = i === 0 ? "★ 1" : String(i + 1);
+    badge.classList.toggle("cover", i === 0);
+  });
+}
+
+async function persistImageOrder(categoryId, order) {
   try {
     const res = await adminFetch(
       `/api/images?categoryId=${encodeURIComponent(categoryId)}`,
@@ -351,29 +361,41 @@ async function saveImageOrder(categoryId, order) {
     );
     const result = await res.json();
     if (!result.success) throw new Error(result.error || "Could not save the new photo order.");
-
-    await loadCategories();
-    window.scrollTo(0, scrollY);
   } catch (err) {
     console.error("Photo reorder failed:", err);
     alert(err.message || "Could not save the new photo order.");
+    loadCategories();   // put the photos back as they were saved
   }
 }
 
-function moveImage(categoryId, index, step) {
-  const order = imageOrders[categoryId] || [];
-  const to = index + step;
-  if (index < 0 || to < 0 || to >= order.length) return;
+function initPhotoSorting(grid, categoryId) {
+  if (!grid || typeof Sortable === "undefined") return;
 
-  const next = [...order];
-  [next[index], next[to]] = [next[to], next[index]];
-  saveImageOrder(categoryId, next);
-}
+  Sortable.create(grid, {
+    animation: 180,
 
-function moveImageToFirst(categoryId, index) {
-  const order = imageOrders[categoryId] || [];
-  if (index <= 0 || index >= order.length) return;
-  saveImageOrder(categoryId, [order[index], ...order.filter((_, i) => i !== index)]);
+    filter: "button",            // the ✖ delete button still works as a normal click
+    preventOnFilter: false,
+
+    delay: 150,                  // touch screens: press and hold, so scrolling still works
+    delayOnTouchOnly: true,
+    touchStartThreshold: 6,
+
+    ghostClass: "photo-ghost",
+    chosenClass: "photo-chosen",
+
+    onEnd(evt) {
+      if (evt.oldIndex === evt.newIndex) return;
+
+      const next = [...(imageOrders[categoryId] || [])];
+      const [moved] = next.splice(evt.oldIndex, 1);
+      next.splice(evt.newIndex, 0, moved);
+
+      imageOrders[categoryId] = next;
+      renumberPhotos(grid);
+      persistImageOrder(categoryId, next);
+    }
+  });
 }
 
 // =========================================================
@@ -440,20 +462,6 @@ async function loadCategories() {
               <span class="photo-num ${i === 0 ? "cover" : ""}">
                 ${i === 0 ? "★ 1" : i + 1}
               </span>
-
-              <div class="photo-move">
-                <button type="button" title="Make this the first photo"
-                  onclick="moveImageToFirst('${cat.id}', ${i})"
-                  ${i === 0 ? "disabled" : ""}>⇤</button>
-                <button type="button" title="Move earlier"
-                  onclick="moveImage('${cat.id}', ${i}, -1)"
-                  ${i === 0 ? "disabled" : ""}>◀</button>
-                <button type="button" title="Move later"
-                  onclick="moveImage('${cat.id}', ${i}, 1)"
-                  ${i === (cat.images || []).length - 1 ? "disabled" : ""}>▶</button>
-              </div>
-
-
             </div>
           `;
 
@@ -519,6 +527,7 @@ async function loadCategories() {
 
 
       list.appendChild(div);
+      initPhotoSorting(div.querySelector(".image-grid"), cat.id);
 
     });
 

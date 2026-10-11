@@ -376,39 +376,28 @@
       font-weight: 700;
     }
 
-    .photo-move {
-      position: absolute;
-      left: 4px;
-      right: 4px;
-      bottom: 4px;
-      display: flex;
-      justify-content: center;
-      gap: 4px;
+        .image-grid > div {
+      cursor: grab;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;      /* no iPhone image menu on press-and-hold */
     }
 
-    .category-entry .image-grid .photo-move button {
-      position: static;
-      width: 28px;
-      height: 28px;
-      margin: 0;
-      padding: 0;
-      border-radius: 6px;
-      background: rgba(0, 0, 0, 0.65);
-      color: #fff;
-      font-size: 0.8rem;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .image-grid img {
+      -webkit-touch-callout: none;
+      -webkit-user-drag: none;
     }
 
-    .category-entry .image-grid .photo-move button:hover:not(:disabled) {
-      background: var(--primary);
-    }
+    .image-grid button { cursor: pointer; }
 
-    .category-entry .image-grid .photo-move button:disabled {
-      opacity: 0.35;
-      cursor: default;
+    .photo-ghost  { opacity: 0.35; }
+    .photo-chosen { cursor: grabbing; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); }
+
+    .hint {
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      margin: -0.5rem 0 1rem;
     }
   </style>
   <style>html { visibility: hidden; }</style>
@@ -498,8 +487,11 @@
   <h2>
     Manage Existing Categories
   </h2>
+  <p class="hint">Drag a photo to rearrange. On a phone, press and hold first. The first photo (★) is the one shown first.</p>
 
   <div id="categoryList"></div>
+
+  
 
 
   <!-- =========================================================
@@ -635,6 +627,7 @@
        ========================================================= -->
 
   <script type="module" src="js/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <script src="js/panel.js"></script>
 
 </body>
